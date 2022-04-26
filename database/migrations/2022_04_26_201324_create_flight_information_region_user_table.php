@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -21,6 +20,10 @@ return new class extends Migration
             $table->foreignIdFor(FlightInformationRegion::class);
             $table->timestamps();
 
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('flight_information_region_id', 'flight_information_region_id')
+                ->references('id')
+                ->on('flight_information_regions');
             $table->unique(['user_id', 'flight_information_region_id'], 'flight_information_region_user');
         });
     }
