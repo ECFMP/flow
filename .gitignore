@@ -22,3 +22,7 @@ Homestead.json
 /.vagrant
 .phpunit.result.cache
 .idea
+
+# Laravel IDE Helper
+_ide_helper*\.php
+\.phpstorm\.meta\.php

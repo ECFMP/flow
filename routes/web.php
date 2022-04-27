@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\VatsimConnectController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::middleware(['guest'])->group(function () {
+    Route::get('/auth/redirect', function () {
+        return Socialite::driver('vatsimconnect')->redirect();
+    });
+
+    Route::get('/auth/callback', [VatsimConnectController::class, 'callback']);
 });
