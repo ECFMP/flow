@@ -22,4 +22,9 @@ class FlightInformationRegion extends Model
     {
         return $this->hasMany(Event::class);
     }
+
+    public function flowMeasures(): HasMany
+    {
+        return $this->hasMany(FlowMeasure::class);
+    }
 }
