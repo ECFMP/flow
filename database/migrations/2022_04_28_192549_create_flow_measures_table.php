@@ -31,7 +31,7 @@ return new class extends Migration {
                 ->comment('The reason given for the flow measure being in place');
             $table->string('type')
                 ->comment('The type of flow measure');
-            $table->string('value')
+            $table->unsignedInteger('value')
                 ->nullable()
                 ->comment('Used to specify the value of the measure, for all but mandatory_route');
             $table->json('mandatory_route')
