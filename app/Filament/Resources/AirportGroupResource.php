@@ -53,6 +53,7 @@ class AirportGroupResource extends Resource
         return [
             'index' => Pages\ListAirportGroups::route('/'),
             'create' => Pages\CreateAirportGroup::route('/create'),
+            'view' => Pages\ViewAirportGroup::route('{record}'),
             'edit' => Pages\EditAirportGroup::route('/{record}/edit'),
         ];
     }

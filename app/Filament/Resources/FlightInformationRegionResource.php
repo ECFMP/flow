@@ -78,6 +78,7 @@ class FlightInformationRegionResource extends Resource
         return [
             'index' => Pages\ListFlightInformationRegions::route('/'),
             'create' => Pages\CreateFlightInformationRegion::route('/create'),
+            'view' => Pages\ViewFlightInformationRegion::route('{record}'),
             'edit' => Pages\EditFlightInformationRegion::route('/{record}/edit'),
         ];
     }
