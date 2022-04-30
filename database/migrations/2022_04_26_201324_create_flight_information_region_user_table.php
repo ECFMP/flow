@@ -20,10 +20,14 @@ return new class extends Migration {
             $table->foreignIdFor(FlightInformationRegion::class);
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
             $table->foreign('flight_information_region_id', 'flight_information_region_id')
                 ->references('id')
-                ->on('flight_information_regions');
+                ->on('flight_information_regions')
+                ->cascadeOnDelete();
             $table->unique(['user_id', 'flight_information_region_id'], 'flight_information_region_user');
         });
     }
