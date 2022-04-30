@@ -60,9 +60,7 @@ jobs:
           key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env.example') }}
 
       - name: Build and Start Containers
-        run:  |
-          ./vendor/bin/sail up -d
-          docker ps
+        run: ./vendor/bin/sail up -d
 
       - name: Migrate Database
         run: ./vendor/bin/sail artisan migrate
