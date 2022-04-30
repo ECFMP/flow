@@ -2,32 +2,30 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\AirportResource\Pages;
-use App\Filament\Resources\AirportResource\RelationManagers;
-use App\Models\Airport;
+use App\Filament\Resources\AirportGroupResource\Pages;
+use App\Filament\Resources\AirportGroupResource\RelationManagers;
+use App\Models\AirportGroup;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 
-class AirportResource extends Resource
+class AirportGroupResource extends Resource
 {
-    protected static ?string $model = Airport::class;
+    protected static ?string $model = AirportGroup::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
+    protected static ?string $navigationIcon = 'heroicon-o-collection';
 
-    protected static ?string $recordTitleAttribute = 'icao_code';
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('icao_code')
-                    ->label(__('ICAO code'))
+                Forms\Components\TextInput::make('name')
                     ->required()
-                    ->unique()
-                    ->length(4),
+                    ->maxLength(255),
             ]);
     }
 
@@ -35,7 +33,7 @@ class AirportResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('icao_code')->label(__('ICAO code')),
+                Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -49,16 +47,16 @@ class AirportResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\GroupsRelationManager::class,
+            RelationManagers\AirportsRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListAirports::route('/'),
-            'create' => Pages\CreateAirport::route('/create'),
-            'edit' => Pages\EditAirport::route('/{record}/edit'),
+            'index' => Pages\ListAirportGroups::route('/'),
+            'create' => Pages\CreateAirportGroup::route('/create'),
+            'edit' => Pages\EditAirportGroup::route('/{record}/edit'),
         ];
     }
 }

@@ -1,21 +1,18 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\AirportGroupResource\RelationManagers;
 
-use App\Filament\Resources\AirportResource\Pages;
-use App\Filament\Resources\AirportResource\RelationManagers;
-use App\Models\Airport;
 use Filament\Forms;
 use Filament\Resources\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 
-class AirportResource extends Resource
+class AirportsRelationManager extends BelongsToManyRelationManager
 {
-    protected static ?string $model = Airport::class;
+    protected static string $relationship = 'airports';
 
-    protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
+    protected static ?string $inverseRelationship = 'groups';
 
     protected static ?string $recordTitleAttribute = 'icao_code';
 
@@ -44,21 +41,5 @@ class AirportResource extends Resource
             ->filters([
                 //
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            RelationManagers\GroupsRelationManager::class,
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListAirports::route('/'),
-            'create' => Pages\CreateAirport::route('/create'),
-            'edit' => Pages\EditAirport::route('/{record}/edit'),
-        ];
     }
 }
