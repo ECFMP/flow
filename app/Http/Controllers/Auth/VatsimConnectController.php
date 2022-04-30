@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\RoleKey;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
@@ -20,7 +21,7 @@ class VatsimConnectController extends Controller
         if (!$user) {
             $user = new User([
                 'id' => $vatsimUser->getId(),
-                'role_id' => Role::firstWhere('key', 'USER')->id
+                'role_id' => Role::firstWhere('key', RoleKey::USER)->id
             ]);
         }
 
@@ -31,6 +32,10 @@ class VatsimConnectController extends Controller
         $user->save();
 
         Auth::login($user);
+
+        if ($user->role->key == RoleKey::USER) {
+            return redirect('/');
+        }
 
         return to_route('filament.pages.dashboard');
     }

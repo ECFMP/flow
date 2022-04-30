@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoleKey;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,9 +46,9 @@ class User extends Authenticatable implements FilamentUser
     public function canAccessFilament(): bool
     {
         return in_array($this->role->key, [
-            'SYSTEM',
-            'NMT',
-            'FLOW_MANAGER'
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+            RoleKey::FLOW_MANAGER,
         ]);
     }
 }
