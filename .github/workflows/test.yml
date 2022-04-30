@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Flow
+    name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     concurrency:
       group: flow-test-${{ github.ref }}
@@ -58,7 +58,7 @@ jobs:
         run: ./vendor/bin/sail up -d
 
       - name: Migrate Database
-        run: ./vendor/bin/sail migrate
+        run: ./vendor/bin/sail artisan migrate
 
       - name: Run Tests
-        run: ./vendor/bin/sail artisan:test
+        run: ./vendor/bin/sail artisan test
