@@ -5,7 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -19,7 +20,7 @@ return new class extends Migration {
             $table->dateTime('date_start')->comment('When the event begins (Z)');
             $table->dateTime('date_end')->comment('When the event ends (Z)');
             $table->foreignIdFor(FlightInformationRegion::class);
-            $table->string('vatcan_code')->comment('The VATCAN events system code');
+            $table->string('vatcan_code')->nullable()->comment('The VATCAN events system code');
             $table->timestamps();
 
             $table->foreign('flight_information_region_id')->references('id')->on('flight_information_regions');
