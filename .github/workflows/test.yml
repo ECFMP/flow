@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: PHP ${{ matrix.php }}
+    name: Tests PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     concurrency:
       group: flow-test-${{ github.ref }}
