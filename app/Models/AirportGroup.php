@@ -13,6 +13,6 @@ class AirportGroup extends Model
 
     public function airports(): BelongsToMany
     {
-        return $this->belongsToMany(Airport::class);
+        return $this->belongsToMany(Airport::class)->withTimestamps();
     }
 }
