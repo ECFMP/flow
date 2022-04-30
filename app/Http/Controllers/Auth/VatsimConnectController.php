@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class VatsimConnectController extends Controller
@@ -19,7 +20,7 @@ class VatsimConnectController extends Controller
         if (!$user) {
             $user = new User([
                 'id' => $vatsimUser->getId(),
-                'role_id' => Role::firstWhere('key', 'USER')->value('id')
+                'role_id' => Role::firstWhere('key', 'USER')->id
             ]);
         }
 
@@ -29,7 +30,8 @@ class VatsimConnectController extends Controller
         $user->refresh_token_expires_at = now()->addSeconds($vatsimUser->expiresIn);
         $user->save();
 
-        // TODO: Return to /admin (or whatever url we choose) once Filament has been added
-        return redirect('/');
+        Auth::login($user);
+
+        return to_route('filament.pages.dashboard');
     }
 }
