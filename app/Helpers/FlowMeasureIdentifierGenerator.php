@@ -23,8 +23,8 @@ class FlowMeasureIdentifierGenerator
 
     private static function designator(Carbon $startTime, FlightInformationRegion $flightInformationRegion): string
     {
-        $flowMeasuresToday = FlowMeasure::where('start_time', '<=', $startTime->startOfDay())
-            ->where('end_time', '>=', $startTime->endOfDay())
+        $flowMeasuresToday = FlowMeasure::where('start_time', '>=', $startTime->copy()->startOfDay())
+            ->where('start_time', '<=', $startTime->copy()->endOfDay())
             ->flightInformationRegion($flightInformationRegion)
             ->count();
 
