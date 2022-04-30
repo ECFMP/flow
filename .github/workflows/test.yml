@@ -52,7 +52,7 @@ jobs:
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
       - name: Copy Env
-        run: .env.example .env
+        run: cp .env.example .env
 
       - name: Cache Docker Images
         uses: ScribeMD/docker-cache@0.1.2
