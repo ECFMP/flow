@@ -18,6 +18,10 @@ class User extends Authenticatable implements FilamentUser
     use HasFactory;
     use Notifiable;
 
+    public $incrementing = false;
+
+    public $keyType = 'int';
+
     protected $fillable = [
         'id',
         'name',
