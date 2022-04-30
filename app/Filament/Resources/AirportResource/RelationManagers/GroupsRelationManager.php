@@ -12,7 +12,7 @@ class GroupsRelationManager extends BelongsToManyRelationManager
 {
     protected static string $relationship = 'groups';
 
-    protected static ?string $recordTitleAttribute = 'id';
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
