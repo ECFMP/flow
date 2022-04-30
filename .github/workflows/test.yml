@@ -61,9 +61,6 @@ jobs:
         with:
           key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env.example') }}
 
-      - name: Copy Env
-        run: cp .env.example .env
-
       - name: Build and Start Containers
         run: ./vendor/bin/sail up -d
 
