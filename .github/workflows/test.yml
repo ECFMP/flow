@@ -62,6 +62,9 @@ jobs:
       - name: Build and Start Containers
         run: ./vendor/bin/sail up -d
 
+      - name: Generate Application Key
+        run: ./vendor/bin/sail artisan key:generate
+
       - name: Migrate Database
         run: ./vendor/bin/sail artisan migrate
 
