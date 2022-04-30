@@ -51,7 +51,7 @@ class FlowMeasureController
             'measure' => [
                 'type' => $flowMeasure->type,
                 'value' => $flowMeasure->isMandatoryRoute()
-                    ? json_decode($flowMeasure->mandatory_route)
+                    ? json_encode($flowMeasure->mandatory_route)
                     : $flowMeasure->value,
             ],
             'filters' => $flowMeasure->filters,

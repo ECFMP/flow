@@ -19,9 +19,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::controller(FlowMeasureController::class)
-    ->prefix('flow-measure')
+Route::middleware('guest')
+    ->prefix('v1')
     ->group(function () {
-        Route::get('', 'getAllFlowMeasures');
-        Route::get('{flowMeasure}', 'getFlowMeasure');
+        Route::controller(FlowMeasureController::class)
+            ->prefix('flow-measure')
+            ->group(function () {
+                Route::get('', 'getAllFlowMeasures');
+                Route::get('{flowMeasure}', 'getFlowMeasure');
+            });
     });
+
+
