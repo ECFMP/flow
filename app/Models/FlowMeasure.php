@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class FlowMeasure extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'identifier',
         'user_id',
@@ -26,6 +31,11 @@ class FlowMeasure extends Model
         'end_time',
     ];
 
+    protected $casts = [
+        'mandatory_route' => 'array',
+        'filters' => 'array',
+    ];
+
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -39,5 +49,24 @@ class FlowMeasure extends Model
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        $now = Carbon::now();
+        return $query->where('start_time', '<=', $now)
+            ->where('end_time', '>', $now);
+    }
+
+    public function isMandatoryRoute(): bool
+    {
+        return $this->type === 'mandatory_route';
+    }
+
+    public function scopeFlightInformationRegion(
+        Builder $query,
+        FlightInformationRegion $flightInformationRegion
+    ): Builder {
+        return $query->where('flight_information_region_id', $flightInformationRegion->id);
     }
 }
