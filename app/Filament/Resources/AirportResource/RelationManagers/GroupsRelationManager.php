@@ -3,16 +3,22 @@
 namespace App\Filament\Resources\AirportResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
 
 class GroupsRelationManager extends BelongsToManyRelationManager
 {
     protected static string $relationship = 'groups';
 
     protected static ?string $recordTitleAttribute = 'name';
+
+    protected function canDelete(Model $record): bool
+    {
+        return false;
+    }
 
     public static function form(Form $form): Form
     {
@@ -29,10 +35,6 @@ class GroupsRelationManager extends BelongsToManyRelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime(),
             ])
             ->filters([
                 //

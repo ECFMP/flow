@@ -35,12 +35,12 @@ class AirportResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('icao_code')->label(__('ICAO code')),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime(),
-            ])
+                Tables\Columns\TextColumn::make('icao_code')
+                    ->label(__('ICAO code'))
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TagsColumn::make('groups.name')
+            ])->defaultSort('icao_code')
             ->filters([
                 //
             ]);

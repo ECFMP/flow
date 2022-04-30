@@ -3,10 +3,11 @@
 namespace App\Filament\Resources\AirportGroupResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Illuminate\Database\Eloquent\Model;
+use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
 
 class AirportsRelationManager extends BelongsToManyRelationManager
 {
@@ -15,6 +16,11 @@ class AirportsRelationManager extends BelongsToManyRelationManager
     protected static ?string $inverseRelationship = 'groups';
 
     protected static ?string $recordTitleAttribute = 'icao_code';
+
+    protected function canDelete(Model $record): bool
+    {
+        return false;
+    }
 
     public static function form(Form $form): Form
     {
@@ -33,10 +39,6 @@ class AirportsRelationManager extends BelongsToManyRelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('icao_code')->label(__('ICAO code')),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime(),
             ])
             ->filters([
                 //

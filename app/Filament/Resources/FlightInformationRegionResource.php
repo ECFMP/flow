@@ -53,13 +53,14 @@ class FlightInformationRegionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('identifier'),
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime(),
+                Tables\Columns\TextColumn::make('identifier')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
             ])
+            ->defaultSort('identifier')
             ->filters([
                 //
             ]);
