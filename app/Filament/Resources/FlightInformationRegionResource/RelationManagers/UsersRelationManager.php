@@ -9,6 +9,7 @@ use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
+use Illuminate\Database\Eloquent\Model;
 
 class UsersRelationManager extends BelongsToManyRelationManager
 {
@@ -18,6 +19,17 @@ class UsersRelationManager extends BelongsToManyRelationManager
 
     protected function canCreate(): bool
     {
+        return false;
+    }
+
+    protected function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    protected function canEdit(Model $record): bool
+    {
+        // TODO: Might add role stuff here
         return false;
     }
 
