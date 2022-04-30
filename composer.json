@@ -14,7 +14,6 @@
         "laravel/sanctum": "^2.14.1",
         "laravel/socialite": "^5.5",
         "laravel/tinker": "^2.7",
-        "socialiteproviders/generators": "^4.6",
         "socialiteproviders/manager": "^4.1"
     },
     "require-dev": {

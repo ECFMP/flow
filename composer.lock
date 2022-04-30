@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aeba39074a612f000c2769853d945b06",
+    "content-hash": "b12f5d60305ab656bf3e6c19758d2eb5",
     "packages": [
         {
             "name": "brick/math",
@@ -2870,66 +2870,6 @@
                 }
             ],
             "time": "2022-03-27T21:42:02+00:00"
-        },
-        {
-            "name": "socialiteproviders/generators",
-            "version": "v4.6.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SocialiteProviders/Generators.git",
-                "reference": "e910bc5db562006d8722acbe6f1ecd21491ec543"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Generators/zipball/e910bc5db562006d8722acbe6f1ecd21491ec543",
-                "reference": "e910bc5db562006d8722acbe6f1ecd21491ec543",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "illuminate/console": "^7.0|^8.0|^9.0",
-                "php": "^7.3|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "SocialiteProviders\\Generators\\GeneratorsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "SocialiteProviders\\Generators\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Brian Faust",
-                    "email": "hello@brianfaust.de",
-                    "homepage": "https://brianfaust.de",
-                    "role": "Developer"
-                },
-                {
-                    "name": "dingdayu",
-                    "email": "614422099@qq.com",
-                    "homepage": "https://github.com/dingdayu",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Laravel Artisan Generators for OAuth1/OAuth2 Providers",
-            "support": {
-                "issues": "https://github.com/SocialiteProviders/Generators/issues",
-                "source": "https://github.com/SocialiteProviders/Generators/tree/v4.6.2"
-            },
-            "time": "2021-10-08T20:52:17+00:00"
         },
         {
             "name": "socialiteproviders/manager",
