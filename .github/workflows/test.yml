@@ -54,6 +54,14 @@ jobs:
       - name: Copy Env
         run: cp .env.example .env
 
+      - name: Cache Docker Images
+        uses: ScribeMD/docker-cache@0.1.2
+        with:
+          key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env.example') }}
+
+      - name: Copy Env
+        run: cp .env.example .env
+
       - name: Build and Start Containers
         run: ./vendor/bin/sail up -d
 
