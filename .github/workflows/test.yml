@@ -52,9 +52,7 @@ jobs:
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
       - name: Copy Env
-        run: | 
-          cp .env.example .env
-          cat .env
+        run: .env.example .env
 
       - name: Cache Docker Images
         uses: ScribeMD/docker-cache@0.1.2
@@ -62,7 +60,9 @@ jobs:
           key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env.example') }}
 
       - name: Build and Start Containers
-        run: ./vendor/bin/sail up -d
+        run:  |
+          ./vendor/bin/sail up -d
+          docker ps
 
       - name: Migrate Database
         run: ./vendor/bin/sail artisan migrate
