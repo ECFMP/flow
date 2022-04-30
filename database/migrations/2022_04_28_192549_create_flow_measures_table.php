@@ -2,7 +2,6 @@
 
 use App\Models\Event;
 use App\Models\FlightInformationRegion;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +19,7 @@ return new class extends Migration {
             $table->string('identifier')
                 ->unique()
                 ->comment('The identifier of the flow rule');
-            $table->foreignIdFor(User::class)
+            $table->unsignedBigInteger('user_id')
                 ->comment('The user who created this flow measure');
             $table->foreignIdFor(FlightInformationRegion::class)
                 ->comment('The flight information region issuing this flow measure');
