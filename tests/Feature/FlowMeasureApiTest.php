@@ -24,6 +24,17 @@ class FlowMeasureApiTest extends TestCase
             ->assertNotFound();
     }
 
+    public function testItReturnsNotFoundIfFlowMeasureSoftDeleted()
+    {
+        $flowMeasure = FlowMeasure::factory()
+            ->create();
+        $flowMeasure->delete();
+
+
+        $this->get('api/v1/flow-measure/' . $flowMeasure->id)
+            ->assertNotFound();
+    }
+
     public function testItReturnsAFlowMeasureNoEvent()
     {
         $flowMeasure = FlowMeasure::factory()
@@ -126,6 +137,22 @@ class FlowMeasureApiTest extends TestCase
             ->assertExactJson([]);
     }
 
+    public function testItIgnoresDeletedFlowMeasures()
+    {
+        $flowMeasure1 = FlowMeasure::factory()
+            ->create()
+            ->delete();
+
+        $flowMeasure2 = FlowMeasure::factory()
+            ->withEvent()
+            ->create()
+            ->delete();
+
+        $this->get('api/v1/flow-measure')
+            ->assertOk()
+            ->assertExactJson([]);
+    }
+
     public function testItReturnsAllFlowMeasures()
     {
         $flowMeasure1 = FlowMeasure::factory()
@@ -182,6 +209,112 @@ class FlowMeasureApiTest extends TestCase
                         ],
                     ]
                 ]
+            ]);
+    }
+
+    public function testItIncludesDeletedFlowMeasuresIfSpecified()
+    {
+        $flowMeasure1 = FlowMeasure::factory()
+            ->create();
+        $flowMeasure1->delete();
+
+        $flowMeasure2 = FlowMeasure::factory()
+            ->withEvent()
+            ->create();
+        $flowMeasure2->delete();
+
+
+        $this->get('api/v1/flow-measure?deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $flowMeasure1->id,
+                    'ident' => $flowMeasure1->identifier,
+                    'event_id' => null,
+                    'reason' => $flowMeasure1->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**']
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM']
+                        ],
+                    ]
+                ],
+                [
+                    'id' => $flowMeasure2->id,
+                    'ident' => $flowMeasure2->identifier,
+                    'event_id' => $flowMeasure2->event->id,
+                    'reason' => $flowMeasure2->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**']
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM']
+                        ],
+                    ]
+                ]
+            ]);
+    }
+
+    public function testItFiltersForActiveMeasuresIfSpecified()
+    {
+        $flowMeasure1 = FlowMeasure::factory()
+            ->create();
+
+        FlowMeasure::factory()
+            ->withEvent()
+            ->notStarted()
+            ->create();
+
+        FlowMeasure::factory()
+            ->withEvent()
+            ->finished()
+            ->create();
+
+
+        $this->get('api/v1/flow-measure?active=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $flowMeasure1->id,
+                    'ident' => $flowMeasure1->identifier,
+                    'event_id' => null,
+                    'reason' => $flowMeasure1->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**']
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM']
+                        ],
+                    ]
+                ],
             ]);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocumentationController;
+use App\Http\Controllers\FlowMeasureController;
 use App\Http\Resources\FlowMeasureResource;
 use App\Models\FlowMeasure;
 use Illuminate\Http\Request;
@@ -26,8 +27,10 @@ Route::middleware('guest')
     ->prefix('v1')
     ->group(function () {
         Route::prefix('flow-measure')
+            ->controller(FlowMeasureController::class)
             ->group(function () {
-                Route::get('', fn() => FlowMeasureResource::collection(FlowMeasure::all())->all());
+                Route::controller(FlowMeasureController::class)
+                    ->get('', 'getFilteredFlowMeasures');
                 Route::get('{flowMeasure}', fn(int $id) => new FlowMeasureResource(FlowMeasure::findOrFail($id)));
             });
     });
