@@ -71,8 +71,30 @@
           "flow-measure"
         ],
         "summary": "Get all flow measures",
-        "description": "GET /flow-measure}",
+        "description": "GET /flow-measure",
         "operationId": "getFlowMeasures",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "deleted",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "required": false,
+            "description": "Include deleted flow measures"
+          },
+          {
+            "in": "query",
+            "name": "active",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "required": false,
+            "description": "Only include flow measures that are currently active"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
