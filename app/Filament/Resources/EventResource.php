@@ -43,7 +43,9 @@ class EventResource extends Resource
                     ->label('Flight Information Region')
                     ->hintIcon('heroicon-o-folder')
                     ->searchable()
-                    ->options(FlightInformationRegion::all()->pluck('name', 'id'))
+                    ->options(auth()->user()
+                        ->flightInformationRegions
+                        ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifierName]))
                     ->required(),
                 Forms\Components\DateTimePicker::make('date_start')
                     ->label('Start (UTC)')
@@ -67,7 +69,7 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('flightInformationRegion.name')
+                Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
                     ->label('FIR')
                     ->searchable()
                     ->sortable(),
@@ -75,15 +77,17 @@ class EventResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_start')
+                    ->label(__('Start'))
                     ->dateTime('M j, Y H:i\z')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('date_end')
+                    ->label(__('End'))
                     ->dateTime('M j, Y H:i\z')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('vatcan_code')
+                Tables\Columns\BadgeColumn::make('vatcan_code')
                     ->label('VATCAN code'),
             ])
-            ->defaultSort('flightInformationRegion.name')
+            ->defaultSort('date_start')
             ->filters([
                 Filter::make('date')
                     ->form([

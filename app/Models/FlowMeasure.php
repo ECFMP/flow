@@ -36,7 +36,7 @@ class FlowMeasure extends Model
         'filters' => 'array',
     ];
 
-    public function owner(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

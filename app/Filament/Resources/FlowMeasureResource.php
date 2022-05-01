@@ -175,16 +175,13 @@ class FlowMeasureResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('identifier'),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
                     ->label(__('Owner')),
                 Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
                     ->label('Flight Information Region'),
                 Tables\Columns\TextColumn::make('event.name'),
                 Tables\Columns\TextColumn::make('reason'),
                 Tables\Columns\BadgeColumn::make('type'),
-                // Tables\Columns\TextColumn::make('value'),
-                // Tables\Columns\TextColumn::make('mandatory_route'),
-                // Tables\Columns\TextColumn::make('filters'),
                 Tables\Columns\TextColumn::make('start_time')
                     ->dateTime('M j, Y H:i\z'),
                 Tables\Columns\TextColumn::make('end_time')
@@ -222,6 +219,7 @@ class FlowMeasureResource extends Resource
         return [
             'index' => Pages\ListFlowMeasures::route('/'),
             'create' => Pages\CreateFlowMeasure::route('/create'),
+            'view' => Pages\ViewFlowMeasure::route('{record}'),
             'edit' => Pages\EditFlowMeasure::route('/{record}/edit'),
         ];
     }

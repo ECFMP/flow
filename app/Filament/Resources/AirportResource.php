@@ -2,14 +2,16 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\Airport;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\AirportResource\Pages;
 use App\Filament\Resources\AirportResource\RelationManagers;
-use App\Models\Airport;
-use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
 
 class AirportResource extends Resource
 {
@@ -18,6 +20,19 @@ class AirportResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
 
     protected static ?string $recordTitleAttribute = 'icao_code';
+
+    protected static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['groups']);
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var Airport $record */
+        return [
+            __('Groups') => $record->groups->pluck('name')->join(', '),
+        ];
+    }
 
     public static function form(Form $form): Form
     {

@@ -42,10 +42,10 @@ class CreateFlowMeasure extends CreateRecord
 
         $filters->add([
             'type' => 'ADEP',
-            'value' => $data['adep'][0]['value'],
+            'value' => Arr::pluck($data['adep'], 'value'),
         ])->add([
             'type' => 'ADES',
-            'value' => $data['ades'][0]['value'],
+            'value' => Arr::pluck($data['ades'], 'value'),
         ]);
 
         $data['filters'] = $filters->toArray();

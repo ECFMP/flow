@@ -2,13 +2,27 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
-use App\Filament\Resources\FlowMeasureResource;
-use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Arr;
+use Filament\Resources\Pages\ViewRecord;
+use App\Filament\Resources\FlowMeasureResource;
 
-class EditFlowMeasure extends EditRecord
+class ViewFlowMeasure extends ViewRecord
 {
     protected static string $resource = FlowMeasureResource::class;
+
+    protected function fillForm(): void
+    {
+        // Copied from EditRecord, I need that logic from murateFormDataBeforeFill
+        $this->callHook('beforeFill');
+
+        $data = $this->record->toArray();
+
+        $data = $this->mutateFormDataBeforeFill($data);
+
+        $this->form->fill($data);
+
+        $this->callHook('afterFill');
+    }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
@@ -39,30 +53,6 @@ class EditFlowMeasure extends EditRecord
         });
 
         $data['filters'] = $filters->toArray();
-
-        return $data;
-    }
-
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        $filters = collect($data['filters'])->map(function (array $filter) {
-            $filter['value'] = $filter['data']['value'];
-            Arr::pull($filter, 'data');
-
-            return $filter;
-        });
-
-        $filters->add([
-            'type' => 'ADEP',
-            'value' => Arr::pluck($data['adep'], 'value'),
-        ])->add([
-            'type' => 'ADES',
-            'value' => Arr::pluck($data['ades'], 'value'),
-        ]);
-
-        $data['filters'] = $filters->toArray();
-        Arr::pull($data, 'adep');
-        Arr::pull($data, 'ades');
 
         return $data;
     }

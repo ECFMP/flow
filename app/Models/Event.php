@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,5 +33,12 @@ class Event extends Model
     public function flowMeasures(): HasMany
     {
         return $this->hasMany(FlowMeasure::class);
+    }
+
+    protected function nameDate(): Attribute
+    {
+        return new Attribute(
+            fn () => "{$this->name} [{$this->date_start->format('M j, Y')}]",
+        );
     }
 }
