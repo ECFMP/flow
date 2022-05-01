@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\VatsimConnectController;
+use App\Http\Controllers\DocumentationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,4 +25,11 @@ Route::middleware(['guest'])->group(function () {
     });
 
     Route::get('/auth/callback', [VatsimConnectController::class, 'callback']);
+
+    Route::controller(DocumentationController::class)
+        ->prefix('docs')
+        ->group(function () {
+            Route::get('v{number}', 'documentationView')
+                ->where(['number' => '\d+']);
+        });
 });

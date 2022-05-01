@@ -1,0 +1,109 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Flow API",
+    "description": "API for European Collaboration and Flow Management Project (ECFMP) flow measures.",
+    "termsOfService": "https://vatsim.net",
+    "contact": {
+      "email": "api@vatsim.net"
+    },
+    "license": {
+      "name": "GPL-3.0-only",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
+    },
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "https://ecfmp.vatsim.dev/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "docs",
+      "description": "Documentation for a specific version of the API."
+    }
+  ],
+  "paths": {
+    "/docs/v{number}": {
+      "get": {
+        "tags": [
+          "docs"
+        ],
+        "summary": "Get a specification of the version documentation",
+        "description": "GET /docs/v{number/",
+        "operationId": "getDocs",
+        "parameters": [
+          {
+            "name": "number",
+            "in": "path",
+            "description": "Version of the documentation to request",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+              }
+            }
+          },
+          "404": {
+            "description": "Documentation version not found"
+          }
+        },
+        "security": [
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Order": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "petId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 198772
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32",
+            "example": 7
+          },
+          "shipDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "description": "Order Status",
+            "example": "approved",
+            "enum": [
+              "placed",
+              "approved",
+              "delivered"
+            ]
+          },
+          "complete": {
+            "type": "boolean"
+          }
+        },
+        "xml": {
+          "name": "order"
+        }
+      }
+    },
+  }
+}
