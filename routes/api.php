@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\FlowMeasureController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+// V1 routes
 Route::middleware('guest')
     ->prefix('v1')
     ->group(function () {
@@ -30,4 +32,11 @@ Route::middleware('guest')
             });
     });
 
+// Documentation
+Route::controller(DocumentationController::class)
+    ->middleware('guest')
+    ->group(function () {
+        Route::get('v{number}', 'getDocumentationData')
+            ->where(['number' => '\d+']);
+    });
 
