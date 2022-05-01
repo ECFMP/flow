@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\DocumentationController;
-use App\Http\Controllers\FlowMeasureController;
+use App\Http\Resources\FlowMeasureResource;
+use App\Models\FlowMeasure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,11 +25,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('guest')
     ->prefix('v1')
     ->group(function () {
-        Route::controller(FlowMeasureController::class)
-            ->prefix('flow-measure')
+        Route::prefix('flow-measure')
             ->group(function () {
-                Route::get('', 'getAllFlowMeasures');
-                Route::get('{flowMeasure}', 'getFlowMeasure');
+                Route::get('', fn() => FlowMeasureResource::collection(FlowMeasure::all())->all());
+                Route::get('{flowMeasure}', fn(int $id) => new FlowMeasureResource(FlowMeasure::findOrFail($id)));
             });
     });
 

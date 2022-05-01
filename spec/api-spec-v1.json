@@ -79,10 +79,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/FlowMeasure"
-                  }
+                  "$ref": "#/components/schemas/FlowMeasures"
                 }
               }
             }
@@ -134,6 +131,12 @@
   },
   "components": {
     "schemas": {
+      "FlowMeasures": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/FlowMeasure"
+        }
+      },
       "FlowMeasure": {
         "type": "object",
         "properties": {
@@ -148,10 +151,11 @@
             "description": "Automatically assigned identifier for this flow measure - FIR, day of month, designator.",
             "example": "EGTT25B"
           },
-          "group": {
-            "type": "string",
+          "event_id": {
+            "type": "integer",
+            "format": "int64",
             "description": "The identifier of the event for this flow measure",
-            "example": "Dublin - Amsterdam City Pair"
+            "example": 44,
           },
           "reason": {
             "type": "string",
@@ -446,6 +450,23 @@
                           "example": null
                         }
                       }
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "waypoint"
+                      ]
+                    },
+                    "value": {
+                      "description": "JSON encoded list of waypoints or airways",
+                      "type": "string",
+                      "format": "JSON",
+                      "example": "[\"BIG\", \"UL9\", \"CPT\"]"
                     }
                   }
                 }
