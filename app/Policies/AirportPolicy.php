@@ -19,7 +19,10 @@ class AirportPolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**
@@ -31,7 +34,10 @@ class AirportPolicy
      */
     public function view(User $user, Airport $airport)
     {
-        return true;
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**

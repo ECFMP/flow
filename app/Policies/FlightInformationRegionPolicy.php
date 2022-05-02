@@ -19,7 +19,10 @@ class FlightInformationRegionPolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**
@@ -31,7 +34,10 @@ class FlightInformationRegionPolicy
      */
     public function view(User $user, FlightInformationRegion $flightInformationRegion)
     {
-        return true;
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**
@@ -72,7 +78,10 @@ class FlightInformationRegionPolicy
      */
     public function delete(User $user, FlightInformationRegion $flightInformationRegion)
     {
-        //
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**

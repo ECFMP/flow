@@ -21,6 +21,8 @@ class AirportResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'icao_code';
 
+    protected static ?string $navigationGroup = 'Admin';
+
     protected static function getGlobalSearchEloquentQuery(): Builder
     {
         return parent::getGlobalSearchEloquentQuery()->with(['groups']);
