@@ -20,19 +20,31 @@
   ],
   "tags": [
     {
-      "name": "docs",
-      "description": "Documentation for a specific version of the API."
+      "name": "Airport Groups",
+      "description": "Relates to groups of airports, such as TMAs."
     },
     {
-      "name": "flow-measure",
-      "description": "Relates to flow measures in place"
+      "name": "Documentation",
+      "description": "Produces an OpenAPI JSON specification for a given version of the API."
+    },
+    {
+      "name": "Events",
+      "description": "Relates to organised network events that may incur higher-than-normal traffic loads."
+    },
+    {
+      "name": "Flow Measures",
+      "description": "Relates to flow measures put in place to control traffic flow on the VATSIM network."
+    },
+    {
+      "name": "Flight Information Regions",
+      "description": "Relates to flight information regions"
     }
   ],
   "paths": {
     "/docs/v{number}": {
       "get": {
         "tags": [
-          "docs"
+          "Documentation"
         ],
         "summary": "Get a specification of the version documentation",
         "description": "GET /docs/v{number}/",
@@ -65,10 +77,212 @@
         ]
       }
     },
+    "/airport-group": {
+      "get": {
+        "tags": [
+          "Airport Groups"
+        ],
+        "summary": "Get all airport groups",
+        "description": "GET /airport-group",
+        "operationId": "getAirportGroups",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportGroups"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/airport-group/{id}": {
+      "get": {
+        "tags": [
+          "Airport Groups"
+        ],
+        "summary": "Get an airport group by id",
+        "description": "GET /airport-group/{id}",
+        "operationId": "getAirportGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique ID of the airport group",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportGroup"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Airport group not found"
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/event": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get all events",
+        "description": "GET /event",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "description": "Only return active events",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Events"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/event/{id}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get a single event by id",
+        "description": "GET /event/{id}",
+        "operationId": "getEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique ID of the event",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/flight-information-region": {
+      "get": {
+        "tags": [
+          "Flight Information Regions"
+        ],
+        "summary": "Get all flight information regions",
+        "description": "GET /flight-information-region",
+        "operationId": "getFlightInformationRegions",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlightInformationRegions"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/flight-information-region/{id}": {
+      "get": {
+        "tags": [
+          "Flight Information Regions"
+        ],
+        "summary": "Get a single flight information region by id",
+        "description": "GET /flight-information-region/{id}",
+        "operationId": "getFlightInformationRegion",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique ID of the flight information region",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FlightInformationRegion"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Flight information region not found"
+          }
+        },
+        "security": [
+        ]
+      }
+    },
     "/flow-measure": {
       "get": {
         "tags": [
-          "flow-measure"
+          "Flow Measures"
         ],
         "summary": "Get all flow measures",
         "description": "GET /flow-measure",
@@ -114,7 +328,7 @@
     "/flow-measure/{id}": {
       "get": {
         "tags": [
-          "flow-measure"
+          "Flow Measures"
         ],
         "summary": "Get a single flow measure by id",
         "description": "GET /flow-measure/{id}",
@@ -153,6 +367,133 @@
   },
   "components": {
     "schemas": {
+      "AirportGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10,
+            "description": "System id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the airport group",
+            "example": "London TMA Group"
+          },
+          "airports": {
+            "type": "array",
+            "description": "List of airport ICAO codes",
+            "items": {
+              "type": "string",
+              "format": "Airport ICAO code",
+              "example": "EGLL"
+            },
+            "example": [
+              "EGLL",
+              "EGKK",
+              "EGLC"
+            ]
+          }
+        }
+      },
+      "AirportGroups": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/AirportGroup"
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10,
+            "description": "System id"
+          },
+          "name": {
+            "type": "string",
+            "example": "Heathrow Overload",
+            "description": "Name of the event"
+          },
+          "date_start": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2022-04-18T13:15:30Z",
+            "description": "The start time of the event, will always be Z"
+          },
+          "date_end": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2022-04-18T13:15:30Z",
+            "description": "The end time of the event, will always be Z"
+          },
+          "flight_information_region_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1,
+            "description": "The flight information region where this event is taking place"
+          },
+          "vatcan_code": {
+            "type": "string",
+            "format": "VATCAN event code",
+            "nullable": true,
+            "example": "abcd",
+            "description": "The VATCAN booking code associated with this event, if present"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "description": "A VATSIM CID",
+              "example": 1203533
+            },
+            "nullable": true,
+            "example": [
+              1203533,
+              1521312
+            ],
+            "description": "Array of VATSIM CIDs participating in the event"
+          }
+        }
+      },
+      "Events": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Event"
+        }
+      },
+      "FlightInformationRegion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10,
+            "description": "System id"
+          },
+          "identifier": {
+            "type": "string",
+            "format": "ICAO code",
+            "example": "EGTT",
+            "minLength": 4,
+            "maxLength": 4,
+            "description": "The ICAO identifier for the FIR"
+          },
+          "name": {
+            "type": "string",
+            "example": "London",
+            "description": "Other name for the FIR"
+          }
+        }
+      },
+      "FlightInformationRegions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/FlightInformationRegion"
+        }
+      },
       "FlowMeasures": {
         "type": "array",
         "items": {
@@ -177,7 +518,7 @@
             "type": "integer",
             "format": "int64",
             "description": "The identifier of the event for this flow measure",
-            "example": 44,
+            "example": 44
           },
           "reason": {
             "type": "string",
@@ -457,8 +798,9 @@
                       "type": "object",
                       "properties": {
                         "event_id": {
-                          "type": "string",
-                          "example": "DUBAM22"
+                          "type": "integer",
+                          "example": 1,
+                          "description": "The id of the event in the API"
                         },
                         "event_vatcan": {
                           "type": "string",
