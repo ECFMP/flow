@@ -18,12 +18,17 @@ class Event extends Model
         'date_start',
         'date_end',
         'flight_information_region_id',
-        'vatcan_code'
+        'vatcan_code',
+        'participants',
     ];
 
     protected $dates = [
         'date_start',
         'date_end',
+    ];
+
+    protected $casts = [
+        'participants' => 'array',
     ];
 
     public function flightInformationRegion(): BelongsTo
