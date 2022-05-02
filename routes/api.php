@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DocumentationController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\FlowMeasureController;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\FlowMeasureResource;
@@ -30,7 +31,7 @@ Route::middleware('guest')
     ->group(function () {
         Route::prefix('event')
             ->group(function () {
-                Route::get('', fn() => EventResource::collection(Event::all()));
+                Route::get('', [EventController::class, 'getFilteredEvents']);
                 Route::get('{event}', fn(int $id) => new EventResource(Event::findOrFail($id)));
             });
 

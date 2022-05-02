@@ -77,6 +77,19 @@
         "summary": "Get all events",
         "description": "GET /event",
         "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "description": "Only return active events",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation",
