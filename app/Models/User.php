@@ -49,10 +49,6 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessFilament(): bool
     {
-        return in_array($this->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
-        ]);
+        return true;
     }
 }
