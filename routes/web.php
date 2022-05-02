@@ -25,11 +25,11 @@ Route::middleware(['guest'])->group(function () {
     });
 
     Route::get('/auth/callback', [VatsimConnectController::class, 'callback']);
-
-    Route::controller(DocumentationController::class)
-        ->prefix('docs')
-        ->group(function () {
-            Route::get('v{number}', 'documentationView')
-                ->where(['number' => '\d+']);
-        });
 });
+
+Route::controller(DocumentationController::class)
+    ->prefix('docs')
+    ->group(function () {
+        Route::get('v{number}', 'documentationView')
+            ->where(['number' => '\d+']);
+        });
