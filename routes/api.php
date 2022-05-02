@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\FlowMeasureController;
+use App\Http\Resources\EventResource;
 use App\Http\Resources\FlowMeasureResource;
+use App\Models\Event;
 use App\Models\FlowMeasure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +28,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('guest')
     ->prefix('v1')
     ->group(function () {
+        Route::prefix('event')
+            ->group(function () {
+                Route::get('', fn() => EventResource::collection(Event::all()));
+                Route::get('{event}', fn(int $id) => new EventResource(Event::findOrFail($id)));
+            });
+
         Route::prefix('flow-measure')
             ->controller(FlowMeasureController::class)
             ->group(function () {

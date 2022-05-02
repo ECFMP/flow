@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\EventResource;
 use App\Http\Resources\FlowMeasureResource;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        EventResource::withoutWrapping();
         FlowMeasureResource::withoutWrapping();
     }
 }
