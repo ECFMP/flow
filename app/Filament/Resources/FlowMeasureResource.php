@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
+use Filament\Pages\Page;
+use Filament\Resources\Pages\CreateRecord;
 
 class FlowMeasureResource extends Resource
 {
@@ -53,6 +55,8 @@ class FlowMeasureResource extends Resource
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
                     ->afterOrEqual(now())
+                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
+                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->required(),
                 Forms\Components\DateTimePicker::make('end_time')
                     ->default(now()->addHours(2)->addMinutes(5))
@@ -177,10 +181,6 @@ class FlowMeasureResource extends Resource
                 Tables\Columns\TextColumn::make('identifier'),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label(__('Owner')),
-                Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
-                    ->label('Flight Information Region'),
-                Tables\Columns\TextColumn::make('event.name'),
-                Tables\Columns\TextColumn::make('reason'),
                 Tables\Columns\BadgeColumn::make('type'),
                 Tables\Columns\TextColumn::make('start_time')
                     ->dateTime('M j, Y H:i\z'),
