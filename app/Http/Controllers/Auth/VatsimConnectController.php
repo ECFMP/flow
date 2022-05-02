@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Enums\RoleKey;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
-class VatsimConnectController extends Controller
+class VatsimConnectController
 {
     public function callback()
     {
@@ -32,10 +30,6 @@ class VatsimConnectController extends Controller
         $user->save();
 
         Auth::login($user);
-
-        if ($user->role->key == RoleKey::USER) {
-            return redirect('/');
-        }
 
         return to_route('filament.pages.dashboard');
     }
