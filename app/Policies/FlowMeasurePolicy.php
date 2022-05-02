@@ -58,10 +58,17 @@ class FlowMeasurePolicy
      */
     public function update(User $user, FlowMeasure $flowMeasure)
     {
-        return $flowMeasure->user == $user || in_array($user->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-        ]);
+        if ($flowMeasure->end_time > now()) {
+            return $flowMeasure->flightInformationRegion
+                ->users()
+                ->whereUserId($user->id)
+                ->exists() || in_array($user->role->key, [
+                    RoleKey::SYSTEM,
+                    RoleKey::NMT,
+                ]);
+        }
+
+        return false;
     }
 
     /**
@@ -73,10 +80,17 @@ class FlowMeasurePolicy
      */
     public function delete(User $user, FlowMeasure $flowMeasure)
     {
-        return in_array($user->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-        ]);
+        if ($flowMeasure->end_time > now()) {
+            return $flowMeasure->flightInformationRegion
+                ->users()
+                ->whereUserId($user->id)
+                ->exists() || in_array($user->role->key, [
+                    RoleKey::SYSTEM,
+                    RoleKey::NMT,
+                ]);
+        }
+
+        return false;
     }
 
     /**
