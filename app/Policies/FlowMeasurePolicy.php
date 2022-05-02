@@ -73,7 +73,7 @@ class FlowMeasurePolicy
      */
     public function delete(User $user, FlowMeasure $flowMeasure)
     {
-        return $flowMeasure->user == $user || in_array($user->role->key, [
+        return in_array($user->role->key, [
             RoleKey::SYSTEM,
             RoleKey::NMT,
         ]);
