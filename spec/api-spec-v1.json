@@ -271,6 +271,17 @@
             "nullable": true,
             "example": "abcd",
             "description": "The VATCAN booking code associated with this event, if present"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "description": "A VATSIM CID",
+              "example": 1203533
+            },
+            "nullable": true,
+            "example": [1203533, 1521312],
+            "description": "Array of VATSIM CIDs participating in the event"
           }
         }
       },
