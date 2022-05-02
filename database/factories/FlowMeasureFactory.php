@@ -74,7 +74,7 @@ class FlowMeasureFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'type' => 'mandatory_route',
             'value' => null,
-            'mandatory_route' => ['LOGAN', 'UL612 LAKEY DCT NUGRA'],
+            'mandatory_route' => json_encode(['LOGAN', 'UL612 LAKEY DCT NUGRA']),
         ]);
     }
 

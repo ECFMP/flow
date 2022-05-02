@@ -43,6 +43,7 @@ return new class extends Migration {
             $table->dateTime('end_time')
                 ->comment('When the flow measure ends (Z)');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('flight_information_region_id')
@@ -50,6 +51,7 @@ return new class extends Migration {
                 ->on('flight_information_regions');
             $table->foreign('event_id')->references('id')->on('events');
             $table->index(['start_time', 'end_time']);
+            $table->index(['deleted_at']);
         });
     }
 

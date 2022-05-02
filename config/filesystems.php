@@ -35,11 +35,16 @@ return [
             'root' => storage_path('app'),
             'throw' => false,
         ],
+        'api-spec' => [
+            'driver' => 'local',
+            'root' => __DIR__ . '/../spec',
+            'throw' => false,
+        ],
 
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
