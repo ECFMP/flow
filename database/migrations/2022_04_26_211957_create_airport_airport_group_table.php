@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->foreignIdFor(AirportGroup::class);
             $table->timestamps();
 
-            $table->foreign('airport_id')->references('id')->on('airports');
-            $table->foreign('airport_group_id')->references('id')->on('airport_groups');
+            $table->foreign('airport_id')->references('id')->on('airports')->cascadeOnDelete();
+            $table->foreign('airport_group_id')->references('id')->on('airport_groups')->cascadeOnDelete();
             $table->unique(['airport_id', 'airport_group_id'], 'airport_airport_group_id');
         });
     }
