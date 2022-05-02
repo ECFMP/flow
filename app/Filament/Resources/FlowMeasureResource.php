@@ -48,7 +48,7 @@ class FlowMeasureResource extends Resource
                     ->hintIcon('heroicon-o-calendar')
                     ->searchable()
                     ->options(
-                        Event::where('date_end', '>', now())->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                        Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                     )
                     ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
                 Forms\Components\DateTimePicker::make('start_time')
@@ -160,7 +160,7 @@ class FlowMeasureResource extends Resource
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
                                         ->options(
-                                            Event::where('date_end', '>', now())->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                                            Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
                             Block::make('member_non_event')
@@ -170,7 +170,7 @@ class FlowMeasureResource extends Resource
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
                                         ->options(
-                                            Event::where('date_end', '>', now())->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                                            Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
                         ])
