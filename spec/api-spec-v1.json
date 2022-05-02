@@ -229,6 +229,11 @@
             "example": 10,
             "description": "System id"
           },
+          "name": {
+            "type": "string",
+            "example": "Heathrow Overload",
+            "description": "Name of the event"
+          },
           "date_start": {
             "type": "string",
             "format": "datetime",
@@ -566,8 +571,9 @@
                       "type": "object",
                       "properties": {
                         "event_id": {
-                          "type": "string",
-                          "example": "DUBAM22"
+                          "type": "integer",
+                          "example": 1,
+                          "description": "The id of the event in the API"
                         },
                         "event_vatcan": {
                           "type": "string",
