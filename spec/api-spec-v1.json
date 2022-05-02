@@ -20,15 +20,19 @@
   ],
   "tags": [
     {
-      "name": "docs",
-      "description": "Documentation for a specific version of the API."
+      "name": "Airport Groups",
+      "description": "Relates to groups of airports, such as TMAs."
     },
     {
-      "name": "flow-measure",
-      "description": "Relates to flow measures in place"
+      "name": "Documentation",
+      "description": "Produces an OpenAPI JSON specification for a given version of the API."
     },
     {
-      "name": "flight-information-region",
+      "name": "Flow Measures",
+      "description": "Relates to flow measures put in place to control traffic flow on the VATSIM network."
+    },
+    {
+      "name": "Flight Information Regions",
       "description": "Relates to flight information regions"
     }
   ],
@@ -36,7 +40,7 @@
     "/docs/v{number}": {
       "get": {
         "tags": [
-          "docs"
+          "Documentation"
         ],
         "summary": "Get a specification of the version documentation",
         "description": "GET /docs/v{number}/",
@@ -69,10 +73,73 @@
         ]
       }
     },
+    "/airport-group": {
+      "get": {
+        "tags": [
+          "Airport Groups"
+        ],
+        "summary": "Get all airport groups",
+        "description": "GET /airport-group",
+        "operationId": "getAirportGroups",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportGroups"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/airport-group/{id}": {
+      "get": {
+        "tags": [
+          "Airport Groups"
+        ],
+        "summary": "Get an airport group by id",
+        "description": "GET /airport-group/{id}",
+        "operationId": "getAirportGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique ID of the airport group",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AirportGroup"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Airport group not found"
+          }
+        },
+        "security": [
+        ]
+      }
+    },
     "/flight-information-region": {
       "get": {
         "tags": [
-          "flight-information-region"
+          "Flight Information Regions"
         ],
         "summary": "Get all flight information regions",
         "description": "GET /flight-information-region",
@@ -96,7 +163,7 @@
     "/flight-information-region/{id}": {
       "get": {
         "tags": [
-          "flight-information-region"
+          "Flight Information Regions"
         ],
         "summary": "Get a single flight information region by id",
         "description": "GET /flight-information-region/{id}",
@@ -135,7 +202,7 @@
     "/flow-measure": {
       "get": {
         "tags": [
-          "flow-measure"
+          "Flow Measures"
         ],
         "summary": "Get all flow measures",
         "description": "GET /flow-measure",
@@ -181,7 +248,7 @@
     "/flow-measure/{id}": {
       "get": {
         "tags": [
-          "flow-measure"
+          "Flow Measures"
         ],
         "summary": "Get a single flow measure by id",
         "description": "GET /flow-measure/{id}",
@@ -220,6 +287,42 @@
   },
   "components": {
     "schemas": {
+      "AirportGroup": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10,
+            "description": "System id"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the airport group",
+            "example": "London TMA Group"
+          },
+          "airports": {
+            "type": "array",
+            "description": "List of airport ICAO codes",
+            "items": {
+              "type": "string",
+              "format": "Airport ICAO code",
+              "example": "EGLL"
+            },
+            "example": [
+              "EGLL",
+              "EGKK",
+              "EGLC"
+            ]
+          }
+        }
+      },
+      "AirportGroups": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/AirportGroup"
+        }
+      },
       "FlightInformationRegion": {
         "type": "object",
         "properties": {

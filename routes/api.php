@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\FlowMeasureController;
+use App\Http\Resources\AirportGroupResource;
 use App\Http\Resources\FlightInformationRegionResource;
 use App\Http\Resources\FlowMeasureResource;
+use App\Models\AirportGroup;
 use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +24,12 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('guest')
     ->prefix('v1')
     ->group(function () {
+        Route::prefix('airport-group')
+            ->group(function () {
+                Route::get('', fn() => AirportGroupResource::collection(AirportGroup::all()));
+                Route::get('{airportGroup}', fn(int $id) => new AirportGroupResource(AirportGroup::findOrFail($id)));
+            });
+
         Route::prefix('flow-measure')
             ->controller(FlowMeasureController::class)
             ->group(function () {
