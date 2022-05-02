@@ -24,6 +24,10 @@
       "description": "Documentation for a specific version of the API."
     },
     {
+      "name": "Events",
+      "description": "Relates to organised network events that may incur higher-than-normal traffic loads."
+    },
+    {
       "name": "flow-measure",
       "description": "Relates to flow measures in place"
     }
@@ -59,6 +63,69 @@
           },
           "404": {
             "description": "Documentation version not found"
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/event": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get all events",
+        "description": "GET /event",
+        "operationId": "getEvents",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Events"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/event/{id}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Get a single event by id",
+        "description": "GET /event/{id}",
+        "operationId": "getEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique ID of the event",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Event not found"
           }
         },
         "security": [
@@ -153,6 +220,48 @@
   },
   "components": {
     "schemas": {
+      "Event": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10,
+            "description": "System id"
+          },
+          "date_start": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2022-04-18T13:15:30Z",
+            "description": "The start time of the event, will always be Z"
+          },
+          "date_end": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2022-04-18T13:15:30Z",
+            "description": "The end time of the event, will always be Z"
+          },
+          "flight_information_region_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1,
+            "description": "The flight information region where this event is taking place"
+          },
+          "vatcan_code": {
+            "type": "string",
+            "format": "VATCAN event code",
+            "nullable": true,
+            "example": "abcd",
+            "description": "The VATCAN booking code associated with this event, if present"
+          }
+        }
+      },
+      "Events": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Event"
+        }
+      },
       "FlowMeasures": {
         "type": "array",
         "items": {
