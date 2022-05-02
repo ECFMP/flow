@@ -125,7 +125,8 @@ class FlowMeasureResource extends Resource
                                         ->numeric()
                                         ->step(5)
                                         ->prefix('FL')
-                                        ->length(3)
+                                        ->minLength(0)
+                                        ->maxLength(660)
                                         ->required()
                                 ]),
                             Block::make('level_below')
@@ -136,17 +137,20 @@ class FlowMeasureResource extends Resource
                                         ->numeric()
                                         ->step(5)
                                         ->prefix('FL')
-                                        ->length(3)
+                                        ->minLength(0)
+                                        ->maxLength(660)
                                         ->required()
                                 ]),
                             Block::make('level')
                                 ->schema([
+                                    // TODO: Add mask?
                                     Forms\Components\TextInput::make('value')
                                         ->label(__('Level'))
                                         ->numeric()
                                         ->step(5)
                                         ->prefix('FL')
-                                        ->length(3)
+                                        ->minLength(0)
+                                        ->maxLength(660)
                                         ->required()
                                 ]),
                             Block::make('member_event')
