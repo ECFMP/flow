@@ -37,6 +37,7 @@ class EventApiTest extends TestCase
                     'date_end' => ApiDateTimeFormatter::formatDateTime($event->date_end),
                     'flight_information_region_id' => $event->flight_information_region_id,
                     'vatcan_code' => null,
+                    'participants' => null,
                 ]
             );
     }
@@ -55,6 +56,26 @@ class EventApiTest extends TestCase
                     'date_end' => ApiDateTimeFormatter::formatDateTime($event->date_end),
                     'flight_information_region_id' => $event->flight_information_region_id,
                     'vatcan_code' => $event->vatcan_code,
+                    'participants' => null,
+                ]
+            );
+    }
+
+    public function testItReturnsAnEventWithParticipants()
+    {
+        $event = Event::factory()->withParticipants()->create();
+
+        $this->get('api/v1/event/' . $event->id)
+            ->assertOk()
+            ->assertExactJson(
+                [
+                    'id' => $event->id,
+                    'name' => $event->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event->date_end),
+                    'flight_information_region_id' => $event->flight_information_region_id,
+                    'vatcan_code' => $event->vatcan_code,
+                    'participants' => $event->participants,
                 ]
             );
     }
@@ -81,6 +102,7 @@ class EventApiTest extends TestCase
                         'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
                         'flight_information_region_id' => $event1->flight_information_region_id,
                         'vatcan_code' => null,
+                        'participants' => null,
                     ],
                     [
                         'id' => $event2->id,
@@ -89,6 +111,7 @@ class EventApiTest extends TestCase
                         'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
                         'flight_information_region_id' => $event2->flight_information_region_id,
                         'vatcan_code' => null,
+                        'participants' => null,
                     ],
                 ]
             );
@@ -110,6 +133,7 @@ class EventApiTest extends TestCase
                         'date_end' => ApiDateTimeFormatter::formatDateTime($event->date_end),
                         'flight_information_region_id' => $event->flight_information_region_id,
                         'vatcan_code' => null,
+                        'participants' => null,
                     ],
                 ]
             );
