@@ -26,6 +26,7 @@ class FlowMeasureIdentifierGenerator
         $flowMeasuresToday = FlowMeasure::where('start_time', '>=', $startTime->copy()->startOfDay())
             ->where('start_time', '<=', $startTime->copy()->endOfDay())
             ->flightInformationRegion($flightInformationRegion)
+            ->withTrashed()
             ->count();
 
         $multiples = (int)($flowMeasuresToday / 26);

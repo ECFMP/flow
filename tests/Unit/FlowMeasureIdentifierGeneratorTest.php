@@ -31,7 +31,8 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
         int $numberExisting,
         string $date,
         string $expectedDayNumber,
-        string $expectedDesignator
+        string $expectedDesignator,
+        bool $isDeleted = false
     ) {
         $fir = FlightInformationRegion::factory()->create(['identifier' => 'EGTT']);
         $otherFir = FlightInformationRegion::factory()->create(['identifier' => 'EGPX']);
@@ -64,13 +65,18 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
         )->create();
 
         // Create other measures today if needed
-        FlowMeasure::factory()->count($numberExisting)->state(
+        $measures = FlowMeasure::factory()->count($numberExisting)->state(
             [
                 'flight_information_region_id' => $fir->id,
                 'start_time' => Carbon::parse($date)->startOfDay(),
                 'end_time' => Carbon::parse($date)->endOfDay(),
             ]
         )->create();
+        if ($isDeleted) {
+            $measures->each(function (FlowMeasure $flowMeasure) {
+                $flowMeasure->delete();
+            });
+        }
 
         $this->assertEquals(
             sprintf('EGTT%s%s', $expectedDayNumber, $expectedDesignator),
@@ -89,6 +95,7 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
             'Starting again' => [27, '2022-04-30 12:00:00', '30', 'AB'],
             'Single digit number' => [0, '2022-04-01 12:00:00', '01', 'A'],
             'Single digit number high' => [0, '2022-04-09 12:00:00', '09', 'A'],
+            'Measures deleted' => [0, '2022-04-09 12:00:00', '09', 'A', true],
         ];
     }
 }
