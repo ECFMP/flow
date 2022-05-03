@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Airport;
 use App\Models\AirportGroup;
+use App\Models\DiscordTag;
 use App\Models\Event;
+use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -41,6 +43,10 @@ class DatabaseSeeder extends Seeder
 
         Event::factory()
             ->withVatcanCode()
+            ->create();
+
+        FlightInformationRegion::factory()
+            ->has(DiscordTag::factory()->count(3))
             ->create();
     }
 }
