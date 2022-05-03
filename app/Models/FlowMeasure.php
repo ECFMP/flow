@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FlowMeasure extends Model
@@ -45,6 +46,12 @@ class FlowMeasure extends Model
     public function flightInformationRegion(): BelongsTo
     {
         return $this->belongsTo(FlightInformationRegion::class);
+    }
+
+    public function notifiedFlightInformationRegions(): BelongsToMany
+    {
+        return $this->belongsToMany(FlightInformationRegion::class)
+            ->withTimestamps();
     }
 
     public function event(): BelongsTo
