@@ -22,6 +22,11 @@ class FlightInformationRegion extends Model
         return $this->belongsToMany(User::class)->withTimestamps();
     }
 
+    public function discordTags(): BelongsToMany
+    {
+        return $this->belongsToMany(DiscordTag::class)->withTimestamps();
+    }
+
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
@@ -35,15 +40,15 @@ class FlightInformationRegion extends Model
     protected function identifier(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => strtoupper($value),
-            set: fn ($value) => strtoupper($value)
+            get: fn($value) => strtoupper($value),
+            set: fn($value) => strtoupper($value)
         );
     }
 
     protected function identifierName(): Attribute
     {
         return new Attribute(
-            fn () => "{$this->identifier} | {$this->name}",
+            fn() => "{$this->identifier} | {$this->name}",
         );
     }
 }
