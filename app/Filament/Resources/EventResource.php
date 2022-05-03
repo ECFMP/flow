@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\RoleKey;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Event;
@@ -14,6 +15,7 @@ use App\Filament\Resources\EventResource\RelationManagers;
 use App\Models\FlightInformationRegion;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class EventResource extends Resource
 {
@@ -32,6 +34,11 @@ class EventResource extends Resource
         ];
     }
 
+    private static function setFirOptions(Collection $firs)
+    {
+        return $firs->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifierName]);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -43,9 +50,14 @@ class EventResource extends Resource
                     ->label('Flight Information Region')
                     ->hintIcon('heroicon-o-folder')
                     ->searchable()
-                    ->options(auth()->user()
-                        ->flightInformationRegions
-                        ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifierName]))
+                    ->options(
+                        in_array(auth()->user()->role->key, [
+                            RoleKey::SYSTEM,
+                            RoleKey::NMT
+                        ]) ? self::setFirOptions(FlightInformationRegion::all()) :
+                            self::setFirOptions(auth()->user()
+                                ->flightInformationRegions)
+                    )
                     ->required(),
                 Forms\Components\DateTimePicker::make('date_start')
                     ->label('Start (UTC)')
