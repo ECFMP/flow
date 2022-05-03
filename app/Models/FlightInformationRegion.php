@@ -24,7 +24,7 @@ class FlightInformationRegion extends Model
 
     public function discordTags(): BelongsToMany
     {
-        return $this->belongsToMany(DiscordTag::class);
+        return $this->belongsToMany(DiscordTag::class)->withTimestamps();
     }
 
     public function events(): HasMany
