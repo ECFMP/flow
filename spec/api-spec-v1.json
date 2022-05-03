@@ -38,6 +38,10 @@
     {
       "name": "Flight Information Regions",
       "description": "Relates to flight information regions"
+    },
+    {
+      "name": "Plugins",
+      "description": "Non-RESTful APIs that plugins can use for easy access to data"
     }
   ],
   "paths": {
@@ -358,6 +362,30 @@
           },
           "404": {
             "description": "Flow measure not found"
+          }
+        },
+        "security": [
+        ]
+      }
+    },
+    "/plugin": {
+      "get": {
+        "tags": [
+          "Plugins"
+        ],
+        "summary": "A combined set of data for easy access by controller client plugins",
+        "description": "GET /plugin",
+        "operationId": "getPluginData",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plugin"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -859,6 +887,20 @@
                 ]
               }
             ]
+          }
+        }
+      },
+      "Plugin": {
+        "type": "object",
+        "properties": {
+          "events": {
+            "$ref": "#/components/schemas/Events"
+          },
+          "flight_information_regions": {
+            "$ref": "#/components/schemas/FlightInformationRegions"
+          },
+          "flow_measures": {
+            "$ref": "#/components/schemas/FlowMeasures"
           }
         }
       }
