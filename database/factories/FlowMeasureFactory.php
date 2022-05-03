@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\FlowMeasureType;
 use App\Helpers\FlowMeasureIdentifierGenerator;
 use App\Models\Event;
 use App\Models\FlightInformationRegion;
@@ -27,7 +28,7 @@ class FlowMeasureFactory extends Factory
             'flight_information_region_id' => $fir->id,
             'event_id' => null,
             'reason' => $this->faker->sentence(4),
-            'type' => 'minimum_departure_interval',
+            'type' => FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL,
             'value' => 120,
             'mandatory_route' => null,
             'filters' => [
@@ -47,7 +48,7 @@ class FlowMeasureFactory extends Factory
 
     public function finished(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('-3 hour', 'now'),
             'end_time' => $this->faker->dateTimeBetween('-2 hour', 'now - 1 minute'),
         ]);
@@ -55,7 +56,7 @@ class FlowMeasureFactory extends Factory
 
     public function notStarted(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('now + 1 minute', 'now + 1 hour'),
             'end_time' => $this->faker->dateTimeBetween('now + 2 hour', 'now + 3 hour'),
         ]);
@@ -63,14 +64,14 @@ class FlowMeasureFactory extends Factory
 
     public function withEvent(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'event_id' => Event::factory()->create()->id,
         ]);
     }
 
     public function withMandatoryRoute(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'mandatory_route',
             'value' => null,
             'mandatory_route' => json_encode(['LOGAN', 'UL612 LAKEY DCT NUGRA']),
@@ -79,7 +80,7 @@ class FlowMeasureFactory extends Factory
 
     public function withAdditionalFilters(array $filters): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'filters' => array_merge($attributes['filters'], $filters),
         ]);
     }

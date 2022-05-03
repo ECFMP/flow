@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\RoleKey;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -10,9 +12,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     public $incrementing = false;
 
@@ -41,5 +45,10 @@ class User extends Authenticatable
     public function flowMeasures(): HasMany
     {
         return $this->hasMany(FlowMeasure::class);
+    }
+
+    public function canAccessFilament(): bool
+    {
+        return true;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -46,5 +47,12 @@ class Event extends Model
         $now = Carbon::now();
         return $query->where('date_start', '<=', $now)
             ->where('date_end', '>', $now);
+    }
+
+    protected function nameDate(): Attribute
+    {
+        return new Attribute(
+            fn () => "{$this->name} [{$this->date_start->format('M j, Y')}]",
+        );
     }
 }
