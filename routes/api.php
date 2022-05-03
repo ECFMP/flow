@@ -3,6 +3,7 @@
 use App\Http\Controllers\DocumentationController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FlowMeasureController;
+use App\Http\Controllers\PluginApiController;
 use App\Http\Resources\AirportGroupResource;
 use App\Http\Resources\EventResource;
 use App\Http\Resources\FlightInformationRegionResource;
@@ -55,6 +56,8 @@ Route::middleware('guest')
                     fn(int $id) => new FlightInformationRegionResource(FlightInformationRegion::findOrFail($id))
                 );
             });
+
+        Route::get('plugin', PluginApiController::class);
     });
 
 // Documentation
