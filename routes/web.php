@@ -20,9 +20,14 @@ Route::get('/', function () {
 });
 
 Route::middleware(['guest'])->group(function () {
+    Route::get('admin/login', function () {
+        // Just redirect to login, we don't work with passwords
+        return to_route('vatsimconnect.redirect');
+    })->name('filament.auth.login');
+
     Route::get('/auth/redirect', function () {
         return Socialite::driver('vatsimconnect')->redirect();
-    });
+    })->name('vatsimconnect.redirect');
 
     Route::get('/auth/callback', [VatsimConnectController::class, 'callback']);
 });
