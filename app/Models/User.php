@@ -12,7 +12,6 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens;
     use HasFactory;
     use Notifiable;
 
