@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
+use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
 use Filament\Pages\Page;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -225,6 +226,13 @@ class FlowMeasureResource extends Resource
             'create' => Pages\CreateFlowMeasure::route('/create'),
             'view' => Pages\ViewFlowMeasure::route('{record}'),
             'edit' => Pages\EditFlowMeasure::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ActiveFlowMeasures::class,
         ];
     }
 }
