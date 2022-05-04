@@ -183,15 +183,18 @@ class FlowMeasureResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('identifier'),
+                Tables\Columns\TextColumn::make('identifier')->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label(__('Owner')),
-                Tables\Columns\BadgeColumn::make('type'),
+                    ->label(__('Owner'))->sortable(),
+                Tables\Columns\BadgeColumn::make('type')
+                    ->alignCenter()
+                    ->formatStateUsing(fn (string $state): string => FlowMeasureType::tryFrom($state)->getFormattedName()),
                 Tables\Columns\TextColumn::make('start_time')
-                    ->dateTime('M j, Y H:i\z'),
+                    ->dateTime('M j, Y H:i\z')->sortable(),
                 Tables\Columns\TextColumn::make('end_time')
-                    ->dateTime('M j, Y H:i\z'),
+                    ->dateTime('M j, Y H:i\z')->sortable(),
             ])
+            ->defaultSort('start_time')
             ->filters([
                 Filter::make('date')
                     ->form([

@@ -2,11 +2,12 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Widgets;
 
-use App\Models\FlowMeasure;
 use Closure;
 use Filament\Tables;
-use Filament\Widgets\TableWidget as BaseWidget;
+use App\Models\FlowMeasure;
+use App\Enums\FlowMeasureType;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Widgets\TableWidget as BaseWidget;
 
 class ActiveFlowMeasures extends BaseWidget
 {
@@ -25,7 +26,9 @@ class ActiveFlowMeasures extends BaseWidget
             Tables\Columns\TextColumn::make('identifier'),
             Tables\Columns\TextColumn::make('user.name')
                 ->label(__('Owner')),
-            Tables\Columns\BadgeColumn::make('type'),
+            Tables\Columns\BadgeColumn::make('type')
+                ->alignCenter()
+                ->formatStateUsing(fn (string $state): string => FlowMeasureType::tryFrom($state)->getFormattedName()),
             Tables\Columns\TextColumn::make('value'),
             Tables\Columns\TextColumn::make('start_time')
                 ->dateTime('H:i\z'),
