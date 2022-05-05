@@ -8,18 +8,17 @@ use Log;
 
 class DiscordMessageSender implements DiscordInterface
 {
-    public function sendMessage(MessageInterface $message): void
+    public function sendMessage(MessageInterface $message): bool
     {
         if (!$this->messageSendingEnabled()) {
             Log::info('Skipping discord message as disabled.');
-            return;
+            return false;
         }
 
         $response = Http::post(
             config('discord.webhook_url'),
             [
                 'content' => $message->content(),
-                'username' => config('discord.username'),
                 'tts' => false,
                 'embeds' => [],
             ]
@@ -33,7 +32,10 @@ class DiscordMessageSender implements DiscordInterface
                     $response->body()
                 )
             );
+            return false;
         }
+
+        return true;
     }
 
     private function messageSendingEnabled(): bool

@@ -11,5 +11,5 @@ use App\Discord\Message\MessageInterface;
  */
 interface DiscordInterface
 {
-    public function sendMessage(MessageInterface $message): void;
+    public function sendMessage(MessageInterface $message): bool;
 }
