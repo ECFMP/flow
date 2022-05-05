@@ -9,6 +9,11 @@ class DiscordMessageSender implements DiscordInterface
 {
     public function sendMessage(MessageInterface $message): void
     {
+        if (!$this->messageSendingEnabled()) {
+            Log::info('Skipping discord message as disabled.');
+            return;
+        }
+
         $response = Http::post(
             config('discord.webhook_url'),
             [
@@ -28,5 +33,10 @@ class DiscordMessageSender implements DiscordInterface
                 )
             );
         }
+    }
+
+    private function messageSendingEnabled(): bool
+    {
+        return config('discord.enabled', false) === true;
     }
 }
