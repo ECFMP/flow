@@ -30,6 +30,7 @@ class FlowMeasureResource extends JsonResource
                     : $this->value,
             ],
             'filters' => $this->formatFilters($this->filters),
+            'notified_flight_information_regions' => $this->notifiedFlightInformationRegions->pluck('id')->toArray(),
         ];
     }
 
