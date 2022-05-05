@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Discord;
+namespace App\Discord\Message;
 
 /**
  * An interface for a discord message

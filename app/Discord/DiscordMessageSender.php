@@ -2,6 +2,7 @@
 
 namespace App\Discord;
 
+use App\Discord\Message\MessageInterface;
 use Illuminate\Support\Facades\Http;
 use Log;
 
