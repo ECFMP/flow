@@ -78,6 +78,22 @@ class FlowMeasureFactory extends Factory
         ]);
     }
 
+    public function withArrivalAirports(array $airports): static
+    {
+        return $this->state(function (array $attributes) use ($airports) {
+            $filteredFilters = array_filter($attributes['filters'], fn ($filter) => $filter['type'] !== 'ADES');
+            return ['filters' => array_merge($filteredFilters, [['type' => 'ADES', 'value' => $airports]])];
+        });
+    }
+
+    public function withDepartureAirports(array $airports): static
+    {
+        return $this->state(function (array $attributes) use ($airports) {
+            $filteredFilters = array_filter($attributes['filters'], fn ($filter) => $filter['type'] !== 'ADEP');
+            return ['filters' => array_merge($filteredFilters, [['type' => 'ADEP', 'value' => $airports]])];
+        });
+    }
+
     public function withAdditionalFilters(array $filters): static
     {
         return $this->state(fn (array $attributes) => [
