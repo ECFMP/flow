@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -15,7 +16,7 @@ return new class extends Migration {
         Schema::create('discord_tags', function (Blueprint $table) {
             $table->id();
             $table->string('tag')->unique()->comment('The tag to use');
-            $table->string('description')->comment('What the tag is for / who it is targeted at');
+            $table->string('description')->nullable()->comment('What the tag is for / who it is targeted at');
             $table->timestamps();
         });
     }
