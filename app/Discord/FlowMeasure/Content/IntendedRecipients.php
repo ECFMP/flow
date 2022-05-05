@@ -5,6 +5,7 @@ namespace App\Discord\FlowMeasure\Content;
 use App\Models\FlightInformationRegion;
 use Arr;
 use Illuminate\Support\Collection;
+use Str;
 
 class IntendedRecipients extends AbstractFlowMeasureContent
 {
@@ -34,8 +35,16 @@ class IntendedRecipients extends AbstractFlowMeasureContent
                 )
             )
             ->flatten()
-            ->map(fn (string $tag) => sprintf('<%s>', $tag))
+            ->map(fn (string $tag) => $this->formatTag($tag))
             ->unique()
             ->values();
+    }
+
+    private function formatTag(string $tag): string
+    {
+        return sprintf(
+            '<%s>',
+            Str::startsWith($tag, '@') ? $tag : '@' . $tag
+        );
     }
 }
