@@ -72,6 +72,8 @@ class FlightInformationRegionResource extends Resource
     {
         return [
             RelationManagers\UsersRelationManager::class,
+            RelationManagers\DiscordTagsRelationManager::class,
+            RelationManagers\EventsRelationManager::class,
         ];
     }
 

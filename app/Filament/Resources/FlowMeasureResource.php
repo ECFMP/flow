@@ -6,21 +6,24 @@ use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Event;
+use App\Enums\RoleKey;
+use Filament\Pages\Page;
 use App\Models\FlowMeasure;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use App\Enums\FlowMeasureType;
 use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
 use Filament\Tables\Filters\Filter;
 use App\Models\FlightInformationRegion;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
-use Filament\Pages\Page;
-use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
 
 class FlowMeasureResource extends Resource
 {
@@ -29,6 +32,11 @@ class FlowMeasureResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-check';
 
     protected static ?string $recordTitleAttribute = 'identifier';
+
+    private static function setFirOptions(Collection $firs)
+    {
+        return $firs->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifierName]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -39,9 +47,14 @@ class FlowMeasureResource extends Resource
                     ->helperText(__('Required if event is left empty'))
                     ->hintIcon('heroicon-o-folder')
                     ->searchable()
-                    ->options(auth()->user()
-                        ->flightInformationRegions
-                        ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifierName]))
+                    ->options(
+                        in_array(auth()->user()->role->key, [
+                            RoleKey::SYSTEM,
+                            RoleKey::NMT
+                        ]) ? self::setFirOptions(FlightInformationRegion::all()) :
+                            self::setFirOptions(auth()->user()
+                                ->flightInformationRegions)
+                    )
                     ->required(fn (Closure $get) => $get('event_id') == null),
                 Forms\Components\Select::make('event_id')
                     ->label(__('Event'))
@@ -182,15 +195,18 @@ class FlowMeasureResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('identifier'),
+                Tables\Columns\TextColumn::make('identifier')->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label(__('Owner')),
-                Tables\Columns\BadgeColumn::make('type'),
+                    ->label(__('Owner'))->sortable(),
+                Tables\Columns\BadgeColumn::make('type')
+                    ->alignCenter()
+                    ->formatStateUsing(fn (string $state): string => FlowMeasureType::tryFrom($state)->getFormattedName()),
                 Tables\Columns\TextColumn::make('start_time')
-                    ->dateTime('M j, Y H:i\z'),
+                    ->dateTime('M j, Y H:i\z')->sortable(),
                 Tables\Columns\TextColumn::make('end_time')
-                    ->dateTime('M j, Y H:i\z'),
+                    ->dateTime('M j, Y H:i\z')->sortable(),
             ])
+            ->defaultSort('start_time')
             ->filters([
                 Filter::make('date')
                     ->form([
@@ -225,6 +241,13 @@ class FlowMeasureResource extends Resource
             'create' => Pages\CreateFlowMeasure::route('/create'),
             'view' => Pages\ViewFlowMeasure::route('{record}'),
             'edit' => Pages\EditFlowMeasure::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ActiveFlowMeasures::class,
         ];
     }
 }

@@ -1,38 +1,23 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\FlightInformationRegionResource\RelationManagers;
 
-use App\Enums\RoleKey;
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Event;
+use App\Enums\RoleKey;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
-use Filament\Resources\Resource;
-use Illuminate\Database\Eloquent\Model;
-use App\Filament\Resources\EventResource\Pages;
-use App\Filament\Resources\EventResource\RelationManagers;
-use App\Models\FlightInformationRegion;
-use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Filament\Tables\Filters\Filter;
+use App\Models\FlightInformationRegion;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\RelationManagers\HasManyRelationManager;
 
-class EventResource extends Resource
+class EventsRelationManager extends HasManyRelationManager
 {
-    protected static ?string $model = Event::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static string $relationship = 'events';
 
     protected static ?string $recordTitleAttribute = 'name';
-
-    public static function getGlobalSearchResultDetails(Model $record): array
-    {
-        return [
-            'FIR' => $record->flightInformationRegion->name,
-            __('Start') => $record->date_start,
-            __('End') => $record->date_end,
-        ];
-    }
 
     private static function setFirOptions(Collection $firs)
     {
@@ -46,19 +31,6 @@ class EventResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('flight_information_region_id')
-                    ->label('Flight Information Region')
-                    ->hintIcon('heroicon-o-folder')
-                    ->searchable()
-                    ->options(
-                        in_array(auth()->user()->role->key, [
-                            RoleKey::SYSTEM,
-                            RoleKey::NMT
-                        ]) ? self::setFirOptions(FlightInformationRegion::all()) :
-                            self::setFirOptions(auth()->user()
-                                ->flightInformationRegions)
-                    )
-                    ->required(),
                 Forms\Components\DateTimePicker::make('date_start')
                     ->label('Start (UTC)')
                     ->default(now()->addWeek()->startOfHour())
@@ -81,10 +53,6 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
-                    ->label('FIR')
-                    ->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -118,22 +86,5 @@ class EventResource extends Resource
                             );
                     }),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListEvents::route('/'),
-            'create' => Pages\CreateEvent::route('/create'),
-            'view' => Pages\ViewEvent::route('{record}'),
-            'edit' => Pages\EditEvent::route('/{record}/edit'),
-        ];
     }
 }
