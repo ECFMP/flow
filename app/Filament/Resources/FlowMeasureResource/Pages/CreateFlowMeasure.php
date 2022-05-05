@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
 use App\Enums\FlowMeasureType;
+use App\Events\FlowMeasureCreatedEvent;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\FlowMeasureResource;
 use App\Helpers\FlowMeasureIdentifierGenerator;
@@ -53,5 +54,10 @@ class CreateFlowMeasure extends CreateRecord
         Arr::pull($data, 'ades');
 
         return $data;
+    }#
+
+    protected function afterCreate()
+    {
+        event(new FlowMeasureCreatedEvent($this->record));
     }
 }

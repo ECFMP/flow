@@ -15,6 +15,7 @@ class DiscordMessageSender implements DiscordInterface
                 'content' => $message->content(),
                 'username' => config('discord.username'),
                 'tts' => false,
+                'embeds' => [],
             ]
         );
 
