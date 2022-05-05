@@ -563,6 +563,16 @@
             "format": "datetime",
             "example": "2022-04-18T13:15:30Z"
           },
+          "notified_flight_information_regions": {
+            "type": "array",
+            "description": "An array of flight information ids that are to be notified of this flow measure",
+            "example": [1, 2, 42],
+            "items": {
+              "type": "integer",
+              "example": 5,
+              "description": "The system id of a flight information region"
+            }
+          },
           "measure": {
             "oneOf": [
               {

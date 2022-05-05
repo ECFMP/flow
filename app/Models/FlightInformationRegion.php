@@ -37,6 +37,11 @@ class FlightInformationRegion extends Model
         return $this->hasMany(FlowMeasure::class);
     }
 
+    public function notifiedFlowMeasures(): BelongsToMany
+    {
+        return $this->belongsToMany(FlowMeasure::class)->withTimestamps();
+    }
+
     protected function identifier(): Attribute
     {
         return Attribute::make(

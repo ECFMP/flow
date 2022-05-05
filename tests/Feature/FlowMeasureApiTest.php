@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Helpers\ApiDateTimeFormatter;
+use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
@@ -62,7 +63,8 @@ class FlowMeasureApiTest extends TestCase
                         'type' => 'ADES',
                         'value' => ['EHAM']
                     ],
-                ]
+                ],
+                'notified_flight_information_regions' => [],
             ]);
     }
 
@@ -94,7 +96,8 @@ class FlowMeasureApiTest extends TestCase
                         'type' => 'ADES',
                         'value' => ['EHAM']
                     ],
-                ]
+                ],
+                'notified_flight_information_regions' => [],
             ]);
     }
 
@@ -126,7 +129,45 @@ class FlowMeasureApiTest extends TestCase
                         'type' => 'ADES',
                         'value' => ['EHAM']
                     ],
-                ]
+                ],
+                'notified_flight_information_regions' => [],
+            ]);
+    }
+
+    public function testItReturnsAFlowMeasureWithNotifiedFlightInformationRegions()
+    {
+        $flowMeasure = FlowMeasure::factory()
+            ->create();
+
+        $flowMeasure->notifiedFlightInformationRegions()
+            ->sync(FlightInformationRegion::factory()->count(3)->create()->pluck('id')->toArray());
+
+        $this->get('api/v1/flow-measure/' . $flowMeasure->id)
+            ->assertOk()
+            ->assertExactJson([
+                'id' => $flowMeasure->id,
+                'ident' => $flowMeasure->identifier,
+                'event_id' => null,
+                'reason' => $flowMeasure->reason,
+                'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure->start_time),
+                'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure->end_time),
+                'measure' => [
+                    'type' => 'minimum_departure_interval',
+                    'value' => 120
+                ],
+                'filters' => [
+                    [
+                        'type' => 'ADEP',
+                        'value' => ['EG**']
+                    ],
+                    [
+                        'type' => 'ADES',
+                        'value' => ['EHAM']
+                    ],
+                ],
+                'notified_flight_information_regions' => $flowMeasure->notifiedFlightInformationRegions
+                    ->pluck('id')
+                    ->toArray(),
             ]);
     }
 
@@ -139,11 +180,11 @@ class FlowMeasureApiTest extends TestCase
 
     public function testItIgnoresDeletedFlowMeasures()
     {
-        $flowMeasure1 = FlowMeasure::factory()
+        FlowMeasure::factory()
             ->create()
             ->delete();
 
-        $flowMeasure2 = FlowMeasure::factory()
+        FlowMeasure::factory()
             ->withEvent()
             ->create()
             ->delete();
@@ -185,7 +226,8 @@ class FlowMeasureApiTest extends TestCase
                             'type' => 'ADES',
                             'value' => ['EHAM']
                         ],
-                    ]
+                    ],
+                    'notified_flight_information_regions' => [],
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -207,7 +249,8 @@ class FlowMeasureApiTest extends TestCase
                             'type' => 'ADES',
                             'value' => ['EHAM']
                         ],
-                    ]
+                    ],
+                    'notified_flight_information_regions' => [],
                 ]
             ]);
     }
@@ -247,7 +290,8 @@ class FlowMeasureApiTest extends TestCase
                             'type' => 'ADES',
                             'value' => ['EHAM']
                         ],
-                    ]
+                    ],
+                    'notified_flight_information_regions' => [],
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -269,7 +313,8 @@ class FlowMeasureApiTest extends TestCase
                             'type' => 'ADES',
                             'value' => ['EHAM']
                         ],
-                    ]
+                    ],
+                    'notified_flight_information_regions' => [],
                 ]
             ]);
     }
@@ -313,7 +358,8 @@ class FlowMeasureApiTest extends TestCase
                             'type' => 'ADES',
                             'value' => ['EHAM']
                         ],
-                    ]
+                    ],
+                    'notified_flight_information_regions' => [],
                 ],
             ]);
     }
