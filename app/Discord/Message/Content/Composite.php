@@ -10,6 +10,7 @@ class Composite implements ContentInterface
 
     private function __construct()
     {
+        $this->components = [];
     }
 
     public static function make(): static
