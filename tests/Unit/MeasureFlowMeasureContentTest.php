@@ -7,7 +7,7 @@ use App\Enums\FlowMeasureType;
 use App\Models\FlowMeasure;
 use DB;
 
-class MeasureContentTest extends \Tests\TestCase
+class MeasureFlowMeasureContentTest extends \Tests\TestCase
 {
     public function setUp(): void
     {

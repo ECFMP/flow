@@ -8,7 +8,7 @@ use App\Models\FlowMeasure;
 use DB;
 use Tests\TestCase;
 
-class OtherFiltersContentTest extends TestCase
+class OtherFiltersFlowMeasureContentTest extends TestCase
 {
     public function setUp(): void
     {

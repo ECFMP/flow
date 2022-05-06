@@ -9,7 +9,7 @@ use App\Models\FlowMeasure;
 use DB;
 use Tests\TestCase;
 
-class IntendedRecipientsContentTest extends TestCase
+class IntendedRecipientsFlowMeasureContentTest extends TestCase
 {
     public function setUp(): void
     {
