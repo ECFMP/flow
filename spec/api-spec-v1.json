@@ -865,10 +865,10 @@
                       ]
                     },
                     "value": {
-                      "description": "JSON encoded list of waypoints or airways",
+                      "description": "String of waypoints",
                       "type": "string",
                       "format": "JSON",
-                      "example": "[\"BIG\", \"UL9\", \"CPT\"]"
+                      "example": "BIG UL9 CPT"
                     }
                   }
                 }

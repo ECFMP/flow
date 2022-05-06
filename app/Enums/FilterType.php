@@ -19,11 +19,11 @@ enum FilterType: string
             self::DEPARTURE_AIRPORTS => 'DEPA',
             self::ARRIVAL_AIRPORTS => 'DEST',
             self::WAYPOINT => 'VIA WPT',
-            self::LEVEL_ABOVE => 'LVLABV',
-            self::LEVEL_BELOW => 'LVLBLW',
+            self::LEVEL_ABOVE => 'LVL ABV',
+            self::LEVEL_BELOW => 'LVL BLW',
             self::LEVEL => 'LVL',
             self::MEMBER_EVENT => 'EVENT',
-            self::MEMBER_NOT_EVENT => 'NON-EVENT',
+            self::MEMBER_NOT_EVENT => 'NON EVENT',
         };
     }
 }
