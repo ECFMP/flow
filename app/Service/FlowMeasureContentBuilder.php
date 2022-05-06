@@ -19,7 +19,7 @@ use App\Models\FlowMeasure;
 
 class FlowMeasureContentBuilder
 {
-    public static function build(FlowMeasure $flowMeasure): ContentInterface
+    public static function activated(FlowMeasure $flowMeasure): ContentInterface
     {
         return Composite::make()
             ->addComponent(new SnippetBlock(self::getInformationSnippet($flowMeasure)))

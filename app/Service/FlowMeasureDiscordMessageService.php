@@ -41,7 +41,7 @@ class FlowMeasureDiscordMessageService
 
     #[NoReturn] private function sendDiscordNotification(FlowMeasure $flowMeasure): void
     {
-        $message = new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::build($flowMeasure));
+        $message = new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::activated($flowMeasure));
         $flowMeasure->discordNotification()->create(
             [
                 'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,

@@ -28,7 +28,7 @@ class FlowMeasureFactory extends Factory
             'flight_information_region_id' => $fir->id,
             'event_id' => null,
             'reason' => $this->faker->sentence(4),
-            'type' => FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL,
+            'type' => FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
             'value' => 120,
             'mandatory_route' => null,
             'filters' => [
