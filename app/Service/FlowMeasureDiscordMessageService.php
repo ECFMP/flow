@@ -4,7 +4,9 @@ namespace App\Service;
 
 use App\Discord\DiscordInterface;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
+use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
+use Illuminate\Database\Eloquent\Builder;
 use JetBrains\PhpStorm\NoReturn;
 
 class FlowMeasureDiscordMessageService
@@ -18,7 +20,9 @@ class FlowMeasureDiscordMessageService
 
     public function sendDiscordNotifications(): void
     {
-        FlowMeasure::whereDoesntHave('discordNotification')
+        FlowMeasure::whereDoesntHave('discordNotification', function (Builder $notification) {
+            $notification->type(DiscordNotificationType::FLOW_MEASURE_ACTIVATED);
+        })
             ->active()
             ->get()
             ->each(function (FlowMeasure $flowMeasure) {
@@ -38,7 +42,12 @@ class FlowMeasureDiscordMessageService
     #[NoReturn] private function sendDiscordNotification(FlowMeasure $flowMeasure): void
     {
         $message = new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::build($flowMeasure));
-        $flowMeasure->discordNotification()->create(['content' => $message->content()]);
+        $flowMeasure->discordNotification()->create(
+            [
+                'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                'content' => $message->content(),
+            ]
+        );
         $this->discord->sendMessage($message);
     }
 }

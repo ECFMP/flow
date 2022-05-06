@@ -16,6 +16,8 @@ return new class extends Migration {
         Schema::create('discord_notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(FlowMeasure::class);
+            $table->string('type')
+                ->comment('The purpose of the discord notification');
             $table->text('content');
             $table->timestamp('created_at');
 
