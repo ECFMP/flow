@@ -12,7 +12,7 @@ class SendDiscordNotificationsTest extends TestCase
 {
     public function testItRunsNotificationSending()
     {
-        Config::set('discord.enable', true);
+        Config::set('discord.enabled', true);
 
         $serviceMock = Mockery::mock(FlowMeasureDiscordMessageService::class);
         $serviceMock->shouldReceive('sendMeasureActivatedDiscordNotifications')->once();
@@ -25,7 +25,7 @@ class SendDiscordNotificationsTest extends TestCase
 
     public function testItDoesntRunsNotificationSendingIfSwitchedOff()
     {
-        Config::set('discord.enable', false);
+        Config::set('discord.enabled', false);
 
         $serviceMock = Mockery::mock(FlowMeasureDiscordMessageService::class);
         $serviceMock->shouldNotReceive('sendMeasureActivatedDiscordNotifications');

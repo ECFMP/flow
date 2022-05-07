@@ -28,7 +28,7 @@ class SendDiscordNotifications extends Command
      */
     public function handle(FlowMeasureDiscordMessageService $discordMessageService)
     {
-        if (!config('discord.enable')) {
+        if (!config('discord.enabled')) {
             $this->info('Skipping discord notifications');
             return 0;
         }
