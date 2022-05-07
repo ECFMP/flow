@@ -18,7 +18,7 @@ class FlowMeasureContentBuilderTest extends TestCase
 
     public function testItBuildsActivatedMessage()
     {
-        $measure = FlowMeasure::factory()->state(fn (array $attributes) => [
+        $measure = FlowMeasure::factory()->state(fn(array $attributes) => [
             'identifier' => 'EGTT06A',
             'reason' => 'Because I said so',
             'start_time' => Carbon::parse('2022-05-06T22:18:00Z'),
@@ -34,5 +34,23 @@ class FlowMeasureContentBuilderTest extends TestCase
         $expected .= "```\n\n";
 
         $this->assertEquals($expected, FlowMeasureContentBuilder::activated($measure)->toString());
+    }
+
+    public function testItBuildsWithdrawnMessage()
+    {
+        $measure = FlowMeasure::factory()->state(fn(array $attributes) => [
+            'identifier' => 'EGTT06A',
+            'reason' => 'Because I said so',
+            'start_time' => Carbon::parse('2022-05-06T22:18:00Z'),
+            'end_time' => Carbon::parse('2022-05-06T23:10:00Z'),
+        ])->create();
+
+        $expected = "```\n";
+        $expected .= "EGTT06A\n\n";
+        $expected .= "Minimum Departure Interval [MDI]: 2 MINS\n";
+        $expected .= "ADEP: EG**          DEST: EHAM\n";
+        $expected .= "```\n\n";
+
+        $this->assertEquals($expected, FlowMeasureContentBuilder::withdrawn($measure)->toString());
     }
 }

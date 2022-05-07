@@ -22,12 +22,12 @@ class FlowMeasureContentBuilder
     public static function activated(FlowMeasure $flowMeasure): ContentInterface
     {
         return Composite::make()
-            ->addComponent(new SnippetBlock(self::getInformationSnippet($flowMeasure)))
+            ->addComponent(new SnippetBlock(self::getActivatedInformation($flowMeasure)))
             ->addComponent(Newline::make(2))
             ->addComponent(new IntendedRecipients($flowMeasure));
     }
 
-    private static function getInformationSnippet(FlowMeasure $flowMeasure): ContentInterface
+    private static function getActivatedInformation(FlowMeasure $flowMeasure): ContentInterface
     {
         return Composite::make()
             ->addComponent(new Identifier($flowMeasure))
@@ -43,5 +43,25 @@ class FlowMeasureContentBuilder
             ->addComponent(new ValidPeriod($flowMeasure))
             ->addComponent(Newline::make(2))
             ->addComponent(new Reason($flowMeasure));
+    }
+
+    public static function withdrawn(FlowMeasure $flowMeasure): ContentInterface
+    {
+        return Composite::make()
+            ->addComponent(new SnippetBlock(self::getWithdrawnInformation($flowMeasure)))
+            ->addComponent(Newline::make(2))
+            ->addComponent(new IntendedRecipients($flowMeasure));
+    }
+
+    private static function getWithdrawnInformation(FlowMeasure $flowMeasure): ContentInterface
+    {
+        return Composite::make()
+            ->addComponent(new Identifier($flowMeasure))
+            ->addComponent(Newline::make(2))
+            ->addComponent(new Measure($flowMeasure))
+            ->addComponent(Newline::make())
+            ->addComponent(new Departing($flowMeasure))
+            ->addComponent(Spacing::make(10))
+            ->addComponent(new Arriving($flowMeasure));
     }
 }

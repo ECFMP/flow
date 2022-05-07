@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Discord\DiscordInterface;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Discord\Message\MessageInterface;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
@@ -31,6 +32,25 @@ class FlowMeasureDiscordMessageService
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
                     new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::activated($flowMeasure))
+                );
+            });
+    }
+
+    public function sendMeasureWithdrawnDiscordNotifications(): void
+    {
+        FlowMeasure::whereHas('discordNotifications', function (Builder $notification) {
+            $notification->type(DiscordNotificationType::FLOW_MEASURE_ACTIVATED);
+        })->whereDoesntHave('discordNotifications', function (Builder $notification) {
+            $notification->type(DiscordNotificationType::FLOW_MEASURE_WITHDRAWN);
+        })
+            ->onlyTrashed()
+            ->active()
+            ->get()
+            ->each(function (FlowMeasure $flowMeasure) {
+                $this->sendDiscordNotification(
+                    $flowMeasure,
+                    DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
+                    new FlowMeasureWithdrawnMessage(FlowMeasureContentBuilder::withdrawn($flowMeasure))
                 );
             });
     }

@@ -115,4 +115,137 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->service->sendMeasureActivatedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 1);
     }
+
+    public function testItSendsWithdrawnNotifications()
+    {
+        $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->delete();
+        })->create();
+        $measure2 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->delete();
+        })->create();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(MessageInterface $message) => Str::contains(
+                        $message->content(),
+                        'Flow Measure Withdrawn'
+                    ) && Str::contains($message->content(), $measure1->identifier)
+            )
+        )
+            ->once();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(MessageInterface $message) => Str::contains(
+                        $message->content(),
+                        'Flow Measure Withdrawn'
+                    ) && Str::contains($message->content(), $measure2->identifier)
+            )
+        )
+            ->once();
+
+        $this->service->sendMeasureWithdrawnDiscordNotifications();
+
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure1->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_WITHDRAWN->value,
+            ]
+        );
+
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure2->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_WITHDRAWN->value,
+            ]
+        );
+    }
+
+    public function testItDoesntSendWithdrawnNotificationsIfNotDeleted()
+    {
+        FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+        })->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureWithdrawnDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 1);
+    }
+
+    public function testItDoesntSendWithdrawnNotificationsIfFlowMeasureNotYetActive()
+    {
+        FlowMeasure::factory()->notStarted()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->delete();
+        })->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureWithdrawnDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 1);
+    }
+
+    public function testItDoesntSendWithdrawnNotificationsIfActivatedMessageNotSent()
+    {
+        FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->delete();
+        })->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureWithdrawnDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 0);
+    }
+
+    public function testItDoesntSendWithdrawnNotificationsIfAlreadySend()
+    {
+        FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->delete();
+        })->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureWithdrawnDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 2);
+    }
 }
