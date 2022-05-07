@@ -56,7 +56,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         )
             ->once();
 
-        $this->service->sendDiscordNotifications();
+        $this->service->sendMeasureActivatedDiscordNotifications();
 
         $this->assertDatabaseHas(
             'discord_notifications',
@@ -79,7 +79,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
     {
         FlowMeasure::factory()->notStarted()->create();
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendDiscordNotifications();
+        $this->service->sendMeasureActivatedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 0);
     }
 
@@ -87,7 +87,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
     {
         FlowMeasure::factory()->finished()->create();
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendDiscordNotifications();
+        $this->service->sendMeasureActivatedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 0);
     }
 
@@ -95,7 +95,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
     {
         FlowMeasure::factory()->create()->delete();
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendDiscordNotifications();
+        $this->service->sendMeasureActivatedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 0);
     }
 
@@ -112,7 +112,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->create();
 
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendDiscordNotifications();
+        $this->service->sendMeasureActivatedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 1);
     }
 }

@@ -19,7 +19,7 @@ class FlowMeasureDiscordMessageService
         $this->discord = $discord;
     }
 
-    public function sendDiscordNotifications(): void
+    public function sendMeasureActivatedDiscordNotifications(): void
     {
         FlowMeasure::whereDoesntHave('discordNotifications', function (Builder $notification) {
             $notification->type(DiscordNotificationType::FLOW_MEASURE_ACTIVATED);

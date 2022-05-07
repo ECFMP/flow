@@ -34,7 +34,7 @@ class SendDiscordNotifications extends Command
         }
 
         $this->info('Sending discord notifications');
-        $discordMessageService->sendDiscordNotifications();
+        $discordMessageService->sendMeasureActivatedDiscordNotifications();
         $this->info('Discord notification sending complete');
 
         return 0;
