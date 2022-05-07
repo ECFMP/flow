@@ -69,6 +69,11 @@ class FlowMeasure extends Model
             ->where('end_time', '>', $now);
     }
 
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->where('end_time', '<', Carbon::now());
+    }
+
     public function isActive(): bool
     {
         return Carbon::now()->between($this->start_time, $this->end_time);

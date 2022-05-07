@@ -248,4 +248,200 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->service->sendMeasureWithdrawnDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 2);
     }
+
+    public function testItSendsExpiredNotifications()
+    {
+        $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+        })->finished()->create();
+        $measure2 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+        })->finished()->create();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(MessageInterface $message) => Str::contains(
+                        $message->content(),
+                        'Flow Measure Expired'
+                    ) && Str::contains($message->content(), $measure1->identifier)
+            )
+        )
+            ->once();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(MessageInterface $message) => Str::contains(
+                        $message->content(),
+                        'Flow Measure Expired'
+                    ) && Str::contains($message->content(), $measure2->identifier)
+            )
+        )
+            ->once();
+
+        $this->service->sendMeasureExpiredDiscordNotifications();
+
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure1->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED->value,
+            ]
+        );
+
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure2->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED->value,
+            ]
+        );
+    }
+
+    public function testItSendsExpiredNotificationsForDeletedFlowMeasures()
+    {
+        $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->delete();
+        })->finished()->create();
+        $measure2 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->delete();
+        })->finished()->create();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(MessageInterface $message) => Str::contains(
+                        $message->content(),
+                        'Flow Measure Expired'
+                    ) && Str::contains($message->content(), $measure1->identifier)
+            )
+        )
+            ->once();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(MessageInterface $message) => Str::contains(
+                        $message->content(),
+                        'Flow Measure Expired'
+                    ) && Str::contains($message->content(), $measure2->identifier)
+            )
+        )
+            ->once();
+
+        $this->service->sendMeasureExpiredDiscordNotifications();
+
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure1->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED->value,
+            ]
+        );
+
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure2->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED->value,
+            ]
+        );
+    }
+
+    public function testItDoesntSendExpiryIfMeasureNotExpired()
+    {
+        FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+        })->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureExpiredDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 1);
+    }
+
+    public function testItDoesntSendExpiryIfActivationMessageNotSent()
+    {
+        FlowMeasure::factory()->finished()->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureExpiredDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 0);
+    }
+
+    public function testItDoesntSendExpiryIfWithdrawnMessageIsSent()
+    {
+        FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
+                    'content' => 'abc',
+                ]
+            );
+        })->finished()->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureExpiredDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 2);
+    }
+
+    public function testItDoesntSendExpiryIfExpiredMessageIsSent()
+    {
+        FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED,
+                    'content' => 'abc',
+                ]
+            );
+        })->finished()->create();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureExpiredDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 2);
+    }
 }

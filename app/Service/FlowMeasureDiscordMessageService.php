@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Discord\DiscordInterface;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Discord\Message\MessageInterface;
 use App\Enums\DiscordNotificationType;
@@ -51,6 +52,29 @@ class FlowMeasureDiscordMessageService
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
                     new FlowMeasureWithdrawnMessage(FlowMeasureContentBuilder::withdrawn($flowMeasure))
+                );
+            });
+    }
+
+    public function sendMeasureExpiredDiscordNotifications(): void
+    {
+        FlowMeasure::whereHas('discordNotifications', function (Builder $notification) {
+            $notification->type(DiscordNotificationType::FLOW_MEASURE_ACTIVATED);
+        })->whereDoesntHave('discordNotifications', function (Builder $notification) {
+            $notification->type(DiscordNotificationType::FLOW_MEASURE_WITHDRAWN)->orWhere(
+                function (Builder $notification) {
+                    $notification->type(DiscordNotificationType::FLOW_MEASURE_EXPIRED);
+                }
+            );
+        })
+            ->withTrashed()
+            ->expired()
+            ->get()
+            ->each(function (FlowMeasure $flowMeasure) {
+                $this->sendDiscordNotification(
+                    $flowMeasure,
+                    DiscordNotificationType::FLOW_MEASURE_EXPIRED,
+                    new FlowMeasureExpiredMessage(FlowMeasureContentBuilder::withdrawn($flowMeasure))
                 );
             });
     }

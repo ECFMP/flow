@@ -64,4 +64,21 @@ class FlowMeasureContentBuilder
             ->addComponent(Spacing::make(10))
             ->addComponent(new Arriving($flowMeasure));
     }
+
+    public static function expired(FlowMeasure $flowMeasure): ContentInterface
+    {
+        return new SnippetBlock(self::getExpiredInformation($flowMeasure));
+    }
+
+    private static function getExpiredInformation(FlowMeasure $flowMeasure): ContentInterface
+    {
+        return Composite::make()
+            ->addComponent(new Identifier($flowMeasure))
+            ->addComponent(Newline::make(2))
+            ->addComponent(new Measure($flowMeasure))
+            ->addComponent(Newline::make())
+            ->addComponent(new Departing($flowMeasure))
+            ->addComponent(Spacing::make(10))
+            ->addComponent(new Arriving($flowMeasure));
+    }
 }

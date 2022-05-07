@@ -18,7 +18,7 @@ class DiscordTagFactory extends Factory
     public function definition()
     {
         return [
-            'tag' => sprintf('@%s', $this->faker->word),
+            'tag' => sprintf('@%s', $this->faker->unique()->word()),
             'description' => $this->faker->sentence(4),
         ];
     }

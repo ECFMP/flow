@@ -69,4 +69,25 @@ class FlowMeasureContentBuilderTest extends TestCase
 
         $this->assertEquals($expected, FlowMeasureContentBuilder::withdrawn($measure)->toString());
     }
+
+    public function testItBuildsExpiredMessage()
+    {
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->count(1))->create();
+        $measure = FlowMeasure::factory()->state(fn(array $attributes) => [
+            'identifier' => 'EGTT06A',
+            'reason' => 'Because I said so',
+            'start_time' => Carbon::parse('2022-05-06T22:18:00Z'),
+            'end_time' => Carbon::parse('2022-05-06T23:10:00Z'),
+        ])->afterCreating(function (FlowMeasure $measure) use ($fir) {
+            $measure->notifiedFlightInformationRegions()->save($fir);
+        })->create();
+
+        $expected = "```\n";
+        $expected .= "EGTT06A\n\n";
+        $expected .= "Minimum Departure Interval [MDI]: 2 MINS\n";
+        $expected .= "ADEP: EG**          DEST: EHAM\n";
+        $expected .= "```";
+
+        $this->assertEquals($expected, FlowMeasureContentBuilder::expired($measure)->toString());
+    }
 }
