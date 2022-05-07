@@ -15,6 +15,7 @@ class IntendedRecipientsFlowMeasureContentTest extends TestCase
     {
         parent::setUp();
         DB::table('flow_measures')->delete();
+        DB::table('events')->delete();
         DB::table('flight_information_regions')->delete();
     }
 
