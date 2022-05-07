@@ -2,13 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Enums\DiscordNotificationType;
+use App\Models\FlowMeasure;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DiscordTag>
  */
-class DiscordTagFactory extends Factory
+class DiscordNotificationFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,15 +19,9 @@ class DiscordTagFactory extends Factory
     public function definition()
     {
         return [
-            'tag' => sprintf('@%s', $this->faker->unique()->word()),
-            'description' => $this->faker->sentence(4),
+            'flow_measure_id' => FlowMeasure::factory()->create()->id,
+            'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+            'content' => 'ohai',
         ];
-    }
-
-    public function withoutAtSymbol(): static
-    {
-        return $this->state(fn(array $attributes) => [
-            'tag' => ltrim($attributes['tag'], '@'),
-        ]);
     }
 }

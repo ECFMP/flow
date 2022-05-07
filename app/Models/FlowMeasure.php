@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Enums\FilterType;
+use App\Enums\FlowMeasureType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FlowMeasure extends Model
@@ -66,9 +69,19 @@ class FlowMeasure extends Model
             ->where('end_time', '>', $now);
     }
 
+    public function scopeExpired(Builder $query): Builder
+    {
+        return $query->where('end_time', '<', Carbon::now());
+    }
+
+    public function isActive(): bool
+    {
+        return Carbon::now()->between($this->start_time, $this->end_time);
+    }
+
     public function isMandatoryRoute(): bool
     {
-        return $this->type === 'mandatory_route';
+        return $this->type === FlowMeasureType::MANDATORY_ROUTE;
     }
 
     public function scopeFlightInformationRegion(
@@ -76,5 +89,36 @@ class FlowMeasure extends Model
         FlightInformationRegion $flightInformationRegion
     ): Builder {
         return $query->where('flight_information_region_id', $flightInformationRegion->id);
+    }
+
+    public function discordNotifications(): HasMany
+    {
+        return $this->hasMany(DiscordNotification::class);
+    }
+
+    public function filtersByType(FilterType $filterType): array
+    {
+        return array_values(
+            array_filter(
+                $this->filters,
+                fn(array $filter) => FilterType::tryFrom($filter['type']) === $filterType
+            )
+        );
+    }
+
+    public function getTypeAttribute(): FlowMeasureType
+    {
+        return FlowMeasureType::from($this->attributes['type']);
+    }
+
+    public function extraFilters(): array
+    {
+        return array_filter(
+            $this->filters,
+            fn(array $filter) => !in_array(
+                FilterType::tryFrom($filter['type']),
+                [FilterType::DEPARTURE_AIRPORTS, FilterType::ARRIVAL_AIRPORTS]
+            )
+        );
     }
 }
