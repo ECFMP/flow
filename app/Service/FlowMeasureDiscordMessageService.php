@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Discord\DiscordInterface;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
+use App\Discord\Message\MessageInterface;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,31 +21,28 @@ class FlowMeasureDiscordMessageService
 
     public function sendDiscordNotifications(): void
     {
-        FlowMeasure::whereDoesntHave('discordNotification', function (Builder $notification) {
+        FlowMeasure::whereDoesntHave('discordNotifications', function (Builder $notification) {
             $notification->type(DiscordNotificationType::FLOW_MEASURE_ACTIVATED);
         })
             ->active()
             ->get()
             ->each(function (FlowMeasure $flowMeasure) {
-                $this->sendDiscordNotification($flowMeasure);
+                $this->sendDiscordNotification(
+                    $flowMeasure,
+                    DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::activated($flowMeasure))
+                );
             });
     }
 
-    public function sendDiscordNotificationIfRequired(FlowMeasure $flowMeasure): void
-    {
-        if (!$flowMeasure->isActive()) {
-            return;
-        }
-
-        $this->sendDiscordNotification($flowMeasure);
-    }
-
-    #[NoReturn] private function sendDiscordNotification(FlowMeasure $flowMeasure): void
-    {
-        $message = new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::activated($flowMeasure));
-        $flowMeasure->discordNotification()->create(
+    #[NoReturn] private function sendDiscordNotification(
+        FlowMeasure $flowMeasure,
+        DiscordNotificationType $type,
+        MessageInterface $message
+    ): void {
+        $flowMeasure->discordNotifications()->create(
             [
-                'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                'type' => $type,
                 'content' => $message->content(),
             ]
         );

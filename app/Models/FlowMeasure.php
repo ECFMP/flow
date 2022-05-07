@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FlowMeasure extends Model
@@ -86,9 +86,9 @@ class FlowMeasure extends Model
         return $query->where('flight_information_region_id', $flightInformationRegion->id);
     }
 
-    public function discordNotification(): HasOne
+    public function discordNotifications(): HasMany
     {
-        return $this->hasOne(DiscordNotification::class);
+        return $this->hasMany(DiscordNotification::class);
     }
 
     public function filtersByType(FilterType $filterType): array
