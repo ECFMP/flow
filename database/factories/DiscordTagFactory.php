@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\DiscordTag;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DiscordTag>
@@ -21,7 +20,7 @@ class DiscordTagFactory extends Factory
     public function definition()
     {
         return [
-            'tag' => sprintf('@%s', $this->faker->unique()->word()),
+            'tag' => sprintf('@%s', $this->faker->unique()->numberBetween(0, PHP_INT_MAX)),
             'description' => $this->faker->sentence(4),
         ];
     }
