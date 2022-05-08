@@ -43,7 +43,7 @@ class UsersRelationManager extends BelongsToManyRelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                BadgeColumn::make('role.key')
+                BadgeColumn::make('role.description')
                     ->enum(RoleKey::cases())
             ])
             ->filters([
