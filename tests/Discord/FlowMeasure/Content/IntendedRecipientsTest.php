@@ -6,7 +6,7 @@ use App\Discord\FlowMeasure\Content\IntendedRecipients;
 use App\Models\DiscordTag;
 use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class IntendedRecipientsTest extends TestCase

@@ -5,7 +5,7 @@ namespace Tests\Discord\FlowMeasure\Content;
 use App\Discord\FlowMeasure\Content\Arriving;
 use App\Models\AirportGroup;
 use App\Models\FlowMeasure;
-use DB;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 use Tests\TestCase;
 

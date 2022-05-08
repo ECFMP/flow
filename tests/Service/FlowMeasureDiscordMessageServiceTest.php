@@ -7,11 +7,11 @@ use App\Discord\Message\MessageInterface;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Service\FlowMeasureDiscordMessageService;
-use Config;
-use DB;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 use Mockery\MockInterface;
-use Str;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class FlowMeasureDiscordMessageServiceTest extends TestCase

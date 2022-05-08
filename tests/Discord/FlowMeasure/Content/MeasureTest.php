@@ -5,9 +5,10 @@ namespace Tests\Discord\FlowMeasure\Content;
 use App\Discord\FlowMeasure\Content\Measure;
 use App\Enums\FlowMeasureType;
 use App\Models\FlowMeasure;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Tests\TestCase;
 
-class MeasureTest extends \Tests\TestCase
+class MeasureTest extends TestCase
 {
     public function setUp(): void
     {

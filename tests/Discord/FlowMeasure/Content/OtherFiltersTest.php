@@ -5,11 +5,10 @@ namespace Tests\Discord\FlowMeasure\Content;
 use App\Discord\FlowMeasure\Content\OtherFilters;
 use App\Models\Event;
 use App\Models\FlowMeasure;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class
-OtherFiltersTest extends TestCase
+class OtherFiltersTest extends TestCase
 {
     public function setUp(): void
     {

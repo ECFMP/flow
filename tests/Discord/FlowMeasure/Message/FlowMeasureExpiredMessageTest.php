@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Message;
 
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\Message\Content\ContentInterface;

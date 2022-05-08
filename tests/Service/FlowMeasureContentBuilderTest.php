@@ -7,7 +7,7 @@ use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
 use App\Service\FlowMeasureContentBuilder;
 use Carbon\Carbon;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class FlowMeasureContentBuilderTest extends TestCase

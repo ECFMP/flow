@@ -4,8 +4,9 @@ namespace Tests\Discord;
 
 use App\Discord\DiscordMessageSender;
 use App\Discord\Message\MessageInterface;
-use Config;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class DiscordMessageSenderTest extends TestCase
