@@ -27,6 +27,7 @@ return new class extends Migration
             $table->foreign('flight_information_region_id')->references('id')->on('flight_information_regions');
             $table->index(['date_start', 'date_end']);
             $table->index('deleted_at');
+            $table->index('created_at');
         });
     }
 
