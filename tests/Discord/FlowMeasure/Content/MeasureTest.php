@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Content;
 
 use App\Discord\FlowMeasure\Content\Measure;
 use App\Enums\FlowMeasureType;
 use App\Models\FlowMeasure;
 use DB;
 
-class MeasureFlowMeasureContentTest extends \Tests\TestCase
+class MeasureTest extends \Tests\TestCase
 {
     public function setUp(): void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Helpers;
 
 use App\Helpers\FlowMeasureFilterApiFormatter;
 use App\Models\Airport;

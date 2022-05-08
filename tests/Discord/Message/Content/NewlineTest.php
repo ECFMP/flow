@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\Message\Content;
 
 use App\Discord\Message\Content\Newline;
 use Tests\TestCase;
 
-class NewlineDiscordContentTest extends TestCase
+class NewlineTest extends TestCase
 {
     public function testItDefaultsToOneNewline()
     {

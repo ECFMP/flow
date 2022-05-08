@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Content;
 
 use App\Discord\FlowMeasure\Content\Identifier;
 use App\Models\FlowMeasure;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class IdentifierFlowMeasureContentTest extends TestCase
+class IdentifierTest extends TestCase
 {
     public function setUp(): void
     {

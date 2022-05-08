@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Content;
 
 use App\Discord\FlowMeasure\Content\Reason;
 use App\Models\FlowMeasure;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class ReasonFlowMeasureContentTest extends TestCase
+class ReasonTest extends TestCase
 {
     public function setUp(): void
     {

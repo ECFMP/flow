@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Helpers;
 
 use App\Helpers\ApiDateTimeFormatter;
 use Carbon\Carbon;

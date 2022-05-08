@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Content;
 
 use App\Discord\FlowMeasure\Content\IntendedRecipients;
 use App\Models\DiscordTag;
@@ -9,7 +9,7 @@ use App\Models\FlowMeasure;
 use DB;
 use Tests\TestCase;
 
-class IntendedRecipientsFlowMeasureContentTest extends TestCase
+class IntendedRecipientsTest extends TestCase
 {
     public function setUp(): void
     {

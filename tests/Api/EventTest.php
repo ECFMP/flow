@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Api;
 
 use App\Helpers\ApiDateTimeFormatter;
 use App\Models\Event;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class EventApiTest extends TestCase
+class EventTest extends TestCase
 {
     public function setUp(): void
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Content;
 
 use App\Discord\FlowMeasure\Content\ValidPeriod;
 use App\Models\FlowMeasure;
@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class ValidPeriodFlowMeasureContentTest extends TestCase
+class ValidPeriodTest extends TestCase
 {
     public function setUp(): void
     {

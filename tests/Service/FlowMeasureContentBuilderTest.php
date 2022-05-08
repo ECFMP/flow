@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Service;
 
 use App\Models\DiscordTag;
 use App\Models\FlightInformationRegion;

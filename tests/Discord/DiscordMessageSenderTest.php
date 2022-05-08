@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord;
 
 use App\Discord\DiscordMessageSender;
 use App\Discord\Message\MessageInterface;
 use Config;
-use Http;
 use Illuminate\Http\Client\Request;
 use Tests\TestCase;
 

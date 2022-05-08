@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Console\Commands;
 
 use App\Service\FlowMeasureDiscordMessageService;
-use Config;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Config;
 use Mockery;
 use Tests\TestCase;
 

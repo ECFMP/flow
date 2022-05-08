@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Api;
 
 use App\Helpers\ApiDateTimeFormatter;
 use App\Models\FlightInformationRegion;
@@ -8,7 +8,7 @@ use App\Models\FlowMeasure;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class FlowMeasureApiTest extends TestCase
+class FlowMeasureTest extends TestCase
 {
     public function setUp(): void
     {

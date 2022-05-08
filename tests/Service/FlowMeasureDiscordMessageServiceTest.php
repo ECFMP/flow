@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Service;
 
 use App\Discord\DiscordInterface;
 use App\Discord\Message\MessageInterface;
 use App\Enums\DiscordNotificationType;
-use App\Models\DiscordNotification;
 use App\Models\FlowMeasure;
 use App\Service\FlowMeasureDiscordMessageService;
 use Config;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Api;
 
 use App\Models\FlightInformationRegion;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class FlightInformationRegionApiTest extends TestCase
+class FlightInformationRegionTest extends TestCase
 {
     public function setUp(): void
     {

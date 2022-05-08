@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Content;
 
 use App\Discord\FlowMeasure\Content\OtherFilters;
 use App\Models\Event;
@@ -8,7 +8,8 @@ use App\Models\FlowMeasure;
 use DB;
 use Tests\TestCase;
 
-class OtherFiltersFlowMeasureContentTest extends TestCase
+class
+OtherFiltersTest extends TestCase
 {
     public function setUp(): void
     {

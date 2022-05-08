@@ -1,15 +1,15 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\FlowMeasure\Content;
 
-use App\Discord\FlowMeasure\Content\Departing;
+use App\Discord\FlowMeasure\Content\Arriving;
 use App\Models\AirportGroup;
 use App\Models\FlowMeasure;
 use DB;
 use InvalidArgumentException;
 use Tests\TestCase;
 
-class DepartingFlowMeasureContentTest extends TestCase
+class ArrivingTest extends TestCase
 {
     public function setUp(): void
     {
@@ -19,13 +19,13 @@ class DepartingFlowMeasureContentTest extends TestCase
 
     public function doCall(FlowMeasure $flowMeasure): string
     {
-        return (new Departing($flowMeasure))->toString();
+        return (new Arriving($flowMeasure))->toString();
     }
 
-    public function testItThrowsExceptionIfNoDepartingAirports()
+    public function testItThrowsExceptionIfNoArrivingAirports()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Must have at least one departure airport');
+        $this->expectExceptionMessage('Must have at least one arrival airport');
 
         $measure = FlowMeasure::factory()->create();
         $measure->filters = [];
@@ -36,7 +36,7 @@ class DepartingFlowMeasureContentTest extends TestCase
     public function testItThrowsExceptionIfTooManyFilters()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Must have at least one departure airport');
+        $this->expectExceptionMessage('Must have at least one arrival airport');
 
         $measure = FlowMeasure::factory()->create();
         $measure->filters = [
@@ -56,14 +56,14 @@ class DepartingFlowMeasureContentTest extends TestCase
     public function testItReturnsAirportString()
     {
         $measure = FlowMeasure::factory()->create();
-        $this->assertEquals('ADEP: EG**', $this->doCall($measure));
+        $this->assertEquals('DEST: EHAM', $this->doCall($measure));
     }
 
     public function testItReturnsAirportStringWithAGroup()
     {
         $group = AirportGroup::factory()->create(['name' => 'Severn Clutch']);
-        $measure = FlowMeasure::factory()->withDepartureAirports(['EGKK', $group->id])->create();
+        $measure = FlowMeasure::factory()->withArrivalAirports(['EGKK', $group->id])->create();
 
-        $this->assertEquals('ADEP: EGKK, ' . $group->name, $this->doCall($measure));
+        $this->assertEquals('DEST: EGKK, ' . $group->name, $this->doCall($measure));
     }
 }

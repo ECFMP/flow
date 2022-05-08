@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Api;
 
 use App\Http\Resources\EventResource;
 use App\Http\Resources\FlightInformationRegionResource;
@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class PluginApiTest extends TestCase
+class PluginTest extends TestCase
 {
     public function setUp(): void
     {

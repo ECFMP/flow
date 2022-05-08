@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\Message\Content;
 
 use App\Discord\Message\Content\Composite;
 use App\Discord\Message\Content\ContentInterface;
 use Tests\TestCase;
 
-class CompositeDiscordContentTest extends TestCase
+class CompositeTest extends TestCase
 {
     private function component1(): ContentInterface
     {

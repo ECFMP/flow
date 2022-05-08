@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Api;
 
 use App\Models\Airport;
 use App\Models\AirportGroup;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-class AirportGroupApiTest extends TestCase
+class AirportGroupTest extends TestCase
 {
     public function setUp(): void
     {

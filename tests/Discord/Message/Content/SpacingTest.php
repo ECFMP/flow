@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\Message\Content;
 
 use App\Discord\Message\Content\Spacing;
 use Tests\TestCase;
 
-class SpacingDiscordContentTest extends TestCase
+class SpacingTest extends TestCase
 {
     public function testItDefaultsToOneSpace()
     {

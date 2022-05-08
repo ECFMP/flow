@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Discord\Message\Content;
 
 use App\Discord\Message\Content\ContentInterface;
 use App\Discord\Message\Content\SnippetBlock;
 use Tests\TestCase;
 
-class SnippetBlockDiscordContentTest extends TestCase
+class SnippetBlockTest extends TestCase
 {
     private function content(): ContentInterface
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Api;
 
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
