@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\DiscordTag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Str;
 
@@ -10,6 +11,8 @@ use Str;
  */
 class DiscordTagFactory extends Factory
 {
+    protected $model = DiscordTag::class;
+
     /**
      * Define the model's default state.
      *
