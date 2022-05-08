@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(SendDiscordNotifications::COMMAND_SIGNATURE)->everyMinute();
+        $schedule->command(SendDiscordNotifications::class)->everyMinute();
     }
 
     /**
