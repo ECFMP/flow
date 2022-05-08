@@ -49,7 +49,10 @@ return new class extends Migration {
             $table->foreign('flight_information_region_id')
                 ->references('id')
                 ->on('flight_information_regions');
-            $table->foreign('event_id')->references('id')->on('events');
+            $table->foreign('event_id')
+                ->references('id')
+                ->on('events')
+                ->cascadeOnDelete();
             $table->index(['start_time', 'end_time']);
             $table->index('deleted_at');
             $table->index('created_at');
