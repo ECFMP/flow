@@ -22,9 +22,12 @@ return new class extends Migration
             $table->foreignIdFor(FlightInformationRegion::class);
             $table->string('vatcan_code')->nullable()->comment('The VATCAN events system code');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('flight_information_region_id')->references('id')->on('flight_information_regions');
             $table->index(['date_start', 'date_end']);
+            $table->index('deleted_at');
+            $table->index('created_at');
         });
     }
 

@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -52,7 +53,7 @@ class Event extends Model
     protected function nameDate(): Attribute
     {
         return new Attribute(
-            fn () => "{$this->name} [{$this->date_start->format('M j, Y')}]",
+            fn() => "{$this->name} [{$this->date_start->format('M j, Y')}]",
         );
     }
 }
