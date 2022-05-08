@@ -24,6 +24,7 @@ use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
+use Illuminate\Support\Carbon;
 
 class FlowMeasureResource extends Resource
 {
@@ -68,13 +69,21 @@ class FlowMeasureResource extends Resource
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
                     ->afterOrEqual(now())
+                    ->minDate(now())
+                    ->maxDate(now()->addDays(10))
                     ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
+                    ->reactive()
+                    ->afterStateUpdated(function (Closure $set, $state) {
+                        $set('end_time', Carbon::parse($state)->addHours(2));
+                    })
                     ->required(),
                 Forms\Components\DateTimePicker::make('end_time')
                     ->default(now()->addHours(2)->addMinutes(5))
                     ->withoutSeconds()
                     ->after('start_time')
+                    ->minDate(now())
+                    ->maxDate(now()->addDays(10))
                     ->required(),
                 Forms\Components\Textarea::make('reason')
                     ->required()
