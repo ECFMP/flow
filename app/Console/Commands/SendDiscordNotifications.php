@@ -7,12 +7,14 @@ use Illuminate\Console\Command;
 
 class SendDiscordNotifications extends Command
 {
+    public const COMMAND_SIGNATURE = 'discord:send-notifications';
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'discord:send-notifications';
+    protected $signature = self::COMMAND_SIGNATURE;
 
     /**
      * The console command description.
