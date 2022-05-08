@@ -35,7 +35,7 @@ class DeleteOldDataTest extends TestCase
     {
         FlowMeasure::factory()
             ->afterCreating(function (FlowMeasure $measure) {
-                $measure->created_at = Carbon::now()->subMonths(6)->subDay();
+                $measure->created_at = Carbon::now()->subMonths(3)->subDay();
                 $measure->save();
             })
             ->create();
@@ -48,7 +48,7 @@ class DeleteOldDataTest extends TestCase
     {
         $flowMeasure = FlowMeasure::factory()
             ->afterCreating(function (FlowMeasure $measure) {
-                $measure->created_at = Carbon::now()->subMonths(6)->subDay();
+                $measure->created_at = Carbon::now()->subMonths(3)->subDay();
                 $measure->save();
             })
             ->create();
@@ -77,7 +77,7 @@ class DeleteOldDataTest extends TestCase
     {
         Event::factory()
             ->afterCreating(function (Event $event) {
-                $event->created_at = Carbon::now()->subMonths(6)->subDay();
+                $event->created_at = Carbon::now()->subMonths(3)->subDay();
                 $event->save();
             })
             ->create();
@@ -90,7 +90,7 @@ class DeleteOldDataTest extends TestCase
     {
         $event = Event::factory()
             ->afterCreating(function (Event $event) {
-                $event->created_at = Carbon::now()->subMonths(6)->subDay();
+                $event->created_at = Carbon::now()->subMonths(3)->subDay();
                 $event->save();
             })
             ->create();
@@ -105,7 +105,7 @@ class DeleteOldDataTest extends TestCase
     public function testItDeletesFlowMeasuresAssociatedWithExpiredEvents()
     {
         $flowMeasure = FlowMeasure::factory()->withEvent()->create();
-        $flowMeasure->event->created_at = Carbon::now()->subMonths(6)->subDay();
+        $flowMeasure->event->created_at = Carbon::now()->subMonths(3)->subDay();
         $flowMeasure->event->save();
 
         $this->artisan('data:delete-old');
