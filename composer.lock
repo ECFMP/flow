@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e31e7bbe4643ac0dfa288e71359bf4de",
+    "content-hash": "b700629da24f2b3c73e7c5ac55575694",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -9487,16 +9487,16 @@
         },
         {
             "name": "laravel-lang/lang",
-            "version": "10.7.2",
+            "version": "10.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/lang.git",
-                "reference": "dbc67144ef3c876fa26e9f267478924ad680cce4"
+                "reference": "52513adc99eec1da1c64c5412c8f8ba5b48ff31a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/dbc67144ef3c876fa26e9f267478924ad680cce4",
-                "reference": "dbc67144ef3c876fa26e9f267478924ad680cce4",
+                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/52513adc99eec1da1c64c5412c8f8ba5b48ff31a",
+                "reference": "52513adc99eec1da1c64c5412c8f8ba5b48ff31a",
                 "shasum": ""
             },
             "require": {
@@ -9561,7 +9561,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2022-05-02T02:20:56+00:00"
+            "time": "2022-05-04T14:15:27+00:00"
         },
         {
             "name": "laravel-lang/publisher",
@@ -12136,7 +12136,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^8.1",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-http": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"
