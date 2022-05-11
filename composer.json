@@ -10,7 +10,6 @@
     "require": {
         "php": "^8.1",
         "ext-json": "*",
-        "clue/block-react": "^1.5",
         "discord-php/http": "^10.0",
         "doctrine/dbal": "^3.3",
         "filament/filament": "^2.11",
