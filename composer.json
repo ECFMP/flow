@@ -13,7 +13,7 @@
         "clue/block-react": "^1.5",
         "discord-php/http": "^10.0",
         "doctrine/dbal": "^3.3",
-        "filament/filament": "^2.11",
+        "filament/filament": "^2.12",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.2",
         "laravel/socialite": "^5.5",

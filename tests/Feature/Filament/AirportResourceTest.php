@@ -21,45 +21,6 @@ it('can render index page', function () {
     $this->get(AirportResource::getUrl())->assertSuccessful();
 });
 
-it('can render create page', function () {
-    /** @var FrontendTestCase $this */
-    $this->get(AirportResource::getUrl())->assertForbidden();
-
-    $this->actingAs(User::factory()->flowManager()->create());
-    $this->get(AirportResource::getUrl())->assertForbidden();
-
-    $this->actingAs(User::factory()->networkManager()->create());
-    $this->get(AirportResource::getUrl())->assertSuccessful();
-
-    $this->actingAs(User::factory()->system()->create());
-    $this->get(AirportResource::getUrl())->assertSuccessful();
-});
-
-it('can create', function () {
-    /** @var FrontendTestCase $this */
-    $this->actingAs(User::factory()->system()->create());
-
-    $newData = Airport::factory()->make();
-
-    livewire(AirportResource\Pages\CreateAirport::class)
-        ->set('data.icao_code', $newData->icao_code)
-        ->call('create');
-
-    $this->assertDatabaseHas(Airport::class, [
-        'icao_code' => $newData->icao_code
-    ]);
-});
-
-it('can validate create input', function () {
-    $this->actingAs(User::factory()->system()->create());
-    $newData = Airport::factory()->make();
-
-    livewire(AirportResource\Pages\CreateAirport::class)
-        ->set('data.icao_code', null)
-        ->call('create')
-        ->assertHasErrors(['data.icao_code' => 'required']);
-});
-
 it('can render edit page', function () {
     /** @var FrontendTestCase $this */
     $this->get(AirportResource::getUrl('edit', [
