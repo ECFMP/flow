@@ -54,6 +54,7 @@ it('can retrieve data for edit page', function () {
 });
 
 it('can edit', function () {
+    /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
 
     $airport = Airport::factory()->create();
@@ -73,7 +74,6 @@ it('can validate edit input', function () {
     $this->actingAs(User::factory()->system()->create());
 
     $airport = Airport::factory()->create();
-    $newData = Airport::factory()->make();
 
     livewire(AirportResource\Pages\EditAirport::class, [
         'record' => $airport->getKey(),

@@ -2,6 +2,8 @@
 
 use App\Filament\Resources\AirportGroupResource;
 use App\Models\AirportGroup;
+use App\Models\Event;
+use App\Models\FlightInformationRegion;
 use App\Models\User;
 use Tests\FrontendTestCase;
 
@@ -23,16 +25,16 @@ it('can render index page', function () {
 
 it('can render create page', function () {
     /** @var FrontendTestCase $this */
-    $this->get(AirportGroupResource::getUrl())->assertForbidden();
+    $this->get(AirportGroupResource::getUrl('create'))->assertForbidden();
 
     $this->actingAs(User::factory()->flowManager()->create());
-    $this->get(AirportGroupResource::getUrl())->assertForbidden();
+    $this->get(AirportGroupResource::getUrl('create'))->assertForbidden();
 
     $this->actingAs(User::factory()->networkManager()->create());
-    $this->get(AirportGroupResource::getUrl())->assertSuccessful();
+    $this->get(AirportGroupResource::getUrl('create'))->assertSuccessful();
 
     $this->actingAs(User::factory()->system()->create());
-    $this->get(AirportGroupResource::getUrl())->assertSuccessful();
+    $this->get(AirportGroupResource::getUrl('create'))->assertSuccessful();
 });
 
 it('can create', function () {
@@ -51,8 +53,8 @@ it('can create', function () {
 });
 
 it('can validate create input', function () {
+    /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
-    $newData = AirportGroup::factory()->make();
 
     livewire(AirportGroupResource\Pages\CreateAirportGroup::class)
         ->set('data.name', null)
@@ -83,6 +85,7 @@ it('can render edit page', function () {
 });
 
 it('can retrieve data for edit page', function () {
+    /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
     $airportGroup = AirportGroup::factory()->create();
 
@@ -93,6 +96,7 @@ it('can retrieve data for edit page', function () {
 });
 
 it('can edit', function () {
+    /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
 
     $airportGroup = AirportGroup::factory()->create();
@@ -109,6 +113,7 @@ it('can edit', function () {
 });
 
 it('can validate edit input', function () {
+    /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
 
     $airportGroup = AirportGroup::factory()->create();

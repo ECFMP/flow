@@ -58,11 +58,17 @@ class EventPolicy
      */
     public function update(User $user, Event $event)
     {
-        return in_array($user->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
-        ]);
+        if ($event->date_end > now()) {
+            return $event->flightInformationRegion
+                ->users()
+                ->whereUserId($user->id)
+                ->exists() || in_array($user->role->key, [
+                    RoleKey::SYSTEM,
+                    RoleKey::NMT,
+                ]);
+        }
+
+        return false;
     }
 
     /**
