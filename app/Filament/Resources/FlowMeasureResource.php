@@ -96,8 +96,14 @@ class FlowMeasureResource extends Resource
                         ->reactive()
                         ->required(),
                     Forms\Components\TextInput::make('value')
-                        ->disabled(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value || $get('type') == null)
-                        ->required(fn (Closure $get) => $get('type') != FlowMeasureType::MANDATORY_ROUTE->value),
+                        ->disabled(fn (Closure $get) => in_array($get('type'), [
+                            FlowMeasureType::MANDATORY_ROUTE->value,
+                            FlowMeasureType::PROHIBIT->value,
+                        ]) || $get('type') == null)
+                        ->required(fn (Closure $get) => !in_array($get('type'), [
+                            FlowMeasureType::MANDATORY_ROUTE->value,
+                            FlowMeasureType::PROHIBIT->value,
+                        ])),
                     Forms\Components\Repeater::make('mandatory_route')
                         ->columnSpan('full')
                         ->required()
