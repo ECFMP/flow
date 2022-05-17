@@ -74,7 +74,6 @@ class AirportResource extends Resource
     {
         return [
             'index' => Pages\ListAirports::route('/'),
-            'create' => Pages\CreateAirport::route('/create'),
             'view' => Pages\ViewAirport::route('{record}'),
             'edit' => Pages\EditAirport::route('/{record}/edit'),
         ];
