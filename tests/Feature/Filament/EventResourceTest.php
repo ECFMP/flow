@@ -62,7 +62,6 @@ it('can create', function () {
 it('can validate create input', function () {
     /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
-    $newData = Event::factory()->make();
 
     livewire(EventResource\Pages\CreateEvent::class)
         ->set('data.name', null)
@@ -84,8 +83,6 @@ it('can render edit page', function () {
         'date_start' => now()->addDay(),
         'date_end' => now()->addDay()->addHour(),
     ]);
-
-
 
     /** @var FrontendTestCase $this */
     /** @var User $user */
@@ -152,7 +149,11 @@ it('can retrieve data for edit page', function () {
     livewire(EventResource\Pages\EditEvent::class, [
         'record' => $event->getKey(),
     ])
-        ->assertSet('data.icao_code', $event->icao_code);
+        ->assertSet('data.name', $event->name)
+        ->assertSet('data.flight_information_region_id', $event->flight_information_region_id)
+        ->assertSet('data.date_start', $event->date_start->toISOString())
+        ->assertSet('data.date_end', $event->date_end->toISOString())
+        ->assertSet('data.vatcan_code', $event->vatcan_code);
 });
 
 it('can edit', function () {
@@ -233,5 +234,9 @@ it('can retrieve data for view page', function () {
     $this->actingAs(User::factory()->networkManager()->create());
     livewire(EventResource\Pages\ViewEvent::class, [
         'record' => $event->getKey(),
-    ])->assertSet('data.icao_code', $event->icao_code);
+    ])->assertSet('data.name', $event->name)
+        ->assertSet('data.flight_information_region_id', $event->flight_information_region_id)
+        ->assertSet('data.date_start', $event->date_start->toISOString())
+        ->assertSet('data.date_end', $event->date_end->toISOString())
+        ->assertSet('data.vatcan_code', $event->vatcan_code);
 });
