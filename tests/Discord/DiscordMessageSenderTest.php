@@ -20,6 +20,7 @@ class DiscordMessageSenderTest extends TestCase
 
         Config::set('discord.enabled', false);
         Config::set('discord.webhook_url', 'https://vatsim.net');
+        Config::set('discord.avatar_url', 'http://ecfmp.dev/images/avatar.png');
         Config::set('discord.token', 'abc');
         Config::set('discord.username', 'FlowBot');
     }
@@ -60,6 +61,7 @@ class DiscordMessageSenderTest extends TestCase
                 $request->isJson() &&
                 json_decode($request->body(), true) === [
                     'username' => 'FlowBot',
+                    'avatar_url' => 'http://ecfmp.dev/images/avatar.png',
                     'content' => 'ohai',
                     'tts' => false,
                     'embeds' => [],
@@ -86,6 +88,7 @@ class DiscordMessageSenderTest extends TestCase
                 $request->isJson() &&
                 json_decode($request->body(), true) === [
                     'username' => 'FlowBot',
+                    'avatar_url' => 'http://ecfmp.dev/images/avatar.png',
                     'content' => 'ohai',
                     'tts' => false,
                     'embeds' => [],

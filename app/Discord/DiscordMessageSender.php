@@ -19,6 +19,7 @@ class DiscordMessageSender implements DiscordInterface
             config('discord.webhook_url'),
             [
                 'username' => config('discord.username'),
+                'avatar_url' => config('discord.avatar_url'),
                 'content' => $message->content(),
                 'tts' => false,
                 'embeds' => [],
