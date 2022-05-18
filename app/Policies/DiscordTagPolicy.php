@@ -3,11 +3,11 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\Event;
 use App\Enums\RoleKey;
+use App\Models\DiscordTag;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class EventPolicy
+class DiscordTagPolicy
 {
     use HandlesAuthorization;
 
@@ -19,19 +19,25 @@ class EventPolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\DiscordTag  $discordTag
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Event $event)
+    public function view(User $user, DiscordTag $discordTag)
     {
-        return true;
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**
@@ -45,7 +51,6 @@ class EventPolicy
         return in_array($user->role->key, [
             RoleKey::SYSTEM,
             RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
         ]);
     }
 
@@ -53,37 +58,29 @@ class EventPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\DiscordTag  $discordTag
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Event $event)
+    public function update(User $user, DiscordTag $discordTag)
     {
-        if ($event->date_end > now()) {
-            return $event->flightInformationRegion
-                ->users()
-                ->whereUserId($user->id)
-                ->exists() || in_array($user->role->key, [
-                    RoleKey::SYSTEM,
-                    RoleKey::NMT,
-                ]);
-        }
-
-        return false;
+        return in_array($user->role->key, [
+            RoleKey::SYSTEM,
+            RoleKey::NMT,
+        ]);
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\DiscordTag  $discordTag
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Event $event)
+    public function delete(User $user, DiscordTag $discordTag)
     {
         return in_array($user->role->key, [
             RoleKey::SYSTEM,
             RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
         ]);
     }
 
@@ -91,15 +88,14 @@ class EventPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\DiscordTag  $discordTag
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Event $event)
+    public function restore(User $user, DiscordTag $discordTag)
     {
         return in_array($user->role->key, [
             RoleKey::SYSTEM,
             RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
         ]);
     }
 
@@ -107,15 +103,14 @@ class EventPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Event  $event
+     * @param  \App\Models\DiscordTag  $discordTag
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Event $event)
+    public function forceDelete(User $user, DiscordTag $discordTag)
     {
         return in_array($user->role->key, [
             RoleKey::SYSTEM,
             RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
         ]);
     }
 

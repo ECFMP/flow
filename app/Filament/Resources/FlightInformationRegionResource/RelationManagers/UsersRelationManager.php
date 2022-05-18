@@ -27,11 +27,6 @@ class UsersRelationManager extends BelongsToManyRelationManager
         return false;
     }
 
-    protected function canDeleteAny(): bool
-    {
-        return false;
-    }
-
     protected function canEdit(Model $record): bool
     {
         // TODO: Might add role stuff here
