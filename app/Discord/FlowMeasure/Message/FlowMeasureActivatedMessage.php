@@ -2,23 +2,26 @@
 
 namespace App\Discord\FlowMeasure\Message;
 
-use App\Discord\Message\Content\ContentInterface;
+use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Message\MessageInterface;
+use App\Models\FlowMeasure;
 
 class FlowMeasureActivatedMessage implements MessageInterface
 {
-    private readonly ContentInterface $content;
+    private readonly FlowMeasure $measure;
 
-    public function __construct(ContentInterface $content)
+    public function __construct(FlowMeasure $measure)
     {
-        $this->content = $content;
+        $this->measure = $measure;
     }
 
     public function content(): string
     {
-        return sprintf(
-            "Flow Measure Activated: \n\n%s",
-            $this->content->toString()
-        );
+        return 'Flow Measure Activated';
+    }
+
+    public function embeds(): EmbedCollection
+    {
+        return (new EmbedCollection())->add();
     }
 }
