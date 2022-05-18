@@ -24,7 +24,7 @@ class ActiveFlowMeasures extends BaseWidget
     {
         return [
             Tables\Columns\TextColumn::make('identifier'),
-            Tables\Columns\TextColumn::make('user.name')
+            Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
                 ->label(__('Owner')),
             Tables\Columns\BadgeColumn::make('type')
                 ->alignCenter()
