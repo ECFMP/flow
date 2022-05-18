@@ -21,6 +21,7 @@ class DiscordMessageSenderTest extends TestCase
         Config::set('discord.enabled', false);
         Config::set('discord.webhook_url', 'https://vatsim.net');
         Config::set('discord.token', 'abc');
+        Config::set('discord.username', 'FlowBot');
     }
 
     public function getMessage(): MessageInterface
@@ -58,6 +59,7 @@ class DiscordMessageSenderTest extends TestCase
                 $request->method() === 'POST' &&
                 $request->isJson() &&
                 json_decode($request->body(), true) === [
+                    'username' => 'FlowBot',
                     'content' => 'ohai',
                     'tts' => false,
                     'embeds' => [],
@@ -83,6 +85,7 @@ class DiscordMessageSenderTest extends TestCase
                 $request->method() === 'POST' &&
                 $request->isJson() &&
                 json_decode($request->body(), true) === [
+                    'username' => 'FlowBot',
                     'content' => 'ohai',
                     'tts' => false,
                     'embeds' => [],
