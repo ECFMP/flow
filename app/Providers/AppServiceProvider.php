@@ -43,5 +43,9 @@ class AppServiceProvider extends ServiceProvider
             new HtmlString('<meta name="msapplication-TileColor" content="#603cba">'),
             new HtmlString('<meta name="theme-color" content="#ffffff">'),
         ]);
+
+        Filament::serving(function () {
+            Filament::registerTheme(mix('css/filament.css'));
+        });
     }
 }
