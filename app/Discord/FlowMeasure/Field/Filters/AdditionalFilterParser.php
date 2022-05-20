@@ -5,15 +5,18 @@ namespace App\Discord\FlowMeasure\Field\Filters;
 use App\Discord\Message\Embed\FieldProviderInterface;
 use App\Enums\FilterType;
 use App\Models\FlowMeasure;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 class AdditionalFilterParser
 {
-    public static function parseAdditionalFilters(FlowMeasure $flowMeasure): array
+    public static function parseAdditionalFilters(FlowMeasure $flowMeasure): Collection
     {
-        return array_map(
-            fn (array $filter) => $this->getFilter($filter),
-            $flowMeasure->extraFilters()
+        return collect(
+            array_map(
+                fn(array $filter) => $this->getFilter($filter),
+                $flowMeasure->extraFilters()
+            )
         );
     }
 

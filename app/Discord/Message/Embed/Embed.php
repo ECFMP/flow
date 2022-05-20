@@ -10,6 +10,7 @@ class Embed implements EmbedInterface
     private DescriptionInterface $description;
     private readonly Collection $fields;
     private FooterInterface $footer;
+    private TitleInterface $title;
 
     private function __construct()
     {
@@ -28,6 +29,13 @@ class Embed implements EmbedInterface
         return $this;
     }
 
+    public function withTitle(TitleInterface $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
     public function withDescription(DescriptionInterface $description): static
     {
         $this->description = $description;
@@ -42,6 +50,15 @@ class Embed implements EmbedInterface
         return $this;
     }
 
+    public function withFields(Collection $fields): static
+    {
+        $fields->each(function (FieldInterface $field) {
+            $this->fields->add($field);
+        });
+
+        return $this;
+    }
+
     public function withFooter(FooterInterface $footer): static
     {
         $this->footer = $footer;
@@ -52,6 +69,10 @@ class Embed implements EmbedInterface
     public function toArray(): array
     {
         $return = [];
+
+        if (isset($this->title)) {
+            $return['title'] = $this->title->title();
+        }
 
         if (isset($this->author)) {
             $return['author'] = $this->author->author();
