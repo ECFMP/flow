@@ -14,13 +14,13 @@ class AdditionalFilterParser
     {
         return collect(
             array_map(
-                fn(array $filter) => $this->getFilter($filter),
+                fn(array $filter) => self::getFilter($filter),
                 $flowMeasure->extraFilters()
             )
         );
     }
 
-    private function getFilter(array $filter): FieldProviderInterface
+    private static function getFilter(array $filter): FieldProviderInterface
     {
         return match (FilterType::from($filter['type'])) {
             FilterType::WAYPOINT => new ViaWaypoint($filter),

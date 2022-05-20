@@ -1,15 +1,29 @@
 <?php
 
-namespace App\Discord\FlowMeasure\Footer;
+namespace App\Discord\FlowMeasure\Description;
 
+use App\Discord\Message\Emoji\Emoji;
 use App\Models\FlightInformationRegion;
-use Arr;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Str;
+use Illuminate\Support\Str;
 
-class IntendedRecipients extends AbstractFlowMeasureFooter
+class EventNameAndInterestedParties extends AbstractFlowMeasureDescription
 {
-    public function footer(): string
+    public function description(): string
+    {
+        if (!$this->flowMeasure->event) {
+            return $this->formatNotifications();
+        }
+
+        return sprintf(
+            "%s\n\n%s",
+            $this->flowMeasure->event->name,
+            $this->formatNotifications()
+        );
+    }
+
+    public function formatNotifications(): string
     {
         if ($this->flowMeasure->notifiedFlightInformationRegions->isEmpty()) {
             return '';
@@ -21,8 +35,9 @@ class IntendedRecipients extends AbstractFlowMeasureFooter
         }
 
         return sprintf(
-            '**FAO**: %s (acknowledge receipt with a :white_check_mark: reaction)',
-            Arr::join($firTags->toArray(), ' ')
+            "**FAO**: %s\nPlease acknowledge receipt with a %s reaction.",
+            Arr::join($firTags->toArray(), ' '),
+            Emoji::WHITE_CHECK_MARK->value
         );
     }
 
@@ -35,7 +50,7 @@ class IntendedRecipients extends AbstractFlowMeasureFooter
                 )
             )
             ->flatten()
-            ->map(fn (string $tag) => $this->formatTag($tag))
+            ->map(fn(string $tag) => $this->formatTag($tag))
             ->unique()
             ->values();
     }

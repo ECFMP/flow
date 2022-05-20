@@ -11,6 +11,7 @@ class Embed implements EmbedInterface
     private readonly Collection $fields;
     private FooterInterface $footer;
     private TitleInterface $title;
+    private Colour $colour;
 
     private function __construct()
     {
@@ -25,6 +26,13 @@ class Embed implements EmbedInterface
     public function withAuthor(AuthorInterface $author): static
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    public function withColour(Colour $colour): static
+    {
+        $this->colour = $colour;
 
         return $this;
     }
@@ -74,6 +82,10 @@ class Embed implements EmbedInterface
             $return['title'] = $this->title->title();
         }
 
+        if (isset($this->colour)) {
+            $return['color'] = $this->colour->value;
+        }
+
         if (isset($this->author)) {
             $return['author'] = $this->author->author();
         }
@@ -91,7 +103,9 @@ class Embed implements EmbedInterface
         }
 
         if (isset($this->footer)) {
-            $return['footer'] = $this->footer->footer();
+            $return['footer'] = [
+                'text' => $this->footer->footer(),
+            ];
         }
 
         return $return;

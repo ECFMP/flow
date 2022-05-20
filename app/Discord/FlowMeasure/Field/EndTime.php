@@ -4,6 +4,8 @@ namespace App\Discord\FlowMeasure\Field;
 
 class EndTime extends AbstractFlowMeasureField
 {
+    use UsesTimes;
+
     public function name(): string
     {
         return 'End Time';

@@ -2,7 +2,7 @@
 
 namespace App\Discord\FlowMeasure\Message;
 
-use App\Discord\FlowMeasure\Description\EventName;
+use App\Discord\FlowMeasure\Description\EventNameAndInterestedParties;
 use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
 use App\Discord\FlowMeasure\Field\EndTime;
@@ -12,6 +12,8 @@ use App\Discord\FlowMeasure\Field\Restriction;
 use App\Discord\FlowMeasure\Field\StartTime;
 use App\Discord\FlowMeasure\Footer\IntendedRecipients;
 use App\Discord\FlowMeasure\Title\Identifier;
+use App\Discord\Message\Embed\BlankField;
+use App\Discord\Message\Embed\Colour;
 use App\Discord\Message\Embed\Embed;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Message\Embed\Field;
@@ -36,13 +38,15 @@ class FlowMeasureActivatedMessage implements MessageInterface
     public function embeds(): EmbedCollection
     {
         return (new EmbedCollection())->add(
-            Embed::make()->withTitle(new Identifier($this->measure))->withDescription(new EventName($this->measure))
-                ->withFooter(new IntendedRecipients($this->measure))
-                ->withField(Field::make(new Restriction($this->measure)))
+            Embed::make()->withColour(Colour::ACTIVATED)
+                ->withTitle(new Identifier($this->measure))
+                ->withDescription(new EventNameAndInterestedParties($this->measure))
+                ->withField(Field::makeInline(new Restriction($this->measure)))
                 ->withField(Field::makeInline(new StartTime($this->measure)))
                 ->withField(Field::makeInline(new EndTime($this->measure)))
-                ->withField(Field::make(new DepartureAirports($this->measure)))
+                ->withField(Field::makeInline(new DepartureAirports($this->measure)))
                 ->withField(Field::makeInline(new ArrivalAirports($this->measure)))
+                ->withField(Field::makeInline(BlankField::make()))
                 ->withFields(
                     AdditionalFilterParser::parseAdditionalFilters($this->measure)->map(
                         fn(FieldProviderInterface $provider) => Field::make($provider)

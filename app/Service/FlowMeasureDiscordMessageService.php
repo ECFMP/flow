@@ -32,7 +32,7 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
-                    new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::activated($flowMeasure))
+                    new FlowMeasureActivatedMessage($flowMeasure)
                 );
             });
     }
@@ -51,7 +51,7 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
-                    new FlowMeasureWithdrawnMessage(FlowMeasureContentBuilder::withdrawn($flowMeasure))
+                    new FlowMeasureWithdrawnMessage($flowMeasure)
                 );
             });
     }

@@ -23,6 +23,11 @@ class DiscordMessageSender implements DiscordInterface
                 'content' => $message->content(),
                 'embeds' => $message->embeds()->toArray(),
                 'tts' => false,
+                'allowed_mentions' => [
+                    'parse' => [
+                        'users',
+                    ],
+                ],
             ]
         );
 

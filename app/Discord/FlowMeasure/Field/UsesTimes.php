@@ -8,11 +8,11 @@ trait UsesTimes
 {
     private static function shortTime(CarbonInterface $time): string
     {
-        return $time->format('HiZ');
+        return $time->format('Hi') . 'Z';
     }
 
     private static function dateTime(CarbonInterface $time): string
     {
-        return $time->format('d/m HiZ');
+        return $time->format('d/m Hi') . 'Z';
     }
 }
