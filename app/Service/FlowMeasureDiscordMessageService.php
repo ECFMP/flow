@@ -74,7 +74,7 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_EXPIRED,
-                    new FlowMeasureExpiredMessage(FlowMeasureContentBuilder::withdrawn($flowMeasure))
+                    new FlowMeasureExpiredMessage($flowMeasure)
                 );
             });
     }

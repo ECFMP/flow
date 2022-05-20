@@ -6,7 +6,6 @@ use App\Discord\FlowMeasure\Description\EventNameAndInterestedParties;
 use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
 use App\Discord\FlowMeasure\Field\Restriction;
-use App\Discord\FlowMeasure\Footer\IntendedRecipients;
 use App\Discord\FlowMeasure\Title\Identifier;
 use App\Discord\Message\Embed\Colour;
 use App\Discord\Message\Embed\Embed;
