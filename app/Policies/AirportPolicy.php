@@ -113,4 +113,14 @@ class AirportPolicy
             RoleKey::NMT,
         ]);
     }
+
+    public function deleteAny()
+    {
+        return false;
+    }
+
+    public function detachAny()
+    {
+        return false;
+    }
 }

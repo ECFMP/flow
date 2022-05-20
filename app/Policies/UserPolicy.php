@@ -104,4 +104,14 @@ class UserPolicy
     {
         return false;
     }
+
+    public function deleteAny()
+    {
+        return false;
+    }
+
+    public function detachAny()
+    {
+        return false;
+    }
 }

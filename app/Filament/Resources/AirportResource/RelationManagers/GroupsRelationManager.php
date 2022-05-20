@@ -20,11 +20,6 @@ class GroupsRelationManager extends BelongsToManyRelationManager
         return false;
     }
 
-    protected function canDeleteAny(): bool
-    {
-        return false;
-    }
-
     public static function form(Form $form): Form
     {
         return $form
