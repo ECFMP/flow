@@ -18,6 +18,8 @@ class DiscordMessageSender implements DiscordInterface
         $response = Http::post(
             config('discord.webhook_url'),
             [
+                'username' => config('discord.username'),
+                'avatar_url' => config('discord.avatar_url'),
                 'content' => $message->content(),
                 'tts' => false,
                 'embeds' => [],
