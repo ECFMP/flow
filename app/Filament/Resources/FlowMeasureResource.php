@@ -93,6 +93,13 @@ class FlowMeasureResource extends Resource
                     Forms\Components\Select::make('type')
                         ->options(collect(FlowMeasureType::cases())
                             ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
+                        ->helperText(function (string|FlowMeasureType|null $state) {
+                            if (is_a($state, FlowMeasureType::class)) {
+                                return $state->getDescription();
+                            }
+
+                            return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
+                        })
                         ->reactive()
                         ->required(),
                     Forms\Components\TextInput::make('value')
