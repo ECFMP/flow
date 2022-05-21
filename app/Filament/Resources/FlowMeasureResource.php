@@ -41,6 +41,10 @@ class FlowMeasureResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $events = Event::where('date_end', '>', now()->addHours(6))
+            ->get(['id', 'name', 'date_start', 'date_end', 'flight_information_region_id'])
+            ->keyBy('id');
+
         return $form
             ->schema([
                 Forms\Components\Select::make('flight_information_region_id')
@@ -62,8 +66,16 @@ class FlowMeasureResource extends Resource
                     ->hintIcon('heroicon-o-calendar')
                     ->searchable()
                     ->options(
-                        Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                        $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                     )
+                    ->afterStateUpdated(function (Closure $set, $state) use ($events) {
+                        if ($state) {
+                            $set('flight_information_region_id', $events[$state]->flight_information_region_id);
+                            $set('start_time', $events[$state]->date_start);
+                            $set('end_time', $events[$state]->date_end);
+                        }
+                    })
+                    ->reactive()
                     ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
                 Forms\Components\DateTimePicker::make('start_time')
                     ->default(now()->addMinutes(5))
@@ -195,7 +207,7 @@ class FlowMeasureResource extends Resource
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
                                         ->options(
-                                            Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
                             Block::make('member_non_event')
@@ -205,7 +217,7 @@ class FlowMeasureResource extends Resource
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
                                         ->options(
-                                            Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
                         ])
