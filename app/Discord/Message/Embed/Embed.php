@@ -99,7 +99,7 @@ class Embed implements EmbedInterface
                 'name' => $field->name(),
                 'value' => $field->value(),
                 'inline' => $field->inline(),
-            ]);
+            ])->toArray();
         }
 
         if (isset($this->footer)) {
