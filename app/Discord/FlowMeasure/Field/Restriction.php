@@ -3,7 +3,7 @@
 namespace App\Discord\FlowMeasure\Field;
 
 use App\Enums\FlowMeasureType;
-use Arr;
+use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
 class Restriction extends AbstractFlowMeasureField
@@ -23,6 +23,7 @@ class Restriction extends AbstractFlowMeasureField
             FlowMeasureType::MILES_IN_TRAIL => $this->nauticalMilesValue(),
             FlowMeasureType::MAX_IAS, FlowMeasureType::IAS_REDUCTION => $this->indicatedAirspeedValue(),
             FlowMeasureType::MAX_MACH, FlowMeasureType::MACH_REDUCTION => $this->machNumberValue(),
+            FlowMeasureType::PROHIBIT => 'N/A',
             default => throw new InvalidArgumentException('Invalid measure type')
         };
     }
@@ -38,14 +39,14 @@ class Restriction extends AbstractFlowMeasureField
         $seconds = $this->flowMeasure->value % 60;
 
         if ($mins === 0) {
-            return sprintf('%d SECS', $seconds);
+            return sprintf('%d Seconds', $seconds);
         }
 
         if ($seconds === 0) {
-            return sprintf('%d MINS', $mins);
+            return sprintf('%d Minutes', $mins);
         }
 
-        return sprintf('%d MINS %d SECS', $mins, $seconds);
+        return sprintf('%d Minutes %d Seconds', $mins, $seconds);
     }
 
     private function indicatedAirspeedValue(): string

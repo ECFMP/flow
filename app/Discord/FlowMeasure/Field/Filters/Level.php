@@ -6,7 +6,6 @@ use App\Discord\FlowMeasure\Field\AbstractFlowMeasureField;
 
 class Level extends AbstractFlowMeasureFilterField
 {
-
     public function name(): string
     {
         return 'At Levels';

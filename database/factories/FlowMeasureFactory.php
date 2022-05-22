@@ -101,6 +101,11 @@ class FlowMeasureFactory extends Factory
         ]);
     }
 
+    public function withAdditionalFilter(array $filter): static
+    {
+        return $this->withAdditionalFilters([$filter]);
+    }
+
     public function withMeasure(FlowMeasureType $measureType, ?int $value): static
     {
         return $this->state(fn(array $attributes) => [

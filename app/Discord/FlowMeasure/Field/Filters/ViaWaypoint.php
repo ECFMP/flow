@@ -2,8 +2,6 @@
 
 namespace App\Discord\FlowMeasure\Field\Filters;
 
-use App\Discord\FlowMeasure\Field\AbstractFlowMeasureField;
-
 class ViaWaypoint extends AbstractFlowMeasureFilterField
 {
 
