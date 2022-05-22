@@ -73,8 +73,12 @@ class FlowMeasureDiscordMessageService
             ->each(function (FlowMeasure $flowMeasure) {
                 $this->sendDiscordNotification(
                     $flowMeasure,
-                    DiscordNotificationType::FLOW_MEASURE_EXPIRED,
-                    new FlowMeasureExpiredMessage($flowMeasure)
+                    $flowMeasure->trashed()
+                        ? DiscordNotificationType::FLOW_MEASURE_WITHDRAWN
+                        : DiscordNotificationType::FLOW_MEASURE_EXPIRED,
+                    $flowMeasure->trashed()
+                        ? new FlowMeasureWithdrawnMessage($flowMeasure)
+                        : new FlowMeasureExpiredMessage($flowMeasure)
                 );
             });
     }

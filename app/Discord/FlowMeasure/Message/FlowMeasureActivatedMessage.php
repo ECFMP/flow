@@ -10,7 +10,6 @@ use App\Discord\FlowMeasure\Field\Filters\AdditionalFilterParser;
 use App\Discord\FlowMeasure\Field\Reason;
 use App\Discord\FlowMeasure\Field\Restriction;
 use App\Discord\FlowMeasure\Field\StartTime;
-use App\Discord\FlowMeasure\Footer\IntendedRecipients;
 use App\Discord\FlowMeasure\Title\IdentifierAndStatus;
 use App\Discord\Message\Embed\BlankField;
 use App\Discord\Message\Embed\Colour;
