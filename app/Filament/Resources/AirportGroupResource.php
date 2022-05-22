@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Forms;
+use Filament\Tables;
+use App\Models\AirportGroup;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
+use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\AirportGroupResource\Pages;
 use App\Filament\Resources\AirportGroupResource\RelationManagers;
-use App\Models\AirportGroup;
-use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
 
 class AirportGroupResource extends Resource
 {
@@ -20,6 +21,14 @@ class AirportGroupResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationGroup = 'Admin';
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        /** @var AirportGroup $record */
+        return [
+            __('Airports') => $record->airport_codes
+        ];
+    }
 
     public static function form(Form $form): Form
     {
