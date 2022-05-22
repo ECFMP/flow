@@ -3,10 +3,14 @@
 namespace Tests\Discord;
 
 use App\Discord\DiscordMessageSender;
+use App\Discord\Message\Embed\Embed;
+use App\Discord\Message\Embed\EmbedCollection;
+use App\Discord\Message\Embed\TitleInterface;
 use App\Discord\Message\MessageInterface;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+use Mockery;
 use Tests\TestCase;
 
 class DiscordMessageSenderTest extends TestCase
@@ -32,6 +36,14 @@ class DiscordMessageSenderTest extends TestCase
             {
                 return 'ohai';
             }
+
+            public function embeds(): EmbedCollection
+            {
+                $mockTitle = Mockery::mock(TitleInterface::class);
+                $mockTitle->shouldReceive('title')->once()->andReturn('Hai');
+
+                return (new EmbedCollection())->add(Embed::make()->withTitle($mockTitle));
+            }
         };
     }
 
@@ -55,16 +67,24 @@ class DiscordMessageSenderTest extends TestCase
 
         Http::assertSentCount(1);
         Http::assertSent(
-            fn(Request $request) =>
-                $request->url() === 'https://vatsim.net' &&
+            fn(Request $request) => $request->url() === 'https://vatsim.net' &&
                 $request->method() === 'POST' &&
                 $request->isJson() &&
                 json_decode($request->body(), true) === [
                     'username' => 'FlowBot',
                     'avatar_url' => 'http://ecfmp.dev/images/avatar.png',
                     'content' => 'ohai',
+                    'embeds' => [
+                        [
+                            'title' => 'Hai',
+                        ],
+                    ],
                     'tts' => false,
-                    'embeds' => [],
+                    'allowed_mentions' => [
+                        'parse' => [
+                            'users',
+                        ],
+                    ],
                 ]
         );
     }
@@ -82,16 +102,24 @@ class DiscordMessageSenderTest extends TestCase
 
         Http::assertSentCount(1);
         Http::assertSent(
-            fn(Request $request) =>
-                $request->url() === 'https://vatsim.net' &&
+            fn(Request $request) => $request->url() === 'https://vatsim.net' &&
                 $request->method() === 'POST' &&
                 $request->isJson() &&
                 json_decode($request->body(), true) === [
                     'username' => 'FlowBot',
                     'avatar_url' => 'http://ecfmp.dev/images/avatar.png',
                     'content' => 'ohai',
+                    'embeds' => [
+                        [
+                            'title' => 'Hai',
+                        ],
+                    ],
                     'tts' => false,
-                    'embeds' => [],
+                    'allowed_mentions' => [
+                        'parse' => [
+                            'users',
+                        ],
+                    ],
                 ]
         );
     }
