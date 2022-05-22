@@ -16,14 +16,16 @@ class EventNameAndInterestedParties extends AbstractFlowMeasureDescription
             return $this->formatNotifications();
         }
 
-        return sprintf(
-            "%s\n\n%s",
-            $this->flowMeasure->event->name,
-            $this->formatNotifications()
+        return trim(
+            sprintf(
+                "%s\n\n%s",
+                $this->flowMeasure->event->name,
+                $this->formatNotifications()
+            )
         );
     }
 
-    public function formatNotifications(): string
+    private function formatNotifications(): string
     {
         if ($this->flowMeasure->notifiedFlightInformationRegions->isEmpty()) {
             return '';
