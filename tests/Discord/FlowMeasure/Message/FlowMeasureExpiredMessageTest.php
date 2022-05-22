@@ -36,7 +36,7 @@ class FlowMeasureExpiredMessageTest extends TestCase
                     'title' => $measure->identifier . ' - ' . 'Expired',
                     'color' => Colour::WITHDRAWN->value,
                     'description' => $measure->event->name,
-                    'fields' => collect([
+                    'fields' => [
                         [
                             'name' => 'Minimum Departure Interval [MDI]',
                             'value' => '2 Minutes',
@@ -52,7 +52,7 @@ class FlowMeasureExpiredMessageTest extends TestCase
                             'value' => 'EHAM',
                             'inline' => true,
                         ],
-                    ]),
+                    ],
                 ],
             ],
             (new FlowMeasureExpiredMessage($measure))->embeds()->toArray()

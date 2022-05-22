@@ -37,7 +37,7 @@ class FlowMeasureWithdrawnMessageTest extends TestCase
                     'title' => $measure->identifier . ' - ' . 'Withdrawn',
                     'color' => Colour::WITHDRAWN->value,
                     'description' => (new EventNameAndInterestedParties($measure))->description(),
-                    'fields' => collect([
+                    'fields' => [
                         [
                             'name' => 'Minimum Departure Interval [MDI]',
                             'value' => '2 Minutes',
@@ -53,7 +53,7 @@ class FlowMeasureWithdrawnMessageTest extends TestCase
                             'value' => 'EHAM',
                             'inline' => true,
                         ],
-                    ]),
+                    ],
                 ],
             ],
             (new FlowMeasureWithdrawnMessage($measure))->embeds()->toArray()
@@ -76,7 +76,7 @@ class FlowMeasureWithdrawnMessageTest extends TestCase
                     'title' => $measure->identifier . ' - ' . 'Withdrawn',
                     'color' => Colour::WITHDRAWN->value,
                     'description' => (new EventNameAndInterestedParties($measure))->description(),
-                    'fields' => collect([
+                    'fields' => [
                         [
                             'name' => 'Minimum Departure Interval [MDI]',
                             'value' => '2 Minutes',
@@ -92,7 +92,7 @@ class FlowMeasureWithdrawnMessageTest extends TestCase
                             'value' => 'EHAM',
                             'inline' => true,
                         ],
-                    ]),
+                    ],
                 ],
             ],
             (new FlowMeasureWithdrawnMessage($measure))->embeds()->toArray()

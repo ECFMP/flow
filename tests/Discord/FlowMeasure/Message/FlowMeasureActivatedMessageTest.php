@@ -39,7 +39,7 @@ class FlowMeasureActivatedMessageTest extends TestCase
                     'title' => $measure->identifier . ' - ' . 'Active',
                     'color' => Colour::ACTIVATED->value,
                     'description' => (new EventNameAndInterestedParties($measure))->description(),
-                    'fields' => collect([
+                    'fields' => [
                         [
                             'name' => 'Minimum Departure Interval [MDI]',
                             'value' => '2 Minutes',
@@ -80,7 +80,7 @@ class FlowMeasureActivatedMessageTest extends TestCase
                             'value' => $measure->reason,
                             'inline' => false,
                         ],
-                    ]),
+                    ],
                 ],
             ],
             (new FlowMeasureActivatedMessage($measure))->embeds()->toArray()
