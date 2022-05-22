@@ -9,23 +9,22 @@ use App\Models\Event;
 use App\Enums\RoleKey;
 use Filament\Pages\Page;
 use App\Models\FlowMeasure;
+use App\Models\AirportGroup;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use App\Enums\FlowMeasureType;
+use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Filament\Tables\Filters\Filter;
 use App\Models\FlightInformationRegion;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
-use App\Models\AirportGroup;
-use Illuminate\Support\Carbon;
 
 class FlowMeasureResource extends Resource
 {
@@ -247,8 +246,17 @@ class FlowMeasureResource extends Resource
                                             $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
-                        ])
-                ])
+                        ]),
+                ]),
+                // TODO: Make it possible to also search by identifier
+                Forms\Components\Fieldset::make('FAO')
+                    ->schema([
+                        Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
+                            ->columnSpan('full')
+                            ->label(__("FIR's"))
+                            ->relationship('notifiedFlightInformationRegions', 'name')
+                            ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->identifierName)
+                    ])
             ]);
     }
 
