@@ -3,26 +3,59 @@
 namespace Tests\Discord\FlowMeasure\Message;
 
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
-use App\Discord\Message\Content\ContentInterface;
+use App\Discord\Message\Embed\Colour;
+use App\Models\DiscordTag;
+use App\Models\FlightInformationRegion;
+use App\Models\FlowMeasure;
 use Tests\TestCase;
 
 class FlowMeasureExpiredMessageTest extends TestCase
 {
-    private function getContent(): ContentInterface
+    public function testItHasNoContent()
     {
-        return new class implements ContentInterface {
-            public function toString(): string
-            {
-                return 'ohai';
-            }
-        };
+        $measure = FlowMeasure::factory()->create();
+
+        $this->assertEquals(
+            '',
+            (new FlowMeasureExpiredMessage($measure))->content()
+        );
     }
 
-    public function testItReturnsMessage()
+    public function testItHasEmbeds()
     {
+        $measure = FlowMeasure::factory()
+            ->withEvent()
+            ->finished()
+            ->withAdditionalFilter(['type' => 'level_below', 'value' => 220])->create();
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->count(2))->create();
+        $measure->notifiedFlightInformationRegions()->sync([$fir->id]);
+
         $this->assertEquals(
-            "Flow Measure Expired: \n\nohai",
-            (new FlowMeasureExpiredMessage($this->getContent()))->content()
+            [
+                [
+                    'title' => $measure->identifier . ' - ' . 'Expired',
+                    'color' => Colour::WITHDRAWN->value,
+                    'description' => $measure->event->name,
+                    'fields' => collect([
+                        [
+                            'name' => 'Minimum Departure Interval [MDI]',
+                            'value' => '2 Minutes',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Departure Airports',
+                            'value' => 'EG**',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Arrival Airports',
+                            'value' => 'EHAM',
+                            'inline' => true,
+                        ],
+                    ]),
+                ],
+            ],
+            (new FlowMeasureExpiredMessage($measure))->embeds()->toArray()
         );
     }
 }

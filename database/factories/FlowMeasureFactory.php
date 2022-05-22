@@ -46,6 +46,14 @@ class FlowMeasureFactory extends Factory
         ];
     }
 
+    public function withTimes(Carbon $startTime, Carbon $endTime): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+        ]);
+    }
+
     public function finished(): static
     {
         return $this->state(fn(array $attributes) => [
