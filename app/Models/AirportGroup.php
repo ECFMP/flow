@@ -28,4 +28,11 @@ class AirportGroup extends Model
                 ->join(', '),
         );
     }
+
+    protected function nameCodes(): Attribute
+    {
+        return new Attribute(
+            fn () => "{$this->name} [{$this->airport_codes}]",
+        );
+    }
 }

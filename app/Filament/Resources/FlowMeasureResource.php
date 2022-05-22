@@ -24,6 +24,7 @@ use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
+use App\Models\AirportGroup;
 use Illuminate\Support\Carbon;
 
 class FlowMeasureResource extends Resource
@@ -138,7 +139,20 @@ class FlowMeasureResource extends Resource
                         ->required()
                         ->label('Departure(s) [ADEP]')
                         ->schema([
-                            Forms\Components\TextInput::make('value')
+                            Forms\Components\Select::make('value_type')
+                                ->options([
+                                    'airport_group' => __('Airport Group'),
+                                    'custom_value' => __('Custom value'),
+                                ])
+                                ->reactive()
+                                ->required(),
+                            Forms\Components\Select::make('airport_group')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
+                                ->searchable()
+                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
+                                ->required(),
+                            Forms\Components\TextInput::make('custom_value')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
                                 ->length(4)
                                 ->default('****')
                                 ->required()
@@ -148,7 +162,20 @@ class FlowMeasureResource extends Resource
                         ->required()
                         ->label('Arrival(s) [ADES]')
                         ->schema([
-                            Forms\Components\TextInput::make('value')
+                            Forms\Components\Select::make('value_type')
+                                ->options([
+                                    'airport_group' => __('Airport Group'),
+                                    'custom_value' => __('Custom value'),
+                                ])
+                                ->reactive()
+                                ->required(),
+                            Forms\Components\Select::make('airport_group')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
+                                ->searchable()
+                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
+                                ->required(),
+                            Forms\Components\TextInput::make('custom_value')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
                                 ->length(4)
                                 ->default('****')
                                 ->required()
