@@ -269,8 +269,8 @@ class FlowMeasureResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('identifier')->sortable(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label(__('Owner'))->sortable(),
+                Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
+                    ->label(__('Owner')),
                 Tables\Columns\BadgeColumn::make('type')
                     ->alignCenter()
                     ->formatStateUsing(fn (string $state): string => FlowMeasureType::tryFrom($state)->getFormattedName()),
