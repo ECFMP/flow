@@ -31,9 +31,9 @@ class ActiveFlowMeasures extends BaseWidget
                 ->formatStateUsing(fn (string $state): string => FlowMeasureType::tryFrom($state)->getFormattedName()),
             Tables\Columns\TextColumn::make('value'),
             Tables\Columns\TextColumn::make('start_time')
-                ->dateTime('H:i\z'),
+                ->dateTime('M j, Y H:i\z'),
             Tables\Columns\TextColumn::make('end_time')
-                ->dateTime('H:i\z'),
+                ->dateTime('M j, Y H:i\z'),
         ];
     }
 }
