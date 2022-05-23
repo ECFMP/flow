@@ -44,7 +44,7 @@ class FlowMeasureNotifiedMessageTest extends TestCase
             [
                 [
                     'title' => $measure->identifier . ' - ' . 'Notified',
-                    'color' => Colour::ACTIVATED->value,
+                    'color' => Colour::NOTIFIED->value,
                     'description' => (new EventNameAndInterestedParties($measure))->description(),
                     'fields' => [
                         [

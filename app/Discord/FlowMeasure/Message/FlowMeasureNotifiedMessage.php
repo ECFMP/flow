@@ -36,6 +36,24 @@ class FlowMeasureNotifiedMessage implements MessageInterface
 
     public function embeds(): EmbedCollection
     {
-        return (new FlowMeasureActivatedMessage($this->measure))->embeds();
+        return (new EmbedCollection())->add(
+            Embed::make()->withColour(Colour::NOTIFIED)
+                ->withTitle(new IdentifierAndStatus($this->measure))
+                ->withDescription(new EventNameAndInterestedParties($this->measure))
+                ->withField(Field::makeInline(new Restriction($this->measure)))
+                ->withField(Field::makeInline(new StartTime($this->measure)))
+                ->withField(Field::makeInline(new EndTime($this->measure)))
+                ->withField(Field::makeInline(new DepartureAirports($this->measure)))
+                ->withField(Field::makeInline(new ArrivalAirports($this->measure)))
+                ->withField(Field::makeInline(BlankField::make()))
+                ->withFields(
+                    AdditionalFilterParser::parseAdditionalFilters($this->measure)->map(
+                        fn(FieldProviderInterface $provider) => Field::make($provider)
+                    )
+                )
+                ->withField(
+                    Field::make(new Reason($this->measure))
+                )
+        );
     }
 }
