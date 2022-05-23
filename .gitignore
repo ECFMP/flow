@@ -26,3 +26,8 @@ Homestead.json
 # Laravel IDE Helper
 _ide_helper*\.php
 \.phpstorm\.meta\.php
+
+# Laravel Mix
+public/js/**
+public/css/**
+public/mix-manifest.json

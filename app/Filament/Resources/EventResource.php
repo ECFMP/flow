@@ -27,10 +27,11 @@ class EventResource extends Resource
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
+        /** @var Event $record */
         return [
             'FIR' => $record->flightInformationRegion->name,
-            __('Start') => $record->date_start,
-            __('End') => $record->date_end,
+            __('Start') => $record->date_start->format('M j, Y H:i\z'),
+            __('End') => $record->date_end->format('M j, Y H:i\z'),
         ];
     }
 

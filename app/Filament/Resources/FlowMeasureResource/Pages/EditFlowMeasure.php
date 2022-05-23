@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
-use App\Filament\Resources\FlowMeasureResource;
-use Filament\Resources\Pages\EditRecord;
 use Illuminate\Support\Arr;
+use App\Models\AirportGroup;
+use App\Enums\FlowMeasureType;
+use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\FlowMeasureResource;
 
 class EditFlowMeasure extends EditRecord
 {
@@ -16,11 +18,11 @@ class EditFlowMeasure extends EditRecord
 
         $filters['adep'] = collect($filters['ADEP']['value'])
             ->map(function ($value) {
-                return ['value' => $value];
+                return $this->buildAirportFilter($value);
             });
         $filters['ades'] = collect($filters['ADES']['value'])
             ->map(function ($value) {
-                return ['value' => $value];
+                return $this->buildAirportFilter($value);
             });
 
         $data['adep'] = $filters['adep']->toArray();
@@ -45,6 +47,10 @@ class EditFlowMeasure extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        if ($data['type'] == FlowMeasureType::MANDATORY_ROUTE) {
+            Arr::pull($data, 'value');
+        }
+
         $filters = collect($data['filters'])->map(function (array $filter) {
             $filter['value'] = $filter['data']['value'];
             Arr::pull($filter, 'data');
@@ -54,10 +60,10 @@ class EditFlowMeasure extends EditRecord
 
         $filters->add([
             'type' => 'ADEP',
-            'value' => Arr::pluck($data['adep'], 'value'),
+            'value' => $this->getAirportValues($data, 'adep')
         ])->add([
             'type' => 'ADES',
-            'value' => Arr::pluck($data['ades'], 'value'),
+            'value' => $this->getAirportValues($data, 'ades')
         ]);
 
         $data['filters'] = $filters->toArray();
@@ -65,5 +71,39 @@ class EditFlowMeasure extends EditRecord
         Arr::pull($data, 'ades');
 
         return $data;
+    }
+
+    private function buildAirportFilter(string $value): array
+    {
+        if (AirportGroup::find($value)) {
+            return [
+                'value_type' => 'airport_group',
+                'airport_group' => $value,
+                'custom_value' => '',
+            ];
+        }
+
+        return [
+            'value_type' => 'custom_value',
+            'airport_group' => null,
+            'custom_value' => $value,
+        ];
+    }
+
+    private function getAirportValues(array $data, string $type): array
+    {
+        $output = [];
+        foreach ($data[$type] as $filterData) {
+            if ($filterData['value_type'] == 'airport_group') {
+                // Making sure it actually exists
+                $airportGroup = AirportGroup::findOrFail($filterData['airport_group'], ['id']);
+
+                $output[] = $airportGroup->getKey();
+            } else {
+                $output[] = $filterData['custom_value'];
+            }
+        }
+
+        return $output;
     }
 }

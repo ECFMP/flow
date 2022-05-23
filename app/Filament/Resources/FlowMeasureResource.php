@@ -9,22 +9,22 @@ use App\Models\Event;
 use App\Enums\RoleKey;
 use Filament\Pages\Page;
 use App\Models\FlowMeasure;
+use App\Models\AirportGroup;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use App\Enums\FlowMeasureType;
+use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Filament\Tables\Filters\Filter;
 use App\Models\FlightInformationRegion;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\TextInput;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
-use Illuminate\Support\Carbon;
 
 class FlowMeasureResource extends Resource
 {
@@ -41,6 +41,10 @@ class FlowMeasureResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $events = Event::where('date_end', '>', now()->addHours(6))
+            ->get(['id', 'name', 'date_start', 'date_end', 'flight_information_region_id'])
+            ->keyBy('id');
+
         return $form
             ->schema([
                 Forms\Components\Select::make('flight_information_region_id')
@@ -56,14 +60,26 @@ class FlowMeasureResource extends Resource
                             self::setFirOptions(auth()->user()
                                 ->flightInformationRegions)
                     )
+                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
+                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->required(fn (Closure $get) => $get('event_id') == null),
                 Forms\Components\Select::make('event_id')
                     ->label(__('Event'))
                     ->hintIcon('heroicon-o-calendar')
                     ->searchable()
                     ->options(
-                        Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                        $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                     )
+                    ->afterStateUpdated(function (Closure $set, $state) use ($events) {
+                        if ($state) {
+                            $set('flight_information_region_id', $events[$state]->flight_information_region_id);
+                            $set('start_time', $events[$state]->date_start);
+                            $set('end_time', $events[$state]->date_end);
+                        }
+                    })
+                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
+                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
+                    ->reactive()
                     ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
                 Forms\Components\DateTimePicker::make('start_time')
                     ->default(now()->addMinutes(5))
@@ -93,6 +109,13 @@ class FlowMeasureResource extends Resource
                     Forms\Components\Select::make('type')
                         ->options(collect(FlowMeasureType::cases())
                             ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
+                        ->helperText(function (string|FlowMeasureType|null $state) {
+                            if (is_a($state, FlowMeasureType::class)) {
+                                return $state->getDescription();
+                            }
+
+                            return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
+                        })
                         ->reactive()
                         ->required(),
                     Forms\Components\TextInput::make('value')
@@ -119,7 +142,20 @@ class FlowMeasureResource extends Resource
                         ->required()
                         ->label('Departure(s) [ADEP]')
                         ->schema([
-                            Forms\Components\TextInput::make('value')
+                            Forms\Components\Select::make('value_type')
+                                ->options([
+                                    'airport_group' => __('Airport Group'),
+                                    'custom_value' => __('Custom value'),
+                                ])
+                                ->reactive()
+                                ->required(),
+                            Forms\Components\Select::make('airport_group')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
+                                ->searchable()
+                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
+                                ->required(),
+                            Forms\Components\TextInput::make('custom_value')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
                                 ->length(4)
                                 ->default('****')
                                 ->required()
@@ -129,7 +165,20 @@ class FlowMeasureResource extends Resource
                         ->required()
                         ->label('Arrival(s) [ADES]')
                         ->schema([
-                            Forms\Components\TextInput::make('value')
+                            Forms\Components\Select::make('value_type')
+                                ->options([
+                                    'airport_group' => __('Airport Group'),
+                                    'custom_value' => __('Custom value'),
+                                ])
+                                ->reactive()
+                                ->required(),
+                            Forms\Components\Select::make('airport_group')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
+                                ->searchable()
+                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
+                                ->required(),
+                            Forms\Components\TextInput::make('custom_value')
+                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
                                 ->length(4)
                                 ->default('****')
                                 ->required()
@@ -188,7 +237,7 @@ class FlowMeasureResource extends Resource
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
                                         ->options(
-                                            Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
                             Block::make('member_non_event')
@@ -198,11 +247,20 @@ class FlowMeasureResource extends Resource
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
                                         ->options(
-                                            Event::where('date_end', '>', now()->addHours(6))->get()->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
-                        ])
-                ])
+                        ]),
+                ]),
+                // TODO: Make it possible to also search by identifier
+                Forms\Components\Fieldset::make('FAO')
+                    ->schema([
+                        Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
+                            ->columnSpan('full')
+                            ->label(__("FIR's"))
+                            ->relationship('notifiedFlightInformationRegions', 'name')
+                            ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->identifierName)
+                    ])
             ]);
     }
 

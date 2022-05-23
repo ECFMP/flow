@@ -19,11 +19,6 @@ class EventsRelationManager extends HasManyRelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    private static function setFirOptions(Collection $firs)
-    {
-        return $firs->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifierName]);
-    }
-
     public static function form(Form $form): Form
     {
         return $form

@@ -52,8 +52,8 @@ it('can create', function () {
 
     $this->assertDatabaseHas(Event::class, [
         'name' => $newData->name,
-        'date_start' => $newData->date_start,
-        'date_end' => $newData->date_end,
+        'date_start' => $newData->date_start->startOfMinute(),
+        'date_end' => $newData->date_end->startOfMinute(),
         'flight_information_region_id' => $newData->flight_information_region_id,
         'vatcan_code' => $newData->vatcan_code,
     ]);
@@ -151,8 +151,8 @@ it('can retrieve data for edit page', function () {
     ])
         ->assertSet('data.name', $event->name)
         ->assertSet('data.flight_information_region_id', $event->flight_information_region_id)
-        ->assertSet('data.date_start', $event->date_start->toISOString())
-        ->assertSet('data.date_end', $event->date_end->toISOString())
+        ->assertSet('data.date_start', $event->date_start->toDateTimeString())
+        ->assertSet('data.date_end', $event->date_end->toDateTimeString())
         ->assertSet('data.vatcan_code', $event->vatcan_code);
 });
 
@@ -175,8 +175,8 @@ it('can edit', function () {
 
     expect($event->refresh())->toMatchArray([
         'name' => $newData->name,
-        'date_start' => $newData->date_start->toISOString(),
-        'date_end' => $newData->date_end->toISOString(),
+        'date_start' => $newData->date_start->startOfMinute()->toISOString(),
+        'date_end' => $newData->date_end->startOfMinute()->toISOString(),
         'flight_information_region_id' => $newData->flight_information_region_id,
         'vatcan_code' => $newData->vatcan_code,
     ]);
@@ -236,7 +236,7 @@ it('can retrieve data for view page', function () {
         'record' => $event->getKey(),
     ])->assertSet('data.name', $event->name)
         ->assertSet('data.flight_information_region_id', $event->flight_information_region_id)
-        ->assertSet('data.date_start', $event->date_start->toISOString())
-        ->assertSet('data.date_end', $event->date_end->toISOString())
+        ->assertSet('data.date_start', $event->date_start->toDateTimeString())
+        ->assertSet('data.date_end', $event->date_end->toDateTimeString())
         ->assertSet('data.vatcan_code', $event->vatcan_code);
 });
