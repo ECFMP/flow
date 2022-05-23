@@ -32,7 +32,7 @@ class FlowMeasureDiscordMessageService
                 [DiscordNotificationType::FLOW_MEASURE_ACTIVATED, DiscordNotificationType::FLOW_MEASURE_APPROACHING]
             );
         })
-            ->where('start_time', '<', Carbon::now()->subDay())
+            ->where('start_time', '<', Carbon::now()->addDay())
             ->where('start_time', '>', Carbon::now())
             ->get()
             ->each(function (FlowMeasure $flowMeasure) {
@@ -68,7 +68,7 @@ class FlowMeasureDiscordMessageService
         return $measure->discordNotifications->firstWhere(
                 fn(DiscordNotification $notification
                 ) => $notification->type === DiscordNotificationType::FLOW_MEASURE_APPROACHING &&
-                    $notification->created_at < Carbon::now()->subHour()
+                    $notification->created_at > Carbon::now()->subHour()
             ) !== null;
     }
 
