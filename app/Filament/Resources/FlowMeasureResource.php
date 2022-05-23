@@ -60,6 +60,8 @@ class FlowMeasureResource extends Resource
                             self::setFirOptions(auth()->user()
                                 ->flightInformationRegions)
                     )
+                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
+                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->required(fn (Closure $get) => $get('event_id') == null),
                 Forms\Components\Select::make('event_id')
                     ->label(__('Event'))
@@ -75,6 +77,8 @@ class FlowMeasureResource extends Resource
                             $set('end_time', $events[$state]->date_end);
                         }
                     })
+                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
+                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->reactive()
                     ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
                 Forms\Components\DateTimePicker::make('start_time')

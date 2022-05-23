@@ -4,6 +4,7 @@ namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
 use Illuminate\Support\Arr;
 use App\Models\AirportGroup;
+use App\Enums\FlowMeasureType;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\FlowMeasureResource;
 
@@ -46,6 +47,10 @@ class EditFlowMeasure extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        if ($data['type'] == FlowMeasureType::MANDATORY_ROUTE) {
+            Arr::pull($data, 'value');
+        }
+
         $filters = collect($data['filters'])->map(function (array $filter) {
             $filter['value'] = $filter['data']['value'];
             Arr::pull($filter, 'data');
