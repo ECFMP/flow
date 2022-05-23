@@ -33,4 +33,9 @@ class DiscordNotification extends Model
     {
         return $query->where('type', $type);
     }
+
+    public function scopeTypes(Builder $query, array $types): Builder
+    {
+        return $query->whereIn('type', $types);
+    }
 }

@@ -24,7 +24,7 @@ class IdentifierAndStatus extends AbstractFlowMeasureTitle
         }
 
         if ($this->flowMeasure->start_time > Carbon::now()) {
-            return 'Approaching';
+            return 'Notified';
         }
 
         return $this->flowMeasure->end_time > Carbon::now()
