@@ -16,6 +16,9 @@ class FlowMeasureController
             $query->active();
         } else if ((int) $request->input('deleted') === 1) {
             $query->withTrashed();
+        } else {
+            $query->notified()
+                ->union(FlowMeasure::endTimeWithinOneDay());
         }
 
         return FlowMeasureResource::collection($query->get());

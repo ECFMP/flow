@@ -5,6 +5,7 @@ namespace Tests\Api;
 use App\Helpers\ApiDateTimeFormatter;
 use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -200,6 +201,18 @@ class FlowMeasureTest extends TestCase
             ->create();
 
         $flowMeasure2 = FlowMeasure::factory()
+            ->withEvent()
+            ->create();
+
+        // Shouldn't show, too far in the future
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->withEvent()
+            ->create();
+
+        // Shouldn't show, too far in the past
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
             ->withEvent()
             ->create();
 

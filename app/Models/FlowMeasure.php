@@ -122,4 +122,16 @@ class FlowMeasure extends Model
             )
         );
     }
+
+    public function scopeNotified(Builder $builder): Builder
+    {
+        return $builder->where('start_time', '<', Carbon::now()->addDay())
+            ->where('start_time', '>', Carbon::now());
+    }
+
+    public function scopeEndTimeWithinOneDay(Builder $builder): Builder
+    {
+        return $builder->where('start_time', '<', Carbon::now())
+            ->where('end_time', '>', Carbon::now()->subDay());
+    }
 }
