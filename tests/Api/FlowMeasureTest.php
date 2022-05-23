@@ -277,7 +277,18 @@ class FlowMeasureTest extends TestCase
         $flowMeasure2 = FlowMeasure::factory()
             ->withEvent()
             ->create();
-        $flowMeasure2->delete();
+
+        // Shouldn't show, too far in the future
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->withEvent()
+            ->create();
+
+        // Shouldn't show, too far in the past
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->withEvent()
+            ->create();
 
 
         $this->get('api/v1/flow-measure?deleted=1')

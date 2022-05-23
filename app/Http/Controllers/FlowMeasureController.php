@@ -12,15 +12,24 @@ class FlowMeasureController
     public function getFilteredFlowMeasures(Request $request): JsonResource
     {
         $query = FlowMeasure::query();
-        if ((int) $request->input('active') === 1) {
-            $query->active();
-        } else if ((int) $request->input('deleted') === 1) {
+        $unionQuery = FlowMeasure::endTimeWithinOneDay();
+        if ($this->includeTrashed($request)) {
             $query->withTrashed();
+            $unionQuery->withTrashed();
+        }
+
+        if ((int)$request->input('active') === 1) {
+            $query->active();
         } else {
             $query->notified()
-                ->union(FlowMeasure::endTimeWithinOneDay());
+                ->union($unionQuery);
         }
 
         return FlowMeasureResource::collection($query->get());
+    }
+
+    private function includeTrashed(Request $request): bool
+    {
+        return (int)$request->input('deleted') === 1;
     }
 }
