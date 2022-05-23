@@ -5,6 +5,7 @@ namespace App\Filament\Resources\FlowMeasureResource\Pages;
 use Illuminate\Support\Arr;
 use Filament\Resources\Pages\ViewRecord;
 use App\Filament\Resources\FlowMeasureResource;
+use App\Models\AirportGroup;
 
 class ViewFlowMeasure extends ViewRecord
 {
@@ -30,11 +31,11 @@ class ViewFlowMeasure extends ViewRecord
 
         $filters['adep'] = collect($filters['ADEP']['value'])
             ->map(function ($value) {
-                return ['value' => $value];
+                return $this->buildAirportFilter($value);
             });
         $filters['ades'] = collect($filters['ADES']['value'])
             ->map(function ($value) {
-                return ['value' => $value];
+                return $this->buildAirportFilter($value);
             });
 
         $data['adep'] = $filters['adep']->toArray();
@@ -55,5 +56,23 @@ class ViewFlowMeasure extends ViewRecord
         $data['filters'] = $filters->toArray();
 
         return $data;
+    }
+
+    private function buildAirportFilter(string $value): array
+    {
+        $airportGroup = AirportGroup::find($value);
+        if ($airportGroup) {
+            return [
+                'value_type' => 'airport_group',
+                'airport_group' => $value,
+                'custom_value' => '',
+            ];
+        }
+
+        return [
+            'value_type' => 'custom_value',
+            'airport_group' => null,
+            'custom_value' => $value,
+        ];
     }
 }

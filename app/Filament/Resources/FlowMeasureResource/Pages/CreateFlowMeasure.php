@@ -6,6 +6,7 @@ use App\Enums\FlowMeasureType;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\FlowMeasureResource;
 use App\Helpers\FlowMeasureIdentifierGenerator;
+use App\Models\AirportGroup;
 use App\Models\Event;
 use App\Models\FlightInformationRegion;
 use Illuminate\Support\Arr;
@@ -42,10 +43,10 @@ class CreateFlowMeasure extends CreateRecord
 
         $filters->add([
             'type' => 'ADEP',
-            'value' => Arr::pluck($data['adep'], 'value'),
+            'value' => $this->getAirportValues($data, 'adep')
         ])->add([
             'type' => 'ADES',
-            'value' => Arr::pluck($data['ades'], 'value'),
+            'value' => $this->getAirportValues($data, 'ades')
         ]);
 
         $data['filters'] = $filters->toArray();
@@ -53,5 +54,22 @@ class CreateFlowMeasure extends CreateRecord
         Arr::pull($data, 'ades');
 
         return $data;
+    }
+
+    private function getAirportValues(array $data, string $type): array
+    {
+        $output = [];
+        foreach ($data[$type] as $filterData) {
+            if ($filterData['value_type'] == 'airport_group') {
+                // Making sure it actually exists
+                $airportGroup = AirportGroup::findOrFail($filterData['airport_group'], ['id']);
+
+                $output[] = $airportGroup->getKey();
+            } else {
+                $output[] = $filterData['custom_value'];
+            }
+        }
+
+        return $output;
     }
 }
