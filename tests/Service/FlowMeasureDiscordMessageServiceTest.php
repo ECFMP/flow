@@ -3,7 +3,9 @@
 namespace Tests\Service;
 
 use App\Discord\DiscordInterface;
-use App\Discord\Message\MessageInterface;
+use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Service\FlowMeasureDiscordMessageService;
@@ -11,7 +13,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Mockery;
 use Mockery\MockInterface;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class FlowMeasureDiscordMessageServiceTest extends TestCase
@@ -37,20 +38,16 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Activated'
-                    ) && Str::contains($message->content(), $measure1->identifier)
+                fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Active'
             )
         )
             ->once();
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Activated'
-                    ) && Str::contains($message->content(), $measure2->identifier)
+                fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure2->identifier . ' - ' . 'Active'
             )
         )
             ->once();
@@ -140,20 +137,16 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Withdrawn'
-                    ) && Str::contains($message->content(), $measure1->identifier)
+                fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Withdrawn'
             )
         )
             ->once();
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Withdrawn'
-                    ) && Str::contains($message->content(), $measure2->identifier)
+                fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure2->identifier . ' - ' . 'Withdrawn'
             )
         )
             ->once();
@@ -271,20 +264,16 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Expired'
-                    ) && Str::contains($message->content(), $measure1->identifier)
+                fn(FlowMeasureExpiredMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Expired'
             )
         )
             ->once();
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Expired'
-                    ) && Str::contains($message->content(), $measure2->identifier)
+                fn(FlowMeasureExpiredMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure2->identifier . ' - ' . 'Expired'
             )
         )
             ->once();
@@ -308,7 +297,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         );
     }
 
-    public function testItSendsExpiredNotificationsForDeletedFlowMeasures()
+    public function testItSendsWithdrawnMessagesForExpiredFlowMeasures()
     {
         $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
@@ -333,20 +322,16 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Expired'
-                    ) && Str::contains($message->content(), $measure1->identifier)
+                fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Withdrawn'
             )
         )
             ->once();
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(MessageInterface $message) => Str::contains(
-                        $message->content(),
-                        'Flow Measure Expired'
-                    ) && Str::contains($message->content(), $measure2->identifier)
+                fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure2->identifier . ' - ' . 'Withdrawn'
             )
         )
             ->once();
@@ -357,7 +342,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             'discord_notifications',
             [
                 'flow_measure_id' => $measure1->id,
-                'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED->value,
+                'type' => DiscordNotificationType::FLOW_MEASURE_WITHDRAWN->value,
             ]
         );
 
@@ -365,7 +350,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             'discord_notifications',
             [
                 'flow_measure_id' => $measure2->id,
-                'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED->value,
+                'type' => DiscordNotificationType::FLOW_MEASURE_WITHDRAWN->value,
             ]
         );
     }

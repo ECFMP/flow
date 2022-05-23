@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\FilterType;
+use App\Enums\FlowMeasureStatus;
 use App\Enums\FlowMeasureType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;

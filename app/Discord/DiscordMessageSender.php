@@ -21,8 +21,13 @@ class DiscordMessageSender implements DiscordInterface
                 'username' => config('discord.username'),
                 'avatar_url' => config('discord.avatar_url'),
                 'content' => $message->content(),
+                'embeds' => $message->embeds()->toArray(),
                 'tts' => false,
-                'embeds' => [],
+                'allowed_mentions' => [
+                    'parse' => [
+                        'users',
+                    ],
+                ],
             ]
         );
 

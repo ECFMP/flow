@@ -46,6 +46,14 @@ class FlowMeasureFactory extends Factory
         ];
     }
 
+    public function withTimes(Carbon $startTime, Carbon $endTime): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+        ]);
+    }
+
     public function finished(): static
     {
         return $this->state(fn(array $attributes) => [
@@ -99,6 +107,11 @@ class FlowMeasureFactory extends Factory
         return $this->state(fn(array $attributes) => [
             'filters' => array_merge($attributes['filters'], $filters),
         ]);
+    }
+
+    public function withAdditionalFilter(array $filter): static
+    {
+        return $this->withAdditionalFilters([$filter]);
     }
 
     public function withMeasure(FlowMeasureType $measureType, ?int $value): static

@@ -32,7 +32,7 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
-                    new FlowMeasureActivatedMessage(FlowMeasureContentBuilder::activated($flowMeasure))
+                    new FlowMeasureActivatedMessage($flowMeasure)
                 );
             });
     }
@@ -51,7 +51,7 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
-                    new FlowMeasureWithdrawnMessage(FlowMeasureContentBuilder::withdrawn($flowMeasure))
+                    new FlowMeasureWithdrawnMessage($flowMeasure)
                 );
             });
     }
@@ -73,8 +73,12 @@ class FlowMeasureDiscordMessageService
             ->each(function (FlowMeasure $flowMeasure) {
                 $this->sendDiscordNotification(
                     $flowMeasure,
-                    DiscordNotificationType::FLOW_MEASURE_EXPIRED,
-                    new FlowMeasureExpiredMessage(FlowMeasureContentBuilder::withdrawn($flowMeasure))
+                    $flowMeasure->trashed()
+                        ? DiscordNotificationType::FLOW_MEASURE_WITHDRAWN
+                        : DiscordNotificationType::FLOW_MEASURE_EXPIRED,
+                    $flowMeasure->trashed()
+                        ? new FlowMeasureWithdrawnMessage($flowMeasure)
+                        : new FlowMeasureExpiredMessage($flowMeasure)
                 );
             });
     }
