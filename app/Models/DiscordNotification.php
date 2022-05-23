@@ -18,10 +18,12 @@ class DiscordNotification extends Model
         'flow_measure_id',
         'type',
         'content',
+        'embeds',
     ];
 
     protected $casts = [
         'type' => DiscordNotificationType::class,
+        'embeds' => 'array',
     ];
 
     public function flowMeasure(): BelongsTo

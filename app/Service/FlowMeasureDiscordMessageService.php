@@ -125,6 +125,7 @@ class FlowMeasureDiscordMessageService
             [
                 'type' => $type,
                 'content' => $message->content(),
+                'embeds' => $message->embeds()->toArray()
             ]
         );
         $this->discord->sendMessage($message);
