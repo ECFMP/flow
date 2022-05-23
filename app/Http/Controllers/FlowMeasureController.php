@@ -14,9 +14,7 @@ class FlowMeasureController
         $query = FlowMeasure::query();
         if ((int) $request->input('active') === 1) {
             $query->active();
-        }
-
-        if ((int) $request->input('deleted') === 1) {
+        } else if ((int) $request->input('deleted') === 1) {
             $query->withTrashed();
         }
 
