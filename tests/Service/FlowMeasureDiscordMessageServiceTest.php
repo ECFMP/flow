@@ -4,11 +4,13 @@ namespace Tests\Service;
 
 use App\Discord\DiscordInterface;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureApproachingMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Service\FlowMeasureDiscordMessageService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Mockery;
@@ -428,4 +430,68 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->service->sendMeasureExpiredDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 2);
     }
+
+    public function testItSendsNotificationForApproachingFlowMeasures()
+    {
+        $measure1 = FlowMeasure::factory()->notStarted()->create();
+        $measure2 = FlowMeasure::factory()->notStarted()->create();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(FlowMeasureApproachingMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Approaching'
+            )
+        )
+            ->once();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(FlowMeasureApproachingMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure2->identifier . ' - ' . 'Approaching'
+            )
+        )
+            ->once();
+
+        $this->service->sendMeasureActivatedDiscordNotifications();
+
+        $this->assertDatabaseCount('discord_notifications', 2);
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure1->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_APPROACHING->value,
+            ]
+        );
+
+        $this->assertDatabaseHas(
+            'discord_notifications',
+            [
+                'flow_measure_id' => $measure2->id,
+                'type' => DiscordNotificationType::FLOW_MEASURE_APPROACHING->value,
+            ]
+        );
+    }
+
+    public function testItDoesntSendApproachingNotificationsIfTooFarInAdvance()
+    {
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->addHours(25), Carbon::now()->addHours(26))
+            ->create();
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->addHours(25), Carbon::now()->addHours(26))
+            ->create();
+
+
+        $this->service->sendMeasureActivatedDiscordNotifications();
+
+        $this->discord->expects('sendMessage')->never();
+        $this->service->sendMeasureExpiredDiscordNotifications();
+        $this->assertDatabaseCount('discord_notifications', 0);
+    }
+
+    // TODO: Already sent approaching
+    // TODO: Already sent activating
+    // TODO: Already active
+    // TODO: Activation sends without notifications when approaching already sent within an hour
+    // TODO: Activation sends with notifications when approaching already over an hour ago
 }
