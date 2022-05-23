@@ -11,6 +11,12 @@ class FlowMeasureController
 {
     public function getFilteredFlowMeasures(Request $request): JsonResource
     {
+        /**
+         * TODO: Move queries to repository?
+         * TODO: Notified only
+         * TODO: All pending up to end of active
+         * TODO: Cron update
+         */
         $query = FlowMeasure::query();
         $unionQuery = FlowMeasure::endTimeWithinOneDay();
         if ($this->includeTrashed($request)) {
