@@ -12,6 +12,12 @@ use Tests\TestCase;
 
 class FlowMeasureActivatedWithoutRecipientsMessageTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        Carbon::setTestNow(Carbon::parse('2022-05-22T14:59:23Z'));
+    }
+
     public function testItHasNoContent()
     {
         $measure = FlowMeasure::factory()->create();

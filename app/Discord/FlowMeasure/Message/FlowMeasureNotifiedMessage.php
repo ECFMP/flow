@@ -20,7 +20,7 @@ use App\Discord\Message\Embed\FieldProviderInterface;
 use App\Discord\Message\MessageInterface;
 use App\Models\FlowMeasure;
 
-class FlowMeasureApproachingMessage implements MessageInterface
+class FlowMeasureNotifiedMessage implements MessageInterface
 {
     private readonly FlowMeasure $measure;
 

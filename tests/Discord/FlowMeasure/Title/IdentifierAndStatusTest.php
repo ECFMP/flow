@@ -27,10 +27,10 @@ class IdentifierAndStatusTest extends TestCase
         $this->assertEquals($measure->identifier . ' - ' . 'Withdrawn', $this->getTitle($measure));
     }
 
-    public function testItIsApproaching()
+    public function testItIsNotified()
     {
         $measure = FlowMeasure::factory()->notStarted()->create();
-        $this->assertEquals($measure->identifier . ' - ' . 'Approaching', $this->getTitle($measure));
+        $this->assertEquals($measure->identifier . ' - ' . 'Notified', $this->getTitle($measure));
     }
 
     public function testItIsActive()

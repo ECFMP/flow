@@ -3,7 +3,7 @@
 namespace Tests\Discord\FlowMeasure\Message;
 
 use App\Discord\FlowMeasure\Description\EventNameAndInterestedParties;
-use App\Discord\FlowMeasure\Message\FlowMeasureApproachingMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\Message\Embed\Colour;
 use App\Models\DiscordTag;
 use App\Models\FlightInformationRegion;
@@ -11,7 +11,7 @@ use App\Models\FlowMeasure;
 use Carbon\Carbon;
 use Tests\TestCase;
 
-class FlowMeasureApproachingMessageTest extends TestCase
+class FlowMeasureNotifiedMessageTest extends TestCase
 {
     public function setUp(): void
     {
@@ -25,7 +25,7 @@ class FlowMeasureApproachingMessageTest extends TestCase
 
         $this->assertEquals(
             '',
-            (new FlowMeasureApproachingMessage($measure))->content()
+            (new FlowMeasureNotifiedMessage($measure))->content()
         );
     }
 
@@ -43,7 +43,7 @@ class FlowMeasureApproachingMessageTest extends TestCase
         $this->assertEquals(
             [
                 [
-                    'title' => $measure->identifier . ' - ' . 'Approaching',
+                    'title' => $measure->identifier . ' - ' . 'Notified',
                     'color' => Colour::ACTIVATED->value,
                     'description' => (new EventNameAndInterestedParties($measure))->description(),
                     'fields' => [
@@ -90,7 +90,7 @@ class FlowMeasureApproachingMessageTest extends TestCase
                     ],
                 ],
             ],
-            (new FlowMeasureApproachingMessage($measure))->embeds()->toArray()
+            (new FlowMeasureNotifiedMessage($measure))->embeds()->toArray()
         );
     }
 }

@@ -15,7 +15,7 @@ class SendDiscordNotificationsTest extends TestCase
         Config::set('discord.enabled', true);
 
         $serviceMock = Mockery::mock(FlowMeasureDiscordMessageService::class);
-        $serviceMock->shouldReceive('sendMeasureApproachingDiscordNotifications')->once();
+        $serviceMock->shouldReceive('sendMeasureNotifiedDiscordNotifications')->once();
         $serviceMock->shouldReceive('sendMeasureActivatedDiscordNotifications')->once();
         $serviceMock->shouldReceive('sendMeasureWithdrawnDiscordNotifications')->once();
         $serviceMock->shouldReceive('sendMeasureExpiredDiscordNotifications')->once();
@@ -29,7 +29,7 @@ class SendDiscordNotificationsTest extends TestCase
         Config::set('discord.enabled', false);
 
         $serviceMock = Mockery::mock(FlowMeasureDiscordMessageService::class);
-        $serviceMock->shouldNotReceive('sendMeasureApproachingDiscordNotifications');
+        $serviceMock->shouldNotReceive('sendMeasureNotifiedDiscordNotifications');
         $serviceMock->shouldNotReceive('sendMeasureActivatedDiscordNotifications');
         $serviceMock->shouldNotReceive('sendMeasureWithdrawnDiscordNotifications');
         $serviceMock->shouldNotReceive('sendMeasureExpiredDiscordNotifications');

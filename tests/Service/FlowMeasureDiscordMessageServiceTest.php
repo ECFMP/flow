@@ -5,7 +5,7 @@ namespace Tests\Service;
 use App\Discord\DiscordInterface;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedWithoutRecipientsMessage;
-use App\Discord\FlowMeasure\Message\FlowMeasureApproachingMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Enums\DiscordNotificationType;
@@ -116,13 +116,13 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->assertDatabaseCount('discord_notifications', 1);
     }
 
-    public function testItSendsActivationWithInterestedPartiesIfApproachingMessageSentOverAnHourAgo()
+    public function testItSendsActivationWithInterestedPartiesIfNotifiedMessageSentOverAnHourAgo()
     {
         $measure = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
                     'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationType::FLOW_MEASURE_APPROACHING,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_NOTIFIED,
                     'content' => 'abc',
                 ]
             );
@@ -151,13 +151,13 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->assertDatabaseCount('discord_notifications', 2);
     }
 
-    public function testItSendsActivationWithoutInterestedPartiesIfApproachingMessageSentLessThanOneHourAgo()
+    public function testItSendsActivationWithoutInterestedPartiesIfNotifiedMessageSentLessThanOneHourAgo()
     {
         $measure = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
                     'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationType::FLOW_MEASURE_APPROACHING,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_NOTIFIED,
                     'content' => 'abc',
                 ]
             );
@@ -503,35 +503,35 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->assertDatabaseCount('discord_notifications', 2);
     }
 
-    public function testItSendsNotificationForApproachingFlowMeasures()
+    public function testItSendsNotificationForNotifiedFlowMeasures()
     {
         $measure1 = FlowMeasure::factory()->notStarted()->create();
         $measure2 = FlowMeasure::factory()->notStarted()->create();
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(FlowMeasureApproachingMessage $message) => $message->embeds()->toArray(
-                    )[0]['title'] === $measure1->identifier . ' - ' . 'Approaching'
+                fn(FlowMeasureNotifiedMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Notified'
             )
         )
             ->once();
 
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
-                fn(FlowMeasureApproachingMessage $message) => $message->embeds()->toArray(
-                    )[0]['title'] === $measure2->identifier . ' - ' . 'Approaching'
+                fn(FlowMeasureNotifiedMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure2->identifier . ' - ' . 'Notified'
             )
         )
             ->once();
 
-        $this->service->sendMeasureApproachingDiscordNotifications();
+        $this->service->sendMeasureNotifiedDiscordNotifications();
 
         $this->assertDatabaseCount('discord_notifications', 2);
         $this->assertDatabaseHas(
             'discord_notifications',
             [
                 'flow_measure_id' => $measure1->id,
-                'type' => DiscordNotificationType::FLOW_MEASURE_APPROACHING->value,
+                'type' => DiscordNotificationType::FLOW_MEASURE_NOTIFIED->value,
             ]
         );
 
@@ -539,12 +539,12 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             'discord_notifications',
             [
                 'flow_measure_id' => $measure2->id,
-                'type' => DiscordNotificationType::FLOW_MEASURE_APPROACHING->value,
+                'type' => DiscordNotificationType::FLOW_MEASURE_NOTIFIED->value,
             ]
         );
     }
 
-    public function testItDoesntSendApproachingNotificationsIfTooFarInAdvance()
+    public function testItDoesntSendNotifiedMessagesIfTooFarInAdvance()
     {
         FlowMeasure::factory()
             ->withTimes(Carbon::now()->addHours(25), Carbon::now()->addHours(26))
@@ -555,12 +555,12 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
 
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendMeasureApproachingDiscordNotifications();
+        $this->service->sendMeasureNotifiedDiscordNotifications();
 
         $this->assertDatabaseCount('discord_notifications', 0);
     }
 
-    public function testItDoesntSendApproachingNotificationsIfApproachingMessageAlreadySent()
+    public function testItDoesntSendNotifiedMessagesIfNotifiedMessageAlreadySent()
     {
         FlowMeasure::factory()
             ->notStarted()
@@ -568,7 +568,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
                 $flowMeasure->discordNotifications()->create(
                     [
                         'flow_measure_id' => $flowMeasure->id,
-                        'type' => DiscordNotificationType::FLOW_MEASURE_APPROACHING,
+                        'type' => DiscordNotificationType::FLOW_MEASURE_NOTIFIED,
                         'content' => 'abc',
                     ]
                 );
@@ -576,11 +576,11 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
 
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendMeasureApproachingDiscordNotifications();
+        $this->service->sendMeasureNotifiedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 1);
     }
 
-    public function testItDoesntSendApproachingNotificationsIfActivatedMessageAlreadySent()
+    public function testItDoesntSendNotifiedMessagesIfActivatedMessageAlreadySent()
     {
         FlowMeasure::factory()
             ->notStarted()
@@ -596,16 +596,16 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
 
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendMeasureApproachingDiscordNotifications();
+        $this->service->sendMeasureNotifiedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 1);
     }
 
-    public function testItDoesntSendApproachingNotificationsIfAlreadyActive()
+    public function testItDoesntSendNotifiedMessagesIfAlreadyActive()
     {
         FlowMeasure::factory()->create();
 
         $this->discord->expects('sendMessage')->never();
-        $this->service->sendMeasureApproachingDiscordNotifications();
+        $this->service->sendMeasureNotifiedDiscordNotifications();
         $this->assertDatabaseCount('discord_notifications', 0);
     }
 }

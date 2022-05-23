@@ -5,7 +5,7 @@ namespace App\Service;
 use App\Discord\DiscordInterface;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureActivatedWithoutRecipientsMessage;
-use App\Discord\FlowMeasure\Message\FlowMeasureApproachingMessage;
+use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Discord\Message\MessageInterface;
@@ -25,11 +25,11 @@ class FlowMeasureDiscordMessageService
         $this->discord = $discord;
     }
 
-    public function sendMeasureApproachingDiscordNotifications(): void
+    public function sendMeasureNotifiedDiscordNotifications(): void
     {
         FlowMeasure::whereDoesntHave('discordNotifications', function (Builder $notification) {
             $notification->types(
-                [DiscordNotificationType::FLOW_MEASURE_ACTIVATED, DiscordNotificationType::FLOW_MEASURE_APPROACHING]
+                [DiscordNotificationType::FLOW_MEASURE_ACTIVATED, DiscordNotificationType::FLOW_MEASURE_NOTIFIED]
             );
         })
             ->where('start_time', '<', Carbon::now()->addDay())
@@ -38,8 +38,8 @@ class FlowMeasureDiscordMessageService
             ->each(function (FlowMeasure $flowMeasure) {
                 $this->sendDiscordNotification(
                     $flowMeasure,
-                    DiscordNotificationType::FLOW_MEASURE_APPROACHING,
-                    new FlowMeasureApproachingMessage($flowMeasure)
+                    DiscordNotificationType::FLOW_MEASURE_NOTIFIED,
+                    new FlowMeasureNotifiedMessage($flowMeasure)
                 );
             });
     }
@@ -56,18 +56,18 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
-                    $this->approachingMessageSentWithinTheLastHour($flowMeasure)
+                    $this->notifiedMessageSentWithinTheLastHour($flowMeasure)
                         ? new FlowMeasureActivatedWithoutRecipientsMessage($flowMeasure)
                         : new FlowMeasureActivatedMessage($flowMeasure)
                 );
             });
     }
 
-    private function approachingMessageSentWithinTheLastHour(FlowMeasure $measure): bool
+    private function notifiedMessageSentWithinTheLastHour(FlowMeasure $measure): bool
     {
         return $measure->discordNotifications->firstWhere(
                 fn(DiscordNotification $notification
-                ) => $notification->type === DiscordNotificationType::FLOW_MEASURE_APPROACHING &&
+                ) => $notification->type === DiscordNotificationType::FLOW_MEASURE_NOTIFIED &&
                     $notification->created_at > Carbon::now()->subHour()
             ) !== null;
     }
