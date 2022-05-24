@@ -13,10 +13,10 @@ trait FormatsAirports
                 return $airport;
             }
 
-            $group = AirportGroup::find($airport);
+            $group = AirportGroup::with('airports')->find($airport);
             return $group
-                ? [$group->name]
-                : [];
-        })->flatten()->unique()->sort()->values()->join(', ');
+                ? sprintf('%s [%s]', $group->name, $group->airports->pluck('icao_code')->join(', '))
+                : '';
+        })->unique()->sort()->values()->join(', ');
     }
 }
