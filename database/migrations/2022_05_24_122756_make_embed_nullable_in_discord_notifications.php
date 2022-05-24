@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('discord_notifications', function (Blueprint $table) {
-            $table->json('embeds')->after('content');
+            $table->json('embeds')->nullable()->change();
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('discord_notifications', function (Blueprint $table) {
-            $table->dropColumn('embeds');
+            $table->json('embeds')->nullable(false)->change();
         });
     }
 };
