@@ -1,7 +1,7 @@
 <?php
 
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
-use App\Filament\Resources\FlowMeasureResource\Widgets\UpcomingFlowMeasures;
+use App\Filament\Resources\FlowMeasureResource\Widgets\NotifiedFlowMeasures;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -145,7 +145,7 @@ return [
         'path' => app_path('Filament/Widgets'),
         'register' => [
             ActiveFlowMeasures::class,
-            UpcomingFlowMeasures::class
+            NotifiedFlowMeasures::class
         ],
     ],
 

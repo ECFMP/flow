@@ -9,7 +9,7 @@ use App\Enums\FlowMeasureType;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Widgets\TableWidget as BaseWidget;
 
-class UpcomingFlowMeasures extends BaseWidget
+class NotifiedFlowMeasures extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full';
 
