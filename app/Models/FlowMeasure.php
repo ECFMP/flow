@@ -7,6 +7,7 @@ use App\Enums\FlowMeasureStatus;
 use App\Enums\FlowMeasureType;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -102,7 +103,7 @@ class FlowMeasure extends Model
         return array_values(
             array_filter(
                 $this->filters,
-                fn(array $filter) => FilterType::tryFrom($filter['type']) === $filterType
+                fn (array $filter) => FilterType::tryFrom($filter['type']) === $filterType
             )
         );
     }
@@ -116,10 +117,29 @@ class FlowMeasure extends Model
     {
         return array_filter(
             $this->filters,
-            fn(array $filter) => !in_array(
+            fn (array $filter) => !in_array(
                 FilterType::tryFrom($filter['type']),
                 [FilterType::DEPARTURE_AIRPORTS, FilterType::ARRIVAL_AIRPORTS]
             )
         );
+    }
+
+    public function status(): Attribute
+    {
+        return new Attribute(function () {
+            if ($this->trashed()) {
+                return FlowMeasureStatus::DELETED;
+            };
+
+            if ($this->end_time->lt(now())) {
+                return FlowMeasureStatus::EXPIRED;
+            };
+
+            if ($this->start_time->lt(now())) {
+                return FlowMeasureStatus::ACTIVE;
+            }
+
+            return FlowMeasureStatus::NOTIFIED;
+        });
     }
 }
