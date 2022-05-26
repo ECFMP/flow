@@ -24,7 +24,7 @@ class NotifiedFlowMeasures extends BaseWidget
     {
         return [
             Tables\Columns\TextColumn::make('identifier'),
-            Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
+            Tables\Columns\TextColumn::make('flightInformationRegion.name')
                 ->label(__('Owner')),
             Tables\Columns\BadgeColumn::make('type')
                 ->alignCenter()
