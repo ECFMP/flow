@@ -29,10 +29,9 @@ class ActiveFlowMeasures extends BaseWidget
                 ->alignCenter()
                 ->formatStateUsing(fn (string $state): string => FlowMeasureType::tryFrom($state)->getFormattedName()),
             Tables\Columns\TextColumn::make('value'),
-            Tables\Columns\TextColumn::make('start_time')
-                ->dateTime('M j, Y H:i\z'),
-            Tables\Columns\TextColumn::make('end_time')
-                ->dateTime('M j, Y H:i\z'),
+            Tables\Columns\ViewColumn::make('end_time')
+                ->alignCenter()
+                ->view('filament.tables.columns.flow-measure.end-time'),
         ];
     }
 }
