@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Widgets;
 
-use Closure;
 use Filament\Tables;
 use App\Models\FlowMeasure;
 use App\Enums\FlowMeasureType;

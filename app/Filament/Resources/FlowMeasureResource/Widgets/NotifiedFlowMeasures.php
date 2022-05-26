@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Widgets;
 
-use Closure;
 use Filament\Tables;
 use App\Models\FlowMeasure;
 use App\Enums\FlowMeasureType;
@@ -16,6 +15,7 @@ class NotifiedFlowMeasures extends BaseWidget
     protected function getTableQuery(): Builder
     {
         return FlowMeasure::query()
+            ->where('start_time', '<', now()->addDay())
             ->where('start_time', '>', now())
             ->orderBy('start_time');
     }
