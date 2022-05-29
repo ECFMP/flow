@@ -720,10 +720,16 @@
                     ]
                   },
                   "value": {
-                    "type": "string",
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "JSON",
+                      "description": "The specified mandatory route string",
+                      "example": "UL612 LAKEY DCT NUGRA"
+                    },
                     "format": "JSON",
-                    "description": "The specified mandatory route as a JSON array. Logical OR between points.",
-                    "example": "[\"LOGAN\",\"UL612 LAKEY DCT NUGRA\"]"
+                    "description": "Ar array of mandatory route strings, items are related via logical OR",
+                    "example": ["LOGAN", "UL612 LAKEY DCT NUGRA"]
                   }
                 }
               }
@@ -833,23 +839,26 @@
                       ]
                     },
                     "value": {
-                      "type": "object",
-                      "properties": {
-                        "event_id": {
-                          "type": "integer",
-                          "example": 1,
-                          "description": "The id of the event in the API"
-                        },
-                        "event_vatcan": {
-                          "type": "string",
-                          "nullable": true,
-                          "description": "The events VATCAN code",
-                          "example": "ABCD01"
-                        },
-                        "event_api": {
-                          "type": "null",
-                          "description": "The events API code",
-                          "example": null
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "event_id": {
+                            "type": "integer",
+                            "example": 1,
+                            "description": "The id of the event in the API"
+                          },
+                          "event_vatcan": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "The events VATCAN code",
+                            "example": "ABCD01"
+                          },
+                          "event_api": {
+                            "type": "null",
+                            "description": "The events API code",
+                            "example": null
+                          }
                         }
                       }
                     }
@@ -865,10 +874,14 @@
                       ]
                     },
                     "value": {
-                      "description": "String of waypoints",
-                      "type": "string",
-                      "format": "JSON",
-                      "example": "BIG UL9 CPT"
+                      "type": "array",
+                      "items": {
+                        "description": "String of waypoints",
+                        "type": "string",
+                        "format": "JSON",
+                        "example": "BIG UL9 CPT"
+                      },
+                      "description": "List of waypoint / route strings, joined via logical OR"
                     }
                   }
                 }
