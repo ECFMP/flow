@@ -36,11 +36,18 @@ class EditFlowMeasure extends EditRecord
 
         $newFilters = collect();
         $filters->each(function (array $filter) use ($newFilters) {
-            foreach ($filter['value'] as $value) {
+            if (in_array($filter['type'], ['level_above', 'level_below'])) {
                 $newFilters->push([
                     'type' => $filter['type'],
-                    'value' => $value
+                    'value' => $filter['value'],
                 ]);
+            } else {
+                foreach ($filter['value'] as $value) {
+                    $newFilters->push([
+                        'type' => $filter['type'],
+                        'value' => $value
+                    ]);
+                }
             }
         });
 
@@ -65,6 +72,13 @@ class EditFlowMeasure extends EditRecord
         $filters = collect($data['filters'])
             ->groupBy('type')
             ->transform(function (Collection $filter, string $type) {
+                if (in_array($type, ['level_above', 'level_below'])) {
+                    return collect([
+                        'type' => $type,
+                        'value' => $filter->pluck('data')->value('value')
+                    ]);
+                }
+
                 return collect([
                     'type' => $type,
                     'value' => $filter->pluck('data')->pluck('value')
@@ -79,12 +93,6 @@ class EditFlowMeasure extends EditRecord
                 'type' => 'ADES',
                 'value' => $this->getAirportValues($data, 'ades')
             ]);
-
-        $data['filters'] = $filters->toArray();
-        Arr::pull($data, 'adep');
-        Arr::pull($data, 'ades');
-
-        return $data;
     }
 
     private function buildAirportFilter(string $value): array

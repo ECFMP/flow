@@ -37,6 +37,13 @@ class CreateFlowMeasure extends CreateRecord
         $filters = collect($data['filters'])
             ->groupBy('type')
             ->transform(function (Collection $filter, string $type) {
+                if (in_array($type, ['level_above', 'level_below'])) {
+                    return collect([
+                        'type' => $type,
+                        'value' => $filter->pluck('data')->value('value')
+                    ]);
+                }
+
                 return collect([
                     'type' => $type,
                     'value' => $filter->pluck('data')->pluck('value')
