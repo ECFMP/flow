@@ -142,6 +142,8 @@ class FlowMeasureResource extends Resource
                         ->label('ADEP')
                         ->required()
                         ->label('Departure(s) [ADEP]')
+                        ->disableItemMovement()
+                        ->hintIcon('heroicon-o-trending-up')
                         ->schema([
                             Forms\Components\Select::make('value_type')
                                 ->options([
@@ -151,6 +153,7 @@ class FlowMeasureResource extends Resource
                                 ->reactive()
                                 ->required(),
                             Forms\Components\Select::make('airport_group')
+                                ->hintIcon('heroicon-o-collection')
                                 ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
                                 ->searchable()
                                 ->options(AirportGroup::all()->pluck('name_codes', 'id'))
@@ -165,6 +168,8 @@ class FlowMeasureResource extends Resource
                         ->label('ADES')
                         ->required()
                         ->label('Arrival(s) [ADES]')
+                        ->disableItemMovement()
+                        ->hintIcon('heroicon-o-trending-down')
                         ->schema([
                             Forms\Components\Select::make('value_type')
                                 ->options([
@@ -174,6 +179,7 @@ class FlowMeasureResource extends Resource
                                 ->reactive()
                                 ->required(),
                             Forms\Components\Select::make('airport_group')
+                                ->hintIcon('heroicon-o-collection')
                                 ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
                                 ->searchable()
                                 ->options(AirportGroup::all()->pluck('name_codes', 'id'))
@@ -188,18 +194,24 @@ class FlowMeasureResource extends Resource
                         ->label('Optional filters')
                         ->createItemButtonLabel(__('Add optional filter'))
                         ->columnSpan('full')
+                        ->inset()
+                        ->disableItemMovement()
                         ->blocks([
                             Block::make('waypoint')
+                                ->icon('heroicon-o-view-list')
                                 ->schema([
                                     Forms\Components\Textarea::make('value')
                                         ->label(__('Waypoint'))
+                                        ->hintIcon('heroicon-o-view-list')
                                         ->required()
                                 ]),
                             Block::make('level_above')
+                                ->icon('heroicon-o-arrow-up')
                                 ->schema([
                                     // TODO: Add mask?
                                     Forms\Components\TextInput::make('value')
                                         ->label(__('Level above'))
+                                        ->hint('heroicon-o-arrow-up')
                                         ->numeric()
                                         ->step(5)
                                         ->prefix('FL')
@@ -208,10 +220,12 @@ class FlowMeasureResource extends Resource
                                         ->required()
                                 ]),
                             Block::make('level_below')
+                                ->icon('heroicon-o-arrow-down')
                                 ->schema([
                                     // TODO: Add mask?
                                     Forms\Components\TextInput::make('value')
                                         ->label(__('Level below'))
+                                        ->hintIcon('heroicon-o-arrow-down')
                                         ->numeric()
                                         ->step(5)
                                         ->prefix('FL')
@@ -220,10 +234,12 @@ class FlowMeasureResource extends Resource
                                         ->required()
                                 ]),
                             Block::make('level')
+                                ->icon('heroicon-o-arrow-right')
                                 ->schema([
                                     // TODO: Add mask?
                                     Forms\Components\TextInput::make('value')
                                         ->label(__('Level'))
+                                        ->hintIcon('heroicon-o-arrow-right')
                                         ->numeric()
                                         ->step(5)
                                         ->prefix('FL')
@@ -232,9 +248,11 @@ class FlowMeasureResource extends Resource
                                         ->required()
                                 ]),
                             Block::make('member_event')
+                                ->icon('heroicon-o-calendar')
                                 ->schema([
                                     Forms\Components\Select::make('member_event')
                                         ->label(__('Event'))
+                                        ->hintIcon('heroicon-o-calendar')
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
                                         ->options(
@@ -242,8 +260,10 @@ class FlowMeasureResource extends Resource
                                         )
                                 ]),
                             Block::make('member_non_event')
+                                ->icon('heroicon-o-calendar')
                                 ->schema([
                                     Forms\Components\Select::make('member_non_event')
+                                        ->hintIcon('heroicon-o-calendar')
                                         ->label(__('Event'))
                                         ->hintIcon('heroicon-o-calendar')
                                         ->searchable()
