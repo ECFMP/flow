@@ -14,6 +14,6 @@ class LevelAbove extends AbstractFlowMeasureFilterField
 
     public function value(): string
     {
-        return $this->joinedValues();
+        return $this->filter['value'];
     }
 }
