@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class FlightInformationRegion extends Model
 {
@@ -45,15 +45,15 @@ class FlightInformationRegion extends Model
     protected function identifier(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => strtoupper($value),
-            set: fn($value) => strtoupper($value)
+            get: fn ($value) => strtoupper($value),
+            set: fn ($value) => strtoupper($value)
         );
     }
 
     protected function identifierName(): Attribute
     {
         return new Attribute(
-            fn() => "{$this->identifier} | {$this->name}",
+            fn () => "{$this->identifier} | {$this->name}",
         );
     }
 }
