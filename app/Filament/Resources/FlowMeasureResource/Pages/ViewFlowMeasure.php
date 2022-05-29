@@ -46,14 +46,24 @@ class ViewFlowMeasure extends ViewRecord
         $filters->pull('ADEP');
         $filters->pull('ADES');
 
-        $filters =  $filters->map(function (array $filter) {
+        $newFilters = collect();
+        $filters->each(function (array $filter) use ($newFilters) {
+            foreach ($filter['value'] as $value) {
+                $newFilters->push([
+                    'type' => $filter['type'],
+                    'value' => $value
+                ]);
+            }
+        });
+
+        $newFilters = $newFilters->map(function (array $filter) {
             $filter['data'] = ['value' => $filter['value']];
             Arr::pull($filter, 'value');
 
             return $filter;
         });
 
-        $data['filters'] = $filters->toArray();
+        $data['filters'] = $newFilters->toArray();
 
         return $data;
     }
