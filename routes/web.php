@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\VatsimConnectController;
 use App\Http\Controllers\DocumentationController;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,16 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::middleware([RedirectIfAuthenticated::class])->get('/', function () {
     return to_route('filament.auth.login');
 });
 
 Route::middleware(['guest'])->group(function () {
-    Route::get('admin/login', function () {
-        // Just redirect to login, we don't work with passwords
-        return to_route('vatsimconnect.redirect');
-    })->name('filament.auth.login');
-
     Route::get('/auth/redirect', function () {
         return Socialite::driver('vatsimconnect')->redirect();
     })->name('vatsimconnect.redirect');
