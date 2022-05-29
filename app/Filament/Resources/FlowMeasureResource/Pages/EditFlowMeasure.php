@@ -5,6 +5,7 @@ namespace App\Filament\Resources\FlowMeasureResource\Pages;
 use Illuminate\Support\Arr;
 use App\Models\AirportGroup;
 use App\Enums\FlowMeasureType;
+use Illuminate\Support\Collection;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\FlowMeasureResource;
 
@@ -51,20 +52,23 @@ class EditFlowMeasure extends EditRecord
             Arr::pull($data, 'value');
         }
 
-        $filters = collect($data['filters'])->map(function (array $filter) {
-            $filter['value'] = $filter['data']['value'];
-            Arr::pull($filter, 'data');
-
-            return $filter;
-        });
-
-        $filters->add([
-            'type' => 'ADEP',
-            'value' => $this->getAirportValues($data, 'adep')
-        ])->add([
-            'type' => 'ADES',
-            'value' => $this->getAirportValues($data, 'ades')
-        ]);
+        $filters = collect($data['filters'])
+            ->groupBy('type')
+            ->transform(function (Collection $filter, string $type) {
+                return collect([
+                    'type' => $type,
+                    'value' => $filter->pluck('data')->pluck('value')
+                ]);
+            })
+            ->values()
+            ->add([
+                'type' => 'ADEP',
+                'value' => $this->getAirportValues($data, 'adep')
+            ])
+            ->add([
+                'type' => 'ADES',
+                'value' => $this->getAirportValues($data, 'ades')
+            ]);
 
         $data['filters'] = $filters->toArray();
         Arr::pull($data, 'adep');

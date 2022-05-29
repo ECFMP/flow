@@ -187,6 +187,8 @@ class FlowMeasureResource extends Resource
                         ->label('Optional filters')
                         ->createItemButtonLabel(__('Add optional filter'))
                         ->columnSpan('full')
+                        ->inset()
+                        ->disableItemMovement()
                         ->blocks([
                             Block::make('waypoint')
                                 ->schema([
