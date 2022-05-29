@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\FlowMeasureStatus;
 use Closure;
 use Filament\Forms;
 use Filament\Tables;
@@ -269,15 +270,23 @@ class FlowMeasureResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('identifier')->sortable(),
-                Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
+                Tables\Columns\TextColumn::make('flightInformationRegion.name')
                     ->label(__('Owner')),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->alignCenter()
+                    ->colors([
+                        'danger',
+                        'success' => FlowMeasureStatus::ACTIVE->value,
+                        'warning' => FlowMeasureStatus::NOTIFIED->value,
+                    ]),
                 Tables\Columns\BadgeColumn::make('type')
                     ->alignCenter()
                     ->formatStateUsing(fn (string $state): string => FlowMeasureType::tryFrom($state)->getFormattedName()),
                 Tables\Columns\TextColumn::make('start_time')
                     ->dateTime('M j, Y H:i\z')->sortable(),
-                Tables\Columns\TextColumn::make('end_time')
-                    ->dateTime('M j, Y H:i\z')->sortable(),
+                Tables\Columns\ViewColumn::make('end_time')
+                    ->alignCenter()
+                    ->view('filament.tables.columns.flow-measure.end-time')->sortable(),
             ])
             ->defaultSort('start_time')
             ->filters([
