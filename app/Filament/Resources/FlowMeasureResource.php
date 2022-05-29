@@ -211,7 +211,7 @@ class FlowMeasureResource extends Resource
                                     // TODO: Add mask?
                                     Forms\Components\TextInput::make('value')
                                         ->label(__('Level above'))
-                                        ->hint('heroicon-o-arrow-up')
+                                        ->hintIcon('heroicon-o-arrow-up')
                                         ->numeric()
                                         ->step(5)
                                         ->prefix('FL')
