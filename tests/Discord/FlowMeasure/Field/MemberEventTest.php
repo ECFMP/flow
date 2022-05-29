@@ -35,4 +35,15 @@ class MemberEventTest extends TestCase
             $this->getField($event)->value()
         );
     }
+
+    public function testItHasADeletedEvent()
+    {
+        $event = Event::factory()->create();
+        $event->delete();
+
+        $this->assertEquals(
+            $event->name,
+            $this->getField($event)->value()
+        );
+    }
 }

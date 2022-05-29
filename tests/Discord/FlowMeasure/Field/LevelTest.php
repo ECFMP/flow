@@ -12,7 +12,7 @@ class LevelTest extends TestCase
         return new Level(
             [
                 'type' => 'level',
-                'value' => 555,
+                'value' => [555, 556],
             ]
         );
     }
@@ -28,7 +28,7 @@ class LevelTest extends TestCase
     public function testItHasALevel()
     {
         $this->assertEquals(
-            '555',
+            "555\n556",
             $this->getField()->value()
         );
     }

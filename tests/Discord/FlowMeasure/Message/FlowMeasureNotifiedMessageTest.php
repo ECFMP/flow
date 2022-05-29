@@ -35,7 +35,7 @@ class FlowMeasureNotifiedMessageTest extends TestCase
             ->notStarted()
             ->withTimes(Carbon::parse('2022-05-22T14:54:23Z'), Carbon::parse('2022-05-22T16:37:22Z'))
             ->withEvent()
-            ->withAdditionalFilter(['type' => 'level_below', 'value' => 220])->create();
+            ->withAdditionalFilter(['type' => 'level_below', 'value' => [220]])->create();
 
         $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->count(2))->create();
         $measure->notifiedFlightInformationRegions()->sync([$fir->id]);

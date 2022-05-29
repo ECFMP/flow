@@ -65,7 +65,7 @@ class FlowMeasureWithdrawnMessageTest extends TestCase
         $measure = FlowMeasure::factory()
             ->withEvent()
             ->finished()
-            ->withAdditionalFilter(['type' => 'level_below', 'value' => 220])->create();
+            ->withAdditionalFilter(['type' => 'level_below', 'value' => [220]])->create();
         $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->count(2))->create();
         $measure->notifiedFlightInformationRegions()->sync([$fir->id]);
         $measure->delete();

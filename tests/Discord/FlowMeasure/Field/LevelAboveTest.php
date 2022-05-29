@@ -12,7 +12,7 @@ class LevelAboveTest extends TestCase
         return new LevelAbove(
             [
                 'type' => 'level_above',
-                'value' => 555,
+                'value' => [555, 556],
             ]
         );
     }
@@ -28,7 +28,7 @@ class LevelAboveTest extends TestCase
     public function testItHasALevelAbove()
     {
         $this->assertEquals(
-            '555',
+            '555, 556',
             $this->getField()->value()
         );
     }
