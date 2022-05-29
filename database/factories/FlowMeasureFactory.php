@@ -122,6 +122,64 @@ class FlowMeasureFactory extends Factory
         return $this->withAdditionalFilters([$filter]);
     }
 
+    public function withLevelAbove(int $level): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'level_above',
+                'value' => (string) $level,
+            ]
+        );
+    }
+
+    public function withLevelBelow(int $level): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'level_above',
+                'value' => (string) $level,
+            ]
+        );
+    }
+
+    public function withLevels(array $levels): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'level',
+                'value' => array_map(fn ($level) => (string) $level, $levels),
+            ]
+        );
+    }
+
+    public function withMemberEvent(Event $event): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'member_event',
+                'value' => [
+                    'event_id' => (string) $event->id,
+                    'event_api' => 'testapicode',
+                    'event_vatcan' => 'testvatcancode',
+                ]
+            ]
+        );
+    }
+
+    public function withMemberNotEvent(Event $event): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'member_not_event',
+                'value' => [
+                    'event_id' => (string) $event->id,
+                    'event_api' => 'testapicode',
+                    'event_vatcan' => 'testvatcancode',
+                ]
+            ]
+        );
+    }
+
     public function withMeasure(FlowMeasureType $measureType, ?int $value): static
     {
         return $this->state(fn (array $attributes) => [
