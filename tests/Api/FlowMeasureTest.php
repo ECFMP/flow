@@ -118,7 +118,7 @@ class FlowMeasureTest extends TestCase
                 'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure->end_time),
                 'measure' => [
                     'type' => 'mandatory_route',
-                    'value' => json_encode(['LOGAN', 'UL612 LAKEY DCT NUGRA']),
+                    'value' => ['LOGAN', 'UL612 LAKEY DCT NUGRA'],
                 ],
                 'filters' => [
                     [

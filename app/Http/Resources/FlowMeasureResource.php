@@ -26,7 +26,7 @@ class FlowMeasureResource extends JsonResource
             'measure' => [
                 'type' => $this->type,
                 'value' => $this->isMandatoryRoute()
-                    ? json_encode($this->mandatory_route)
+                    ? $this->mandatory_route
                     : $this->value,
             ],
             'filters' => $this->formatFilters($this->filters),
