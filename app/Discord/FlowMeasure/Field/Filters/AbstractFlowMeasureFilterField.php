@@ -22,6 +22,12 @@ abstract class AbstractFlowMeasureFilterField implements FieldProviderInterface
 
     protected function eventName(): string
     {
-        return Event::withTrashed()->findOrFail($this->filter['value'])->name;
+        return Arr::join(
+            array_map(
+                fn(int $eventId) => Event::withTrashed()->findOrFail($eventId)->name,
+                $this->filter['value']
+            ),
+            ', '
+        );
     }
 }

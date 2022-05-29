@@ -4,16 +4,17 @@ namespace Tests\Discord\FlowMeasure\Field;
 
 use App\Discord\FlowMeasure\Field\Filters\MemberNotEvent;
 use App\Models\Event;
+use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class MemberNotEventTest extends TestCase
 {
-    private function getField(Event $event): MemberNotEvent
+    private function getField(Collection $events): MemberNotEvent
     {
         return new MemberNotEvent(
             [
-                'type' => 'member_not_event',
-                'value' => $event->id,
+                'type' => 'member_event',
+                'value' => $events->map(fn(Event $event) => $event->id)->toArray(),
             ]
         );
     }
@@ -22,7 +23,7 @@ class MemberNotEventTest extends TestCase
     {
         $this->assertEquals(
             'Not Participating in Event',
-            $this->getField(Event::factory()->create())->name()
+            $this->getField(Event::factory()->count(3)->create())->name()
         );
     }
 
@@ -32,7 +33,7 @@ class MemberNotEventTest extends TestCase
 
         $this->assertEquals(
             $event->name,
-            $this->getField($event)->value()
+            $this->getField(collect([$event]))->value()
         );
     }
 
@@ -43,7 +44,18 @@ class MemberNotEventTest extends TestCase
 
         $this->assertEquals(
             $event->name,
-            $this->getField($event)->value()
+            $this->getField(collect([$event]))->value()
+        );
+    }
+
+    public function testItHasMultipleEvents()
+    {
+        $event = Event::factory()->create();
+        $event2 = Event::factory()->create();
+
+        $this->assertEquals(
+            sprintf('%s, %s', $event->name, $event2->name),
+            $this->getField(collect([$event, $event2]))->value()
         );
     }
 }

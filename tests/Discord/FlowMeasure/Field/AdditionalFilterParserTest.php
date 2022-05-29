@@ -104,11 +104,11 @@ class AdditionalFilterParserTest extends TestCase
             [
                 [
                     'type' => 'level_above',
-                    'value' => 123,
+                    'value' => [123],
                 ],
                 [
                     'type' => 'member_not_event',
-                    'value' => 123,
+                    'value' => [123],
                 ],
             ]
         )->create();
