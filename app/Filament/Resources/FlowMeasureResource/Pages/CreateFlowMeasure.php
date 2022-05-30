@@ -34,20 +34,30 @@ class CreateFlowMeasure extends CreateRecord
             Arr::pull($data, 'value');
         }
 
-        $filters = collect($data['filters'])->map(function (array $filter) {
-            $filter['value'] = $filter['data']['value'];
-            Arr::pull($filter, 'data');
+        $filters = collect($data['filters'])
+            ->groupBy('type')
+            ->transform(function (Collection $filter, string $type) {
+                if (in_array($type, ['level_above', 'level_below'])) {
+                    return collect([
+                        'type' => $type,
+                        'value' => $filter->pluck('data')->value('value')
+                    ]);
+                }
 
-            return $filter;
-        });
-
-        $filters->add([
-            'type' => 'ADEP',
-            'value' => $this->getAirportValues($data, 'adep')
-        ])->add([
-            'type' => 'ADES',
-            'value' => $this->getAirportValues($data, 'ades')
-        ]);
+                return collect([
+                    'type' => $type,
+                    'value' => $filter->pluck('data')->pluck('value')
+                ]);
+            })
+            ->values()
+            ->add([
+                'type' => 'ADEP',
+                'value' => $this->getAirportValues($data, 'adep')
+            ])
+            ->add([
+                'type' => 'ADES',
+                'value' => $this->getAirportValues($data, 'ades')
+            ]);
 
         $data['filters'] = $filters->toArray();
         Arr::pull($data, 'adep');

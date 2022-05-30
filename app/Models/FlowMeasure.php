@@ -5,9 +5,11 @@ namespace App\Models;
 use Carbon\Carbon;
 use App\Enums\FilterType;
 use App\Enums\FlowMeasureType;
+use App\Enums\FlowMeasureStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -121,5 +123,24 @@ class FlowMeasure extends Model
                 [FilterType::DEPARTURE_AIRPORTS, FilterType::ARRIVAL_AIRPORTS]
             )
         );
+    }
+
+    public function status(): Attribute
+    {
+        return new Attribute(function () {
+            if ($this->trashed()) {
+                return FlowMeasureStatus::DELETED;
+            };
+
+            if ($this->end_time->lt(now())) {
+                return FlowMeasureStatus::EXPIRED;
+            };
+
+            if ($this->start_time->lt(now())) {
+                return FlowMeasureStatus::ACTIVE;
+            }
+
+            return FlowMeasureStatus::NOTIFIED;
+        });
     }
 }

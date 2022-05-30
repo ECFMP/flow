@@ -3,6 +3,7 @@
 namespace App\Discord\FlowMeasure\Field\Filters;
 
 use App\Discord\FlowMeasure\Field\AbstractFlowMeasureField;
+use Arr;
 
 class Level extends AbstractFlowMeasureFilterField
 {
@@ -13,6 +14,6 @@ class Level extends AbstractFlowMeasureFilterField
 
     public function value(): string
     {
-        return (string) $this->filter['value'];
+        return $this->joinedValues("\n");
     }
 }

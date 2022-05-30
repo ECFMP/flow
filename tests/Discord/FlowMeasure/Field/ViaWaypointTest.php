@@ -12,7 +12,7 @@ class ViaWaypointTest extends TestCase
         return new ViaWaypoint(
             [
                 'type' => 'waypoint',
-                'value' => 'XAMAB',
+                'value' => ['XAMAB', 'WOTAN L9 CPT'],
             ]
         );
     }
@@ -28,7 +28,7 @@ class ViaWaypointTest extends TestCase
     public function testItHasALevel()
     {
         $this->assertEquals(
-            'XAMAB',
+            'XAMAB, WOTAN L9 CPT',
             $this->getField()->value()
         );
     }
