@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\FlowMeasureResource;
 use App\Models\FlowMeasure;
+use App\Repository\FlowMeasureRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FlowMeasureController
 {
+    private readonly FlowMeasureRepository $flowMeasureRepository;
+
+    public function __construct(FlowMeasureRepository $flowMeasureRepository)
+    {
+        $this->flowMeasureRepository = $flowMeasureRepository;
+    }
+
     public function getFilteredFlowMeasures(Request $request): JsonResource
     {
         /**
@@ -17,25 +25,23 @@ class FlowMeasureController
          * TODO: All pending up to end of active
          * TODO: Cron update
          */
-        $query = FlowMeasure::query();
-        $unionQuery = FlowMeasure::endTimeWithinOneDay();
-        if ($this->includeTrashed($request)) {
-            $query->withTrashed();
-            $unionQuery->withTrashed();
-        }
 
-        if ((int)$request->input('active') === 1) {
-            $query->active();
+        if ($this->onlyActive($request)) {
+            $flowMeasures = FlowMeasure::query()->active()->orderBy('id')->get();
         } else {
-            $query->notified()
-                ->union($unionQuery);
+            $flowMeasures = $this->flowMeasureRepository->getApiRelevantFlowMeasures($this->includeTrashed($request));
         }
 
-        return FlowMeasureResource::collection($query->orderBy('id')->get());
+        return FlowMeasureResource::collection($flowMeasures);
     }
 
     private function includeTrashed(Request $request): bool
     {
         return (int)$request->input('deleted') === 1;
+    }
+
+    private function onlyActive(Request $request): bool
+    {
+        return (int)$request->input('active') === 1;
     }
 }
