@@ -44,6 +44,13 @@ class FlowMeasureRepositoryTest extends TestCase
             ->withEvent()
             ->create();
 
+        // Shouldn't show, deleted.
+        $deleted = FlowMeasure::factory()
+            ->finished()
+            ->withEvent()
+            ->create();
+        $deleted->delete();
+
         $expected = [$notified->id, $active->id, $finished->id];
         $actual = $this->flowMeasureRepository->getApiRelevantFlowMeasures(false)
             ->pluck('id')
@@ -63,7 +70,6 @@ class FlowMeasureRepositoryTest extends TestCase
 
         $active = FlowMeasure::factory()
             ->create();
-        $active->delete();
 
         $finished = FlowMeasure::factory()
             ->finished()
@@ -85,6 +91,77 @@ class FlowMeasureRepositoryTest extends TestCase
 
         $expected = [$notified->id, $active->id, $finished->id];
         $actual = $this->flowMeasureRepository->getApiRelevantFlowMeasures(true)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItReturnsActiveFlowMeasuresWithoutDeleted()
+    {
+        // Should show
+        $active1 = FlowMeasure::factory()
+            ->create();
+
+        $active2 = FlowMeasure::factory()
+            ->create();
+
+        $active3 = FlowMeasure::factory()
+            ->create();
+
+        // Shouldn't show, not started
+        FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        // Shouldn't show, finished
+        FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        // Shouldn't show, deleted
+        $deleted = FlowMeasure::factory()
+            ->create();
+        $deleted->delete();
+
+        $expected = [$active1->id, $active2->id, $active3->id];
+        $actual = $this->flowMeasureRepository->getActiveFlowMeasures(false)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItReturnsActiveFlowMeasuresWithDeleted()
+    {
+        // Should show
+        $active1 = FlowMeasure::factory()
+            ->create();
+
+        $active2 = FlowMeasure::factory()
+            ->create();
+
+        $active3 = FlowMeasure::factory()
+            ->create();
+
+        $deleted = FlowMeasure::factory()
+            ->create();
+        $deleted->delete();
+
+        // Shouldn't show, not started
+        FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        // Shouldn't show, finished
+        FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $expected = [$active1->id, $active2->id, $active3->id, $deleted->id];
+        $actual = $this->flowMeasureRepository->getActiveFlowMeasures(true)
             ->pluck('id')
             ->sort()
             ->toArray();

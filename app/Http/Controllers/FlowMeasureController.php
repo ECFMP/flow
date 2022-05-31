@@ -27,7 +27,7 @@ class FlowMeasureController
          */
 
         if ($this->onlyActive($request)) {
-            $flowMeasures = FlowMeasure::query()->active()->orderBy('id')->get();
+            $flowMeasures = $this->flowMeasureRepository->getActiveFlowMeasures($this->includeTrashed($request));
         } else {
             $flowMeasures = $this->flowMeasureRepository->getApiRelevantFlowMeasures($this->includeTrashed($request));
         }
