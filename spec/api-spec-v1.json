@@ -310,7 +310,17 @@
               "example": 1
             },
             "required": false,
-            "description": "Only include flow measures that are currently active"
+            "description": "Only include flow measures that are currently active, can be used in combination with notified"
+          },
+          {
+            "in": "query",
+            "name": "notified",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            },
+            "required": false,
+            "description": "Only include flow measures that are currently notified, can be used in combination with active"
           }
         ],
         "responses": {
