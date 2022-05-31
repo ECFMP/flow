@@ -2,8 +2,6 @@
 
 namespace App\Discord\FlowMeasure\Field\Filters;
 
-use App\Models\Event;
-
 class MemberNotEvent extends AbstractFlowMeasureFilterField
 {
 
@@ -14,6 +12,6 @@ class MemberNotEvent extends AbstractFlowMeasureFilterField
 
     public function value(): string
     {
-        return Event::findOrFail($this->filter['value'])->name;
+        return $this->eventName();
     }
 }

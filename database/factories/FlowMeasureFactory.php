@@ -48,7 +48,7 @@ class FlowMeasureFactory extends Factory
 
     public function withTimes(Carbon $startTime, Carbon $endTime): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'start_time' => $startTime,
             'end_time' => $endTime,
         ]);
@@ -56,7 +56,7 @@ class FlowMeasureFactory extends Factory
 
     public function finished(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('-3 hour', 'now'),
             'end_time' => $this->faker->dateTimeBetween('-2 hour', 'now - 1 minute'),
         ]);
@@ -64,22 +64,30 @@ class FlowMeasureFactory extends Factory
 
     public function notStarted(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('now + 1 minute', 'now + 1 hour'),
             'end_time' => $this->faker->dateTimeBetween('now + 2 hour', 'now + 3 hour'),
         ]);
     }
 
+    public function notNotified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'start_time' => $this->faker->dateTimeBetween('+25 hours', '+26 hours'),
+            'end_time' => $this->faker->dateTimeBetween('+26 hours', '+27 hours'),
+        ]);
+    }
+
     public function withEvent(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'event_id' => Event::factory()->create()->id,
         ]);
     }
 
     public function withMandatoryRoute(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => 'mandatory_route',
             'value' => null,
             'mandatory_route' => ['LOGAN', 'UL612 LAKEY DCT NUGRA'],
@@ -89,7 +97,7 @@ class FlowMeasureFactory extends Factory
     public function withArrivalAirports(array $airports): static
     {
         return $this->state(function (array $attributes) use ($airports) {
-            $filteredFilters = array_filter($attributes['filters'], fn($filter) => $filter['type'] !== 'ADES');
+            $filteredFilters = array_filter($attributes['filters'], fn ($filter) => $filter['type'] !== 'ADES');
             return ['filters' => array_merge($filteredFilters, [['type' => 'ADES', 'value' => $airports]])];
         });
     }
@@ -97,14 +105,14 @@ class FlowMeasureFactory extends Factory
     public function withDepartureAirports(array $airports): static
     {
         return $this->state(function (array $attributes) use ($airports) {
-            $filteredFilters = array_filter($attributes['filters'], fn($filter) => $filter['type'] !== 'ADEP');
+            $filteredFilters = array_filter($attributes['filters'], fn ($filter) => $filter['type'] !== 'ADEP');
             return ['filters' => array_merge($filteredFilters, [['type' => 'ADEP', 'value' => $airports]])];
         });
     }
 
     public function withAdditionalFilters(array $filters): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'filters' => array_merge($attributes['filters'], $filters),
         ]);
     }
@@ -114,9 +122,67 @@ class FlowMeasureFactory extends Factory
         return $this->withAdditionalFilters([$filter]);
     }
 
+    public function withLevelAbove(int $level): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'level_above',
+                'value' => (string) $level,
+            ]
+        );
+    }
+
+    public function withLevelBelow(int $level): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'level_above',
+                'value' => (string) $level,
+            ]
+        );
+    }
+
+    public function withLevels(array $levels): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'level',
+                'value' => array_map(fn ($level) => (string) $level, $levels),
+            ]
+        );
+    }
+
+    public function withMemberEvent(Event $event): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'member_event',
+                'value' => [
+                    'event_id' => (string) $event->id,
+                    'event_api' => 'testapicode',
+                    'event_vatcan' => 'testvatcancode',
+                ]
+            ]
+        );
+    }
+
+    public function withMemberNotEvent(Event $event): static
+    {
+        return $this->withAdditionalFilter(
+            [
+                'type' => 'member_not_event',
+                'value' => [
+                    'event_id' => (string) $event->id,
+                    'event_api' => 'testapicode',
+                    'event_vatcan' => 'testvatcancode',
+                ]
+            ]
+        );
+    }
+
     public function withMeasure(FlowMeasureType $measureType, ?int $value): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'type' => $measureType->value,
             'value' => $value,
             'mandatory_route' => null,
@@ -125,7 +191,7 @@ class FlowMeasureFactory extends Factory
 
     public function withValue(int $value): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'value' => $value,
         ]);
     }

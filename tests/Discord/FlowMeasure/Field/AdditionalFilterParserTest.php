@@ -19,7 +19,7 @@ class AdditionalFilterParserTest extends TestCase
         $measure = FlowMeasure::factory()->withAdditionalFilter(
             [
                 'type' => 'waypoint',
-                'value' => 'abc',
+                'value' => ['abc'],
             ]
         )->create();
 
@@ -33,7 +33,7 @@ class AdditionalFilterParserTest extends TestCase
         $measure = FlowMeasure::factory()->withAdditionalFilter(
             [
                 'type' => 'level',
-                'value' => 123,
+                'value' => [123],
             ]
         )->create();
 
@@ -47,7 +47,7 @@ class AdditionalFilterParserTest extends TestCase
         $measure = FlowMeasure::factory()->withAdditionalFilter(
             [
                 'type' => 'level_above',
-                'value' => 123,
+                'value' => [123],
             ]
         )->create();
 
@@ -61,7 +61,7 @@ class AdditionalFilterParserTest extends TestCase
         $measure = FlowMeasure::factory()->withAdditionalFilter(
             [
                 'type' => 'level_below',
-                'value' => 123,
+                'value' => [123],
             ]
         )->create();
 
@@ -75,7 +75,7 @@ class AdditionalFilterParserTest extends TestCase
         $measure = FlowMeasure::factory()->withAdditionalFilter(
             [
                 'type' => 'member_event',
-                'value' => 123,
+                'value' => [123],
             ]
         )->create();
 
@@ -89,7 +89,7 @@ class AdditionalFilterParserTest extends TestCase
         $measure = FlowMeasure::factory()->withAdditionalFilter(
             [
                 'type' => 'member_not_event',
-                'value' => 123,
+                'value' => [123],
             ]
         )->create();
 
@@ -104,11 +104,11 @@ class AdditionalFilterParserTest extends TestCase
             [
                 [
                     'type' => 'level_above',
-                    'value' => 123,
+                    'value' => [123],
                 ],
                 [
                     'type' => 'member_not_event',
-                    'value' => 123,
+                    'value' => [123],
                 ],
             ]
         )->create();

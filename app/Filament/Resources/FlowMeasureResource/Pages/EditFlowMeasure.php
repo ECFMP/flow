@@ -5,6 +5,7 @@ namespace App\Filament\Resources\FlowMeasureResource\Pages;
 use Illuminate\Support\Arr;
 use App\Models\AirportGroup;
 use App\Enums\FlowMeasureType;
+use Illuminate\Support\Collection;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\FlowMeasureResource;
 
@@ -33,14 +34,31 @@ class EditFlowMeasure extends EditRecord
         $filters->pull('ADEP');
         $filters->pull('ADES');
 
-        $filters =  $filters->map(function (array $filter) {
+        $newFilters = collect();
+        $filters->each(function (array $filter) use ($newFilters) {
+            if (in_array($filter['type'], ['level_above', 'level_below'])) {
+                $newFilters->push([
+                    'type' => $filter['type'],
+                    'value' => $filter['value'],
+                ]);
+            } else {
+                foreach ($filter['value'] as $value) {
+                    $newFilters->push([
+                        'type' => $filter['type'],
+                        'value' => $value
+                    ]);
+                }
+            }
+        });
+
+        $newFilters = $newFilters->map(function (array $filter) {
             $filter['data'] = ['value' => $filter['value']];
             Arr::pull($filter, 'value');
 
             return $filter;
         });
 
-        $data['filters'] = $filters->toArray();
+        $data['filters'] = $newFilters->toArray();
 
         return $data;
     }
@@ -51,26 +69,30 @@ class EditFlowMeasure extends EditRecord
             Arr::pull($data, 'value');
         }
 
-        $filters = collect($data['filters'])->map(function (array $filter) {
-            $filter['value'] = $filter['data']['value'];
-            Arr::pull($filter, 'data');
+        $filters = collect($data['filters'])
+            ->groupBy('type')
+            ->transform(function (Collection $filter, string $type) {
+                if (in_array($type, ['level_above', 'level_below'])) {
+                    return collect([
+                        'type' => $type,
+                        'value' => $filter->pluck('data')->value('value')
+                    ]);
+                }
 
-            return $filter;
-        });
-
-        $filters->add([
-            'type' => 'ADEP',
-            'value' => $this->getAirportValues($data, 'adep')
-        ])->add([
-            'type' => 'ADES',
-            'value' => $this->getAirportValues($data, 'ades')
-        ]);
-
-        $data['filters'] = $filters->toArray();
-        Arr::pull($data, 'adep');
-        Arr::pull($data, 'ades');
-
-        return $data;
+                return collect([
+                    'type' => $type,
+                    'value' => $filter->pluck('data')->pluck('value')
+                ]);
+            })
+            ->values()
+            ->add([
+                'type' => 'ADEP',
+                'value' => $this->getAirportValues($data, 'adep')
+            ])
+            ->add([
+                'type' => 'ADES',
+                'value' => $this->getAirportValues($data, 'ades')
+            ]);
     }
 
     private function buildAirportFilter(string $value): array

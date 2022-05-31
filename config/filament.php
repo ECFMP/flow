@@ -1,7 +1,7 @@
 <?php
 
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
-use App\Filament\Resources\FlowMeasureResource\Widgets\UpcomingFlowMeasures;
+use App\Filament\Resources\FlowMeasureResource\Widgets\NotifiedFlowMeasures;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -92,7 +92,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            'login' => \Filament\Http\Livewire\Auth\Login::class,
+            'login' => \App\Filament\Pages\Login::class,
         ],
     ],
 
@@ -145,7 +145,7 @@ return [
         'path' => app_path('Filament/Widgets'),
         'register' => [
             ActiveFlowMeasures::class,
-            UpcomingFlowMeasures::class
+            NotifiedFlowMeasures::class
         ],
     ],
 

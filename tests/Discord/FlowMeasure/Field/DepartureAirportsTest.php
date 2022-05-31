@@ -3,6 +3,7 @@
 namespace Tests\Discord\FlowMeasure\Field;
 
 use App\Discord\FlowMeasure\Field\DepartureAirports;
+use App\Models\Airport;
 use App\Models\AirportGroup;
 use App\Models\FlowMeasure;
 use InvalidArgumentException;
@@ -65,8 +66,15 @@ class DepartureAirportsTest extends TestCase
     public function testItReturnsAirportStringWithAGroup()
     {
         $group = AirportGroup::factory()->create(['name' => 'Severn Clutch']);
+        $airport1 = Airport::factory()->create();
+        $airport2 = Airport::factory()->create();
+        $group->airports()->sync([$airport1->id, $airport2->id]);
+
         $measure = FlowMeasure::factory()->withDepartureAirports(['EGKK', $group->id])->create();
 
-        $this->assertEquals('EGKK, Severn Clutch', $this->getField($measure)->value());
+        $this->assertEquals(
+            'EGKK, Severn Clutch [' . $airport1->icao_code . ', ' . $airport2->icao_code . ']',
+            $this->getField($measure)->value()
+        );
     }
 }

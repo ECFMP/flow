@@ -12,7 +12,7 @@ class LevelAboveTest extends TestCase
         return new LevelAbove(
             [
                 'type' => 'level_above',
-                'value' => 555,
+                'value' => '555',
             ]
         );
     }

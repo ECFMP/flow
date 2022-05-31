@@ -12,6 +12,6 @@ class ViaWaypoint extends AbstractFlowMeasureFilterField
 
     public function value(): string
     {
-        return (string) $this->filter['value'];
+        return $this->joinedValues();
     }
 }
