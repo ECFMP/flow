@@ -31,7 +31,7 @@ class FlowMeasureController
                 ->union($unionQuery);
         }
 
-        return FlowMeasureResource::collection($query->get());
+        return FlowMeasureResource::collection($query->orderBy('id')->get());
     }
 
     private function includeTrashed(Request $request): bool
