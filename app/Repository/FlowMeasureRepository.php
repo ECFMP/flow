@@ -25,6 +25,23 @@ class FlowMeasureRepository
             ->get();
     }
 
+    public function getNotifiedFlowMeasures(bool $includeDeleted): Collection
+    {
+        return $this->baseQuery($includeDeleted)
+            ->notified()
+            ->orderBy('id')
+            ->get();
+    }
+
+    public function getActiveAndNotifiedFlowMeasures(bool $includeDeleted): Collection
+    {
+        return $this->baseQuery($includeDeleted)
+            ->notified()
+            ->union($this->baseQuery($includeDeleted)->active())
+            ->orderBy('id')
+            ->get();
+    }
+
     private function baseQuery(bool $includeDeleted): Builder
     {
         return tap(

@@ -475,6 +475,13 @@ class FlowMeasureTest extends TestCase
             ->withEvent()
             ->create();
 
+        $deleted = FlowMeasure::factory()
+            ->notStarted()
+            ->withEvent()
+            ->create();
+
+        $deleted->delete();
+
         // Shouldn't show, too far in the future
         FlowMeasure::factory()
             ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
@@ -488,6 +495,82 @@ class FlowMeasureTest extends TestCase
             ->create();
 
         $this->get('api/v1/flow-measure')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $flowMeasure1->id,
+                    'ident' => $flowMeasure1->identifier,
+                    'event_id' => null,
+                    'reason' => $flowMeasure1->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120,
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**'],
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM'],
+                        ],
+                    ],
+                    'notified_flight_information_regions' => [],
+                ],
+                [
+                    'id' => $flowMeasure2->id,
+                    'ident' => $flowMeasure2->identifier,
+                    'event_id' => $flowMeasure2->event->id,
+                    'reason' => $flowMeasure2->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120,
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**'],
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM'],
+                        ],
+                    ],
+                    'notified_flight_information_regions' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsNotifiedFlowMeasuresWithDeleted()
+    {
+        $flowMeasure1 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $flowMeasure2 = FlowMeasure::factory()
+            ->notStarted()
+            ->withEvent()
+            ->create();
+        $flowMeasure2->delete();
+
+        // Shouldn't show, too far in the future
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->withEvent()
+            ->create();
+
+        // Shouldn't show, too far in the past
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->withEvent()
+            ->create();
+
+        $this->get('api/v1/flow-measure?notified=1&deleted=1')
             ->assertOk()
             ->assertExactJson([
                 [
@@ -715,6 +798,185 @@ class FlowMeasureTest extends TestCase
                     'reason' => $flowMeasure1->reason,
                     'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->start_time),
                     'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120,
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**'],
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM'],
+                        ],
+                    ],
+                    'notified_flight_information_regions' => [],
+                ],
+            ]);
+    }
+
+    public function testItFiltersForActiveMeasuresIncludingDeleted()
+    {
+        $flowMeasure1 = FlowMeasure::factory()
+            ->create();
+        $flowMeasure1->delete();
+
+        FlowMeasure::factory()
+            ->withEvent()
+            ->notStarted()
+            ->create();
+
+        FlowMeasure::factory()
+            ->withEvent()
+            ->finished()
+            ->create();
+
+
+        $this->get('api/v1/flow-measure?active=1&deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $flowMeasure1->id,
+                    'ident' => $flowMeasure1->identifier,
+                    'event_id' => null,
+                    'reason' => $flowMeasure1->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120,
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**'],
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM'],
+                        ],
+                    ],
+                    'notified_flight_information_regions' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsActiveAndNotifiedFlowMeasures()
+    {
+        $flowMeasure1 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $flowMeasure2 = FlowMeasure::factory()
+            ->withEvent()
+            ->create();
+
+        FlowMeasure::factory()
+            ->finished()
+            ->create();
+
+        $deleted = FlowMeasure::factory()
+            ->create();
+        $deleted->delete();
+
+        $this->get('api/v1/flow-measure?active=1&notified=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $flowMeasure1->id,
+                    'ident' => $flowMeasure1->identifier,
+                    'event_id' => null,
+                    'reason' => $flowMeasure1->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120,
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**'],
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM'],
+                        ],
+                    ],
+                    'notified_flight_information_regions' => [],
+                ],
+                [
+                    'id' => $flowMeasure2->id,
+                    'ident' => $flowMeasure2->identifier,
+                    'event_id' => $flowMeasure2->event->id,
+                    'reason' => $flowMeasure2->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120,
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**'],
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM'],
+                        ],
+                    ],
+                    'notified_flight_information_regions' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsActiveAndNotifiedFlowMeasuresWithDeleted()
+    {
+        $flowMeasure1 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $flowMeasure2 = FlowMeasure::factory()
+            ->withEvent()
+            ->create();
+        $flowMeasure2->delete();
+
+        $this->get('api/v1/flow-measure?active=1&notified=1&deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $flowMeasure1->id,
+                    'ident' => $flowMeasure1->identifier,
+                    'event_id' => null,
+                    'reason' => $flowMeasure1->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure1->end_time),
+                    'measure' => [
+                        'type' => 'minimum_departure_interval',
+                        'value' => 120,
+                    ],
+                    'filters' => [
+                        [
+                            'type' => 'ADEP',
+                            'value' => ['EG**'],
+                        ],
+                        [
+                            'type' => 'ADES',
+                            'value' => ['EHAM'],
+                        ],
+                    ],
+                    'notified_flight_information_regions' => [],
+                ],
+                [
+                    'id' => $flowMeasure2->id,
+                    'ident' => $flowMeasure2->identifier,
+                    'event_id' => $flowMeasure2->event->id,
+                    'reason' => $flowMeasure2->reason,
+                    'starttime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->start_time),
+                    'endtime' => ApiDateTimeFormatter::formatDateTime($flowMeasure2->end_time),
                     'measure' => [
                         'type' => 'minimum_departure_interval',
                         'value' => 120,

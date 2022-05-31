@@ -117,7 +117,7 @@ class FlowMeasureRepositoryTest extends TestCase
 
         // Shouldn't show, finished
         FlowMeasure::factory()
-            ->notStarted()
+            ->finished()
             ->create();
 
         // Shouldn't show, deleted
@@ -157,11 +157,155 @@ class FlowMeasureRepositoryTest extends TestCase
 
         // Shouldn't show, finished
         FlowMeasure::factory()
-            ->notStarted()
+            ->finished()
             ->create();
 
         $expected = [$active1->id, $active2->id, $active3->id, $deleted->id];
         $actual = $this->flowMeasureRepository->getActiveFlowMeasures(true)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItReturnsNotifiedFlowMeasuresWithoutDeleted()
+    {
+        // Should show
+        $notified1 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $notified2 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $notified3 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        // Shouldn't show, active
+        FlowMeasure::factory()
+            ->create();
+
+        // Shouldn't show, finished
+        FlowMeasure::factory()
+            ->finished()
+            ->create();
+
+        // Shouldn't show, deleted
+        $deleted = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+        $deleted->delete();
+
+        $expected = [$notified1->id, $notified2->id, $notified3->id];
+        $actual = $this->flowMeasureRepository->getNotifiedFlowMeasures(false)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItReturnsNotifiedFlowMeasuresWithDeleted()
+    {
+        // Should show
+        $notified1 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $notified2 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $notified3 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $deleted = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+        $deleted->delete();
+
+        // Shouldn't show, active
+        FlowMeasure::factory()
+            ->create();
+
+        // Shouldn't show, finished
+        FlowMeasure::factory()
+            ->finished()
+            ->create();
+
+        $expected = [$notified1->id, $notified2->id, $notified3->id, $deleted->id];
+        $actual = $this->flowMeasureRepository->getNotifiedFlowMeasures(true)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItReturnsNotifiedAndActiveFlowMeasuresWithoutDeleted()
+    {
+        // Should show
+        $notified1 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $notified2 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $active = FlowMeasure::factory()
+            ->create();
+
+        // Shouldn't show, finished
+        FlowMeasure::factory()
+            ->finished()
+            ->create();
+
+        // Shouldn't show, deleted
+        $deleted = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+        $deleted->delete();
+
+        $expected = [$notified1->id, $notified2->id, $active->id];
+        $actual = $this->flowMeasureRepository->getActiveAndNotifiedFlowMeasures(false)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItReturnsNotifiedAndActiveFlowMeasuresWithDeleted()
+    {
+        // Should show
+        $notified1 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $notified2 = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $active = FlowMeasure::factory()
+            ->create();
+
+        $deletedNotified = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+        $deletedNotified->delete();
+
+        $deletedActive = FlowMeasure::factory()
+            ->create();
+        $deletedActive->delete();
+
+        $expected = [$notified1->id, $notified2->id, $active->id, $deletedNotified->id, $deletedActive->id];
+        
+        $actual = $this->flowMeasureRepository->getActiveAndNotifiedFlowMeasures(true)
             ->pluck('id')
             ->sort()
             ->toArray();

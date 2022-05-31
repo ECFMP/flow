@@ -19,17 +19,24 @@ class FlowMeasureController
 
     public function getFilteredFlowMeasures(Request $request): JsonResource
     {
-        /**
-         * TODO: Move queries to repository?
-         * TODO: Notified only
-         * TODO: All pending up to end of active
-         * TODO: Cron update
-         */
-
-        if ($this->onlyActive($request)) {
-            $flowMeasures = $this->flowMeasureRepository->getActiveFlowMeasures($this->includeTrashed($request));
+        if ($this->activeAndNotified($request)) {
+            $flowMeasures = $this->flowMeasureRepository->getActiveAndNotifiedFlowMeasures(
+                $this->includeTrashed($request)
+            );
         } else {
-            $flowMeasures = $this->flowMeasureRepository->getApiRelevantFlowMeasures($this->includeTrashed($request));
+            if ($this->onlyActive($request)) {
+                $flowMeasures = $this->flowMeasureRepository->getActiveFlowMeasures($this->includeTrashed($request));
+            } else {
+                if ($this->onlyNotified($request)) {
+                    $flowMeasures = $this->flowMeasureRepository->getNotifiedFlowMeasures(
+                        $this->includeTrashed($request)
+                    );
+                } else {
+                    $flowMeasures = $this->flowMeasureRepository->getApiRelevantFlowMeasures(
+                        $this->includeTrashed($request)
+                    );
+                }
+            }
         }
 
         return FlowMeasureResource::collection($flowMeasures);
@@ -43,5 +50,15 @@ class FlowMeasureController
     private function onlyActive(Request $request): bool
     {
         return (int)$request->input('active') === 1;
+    }
+
+    private function onlyNotified(Request $request): bool
+    {
+        return (int)$request->input('notified') === 1;
+    }
+
+    private function activeAndNotified(Request $request): bool
+    {
+        return $this->onlyActive($request) && $this->onlyNotified($request);
     }
 }
