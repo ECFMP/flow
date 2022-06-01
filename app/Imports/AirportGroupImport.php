@@ -14,7 +14,7 @@ class AirportGroupImport implements ToCollection
 
     private function rowValid(Collection $row): bool
     {
-        return count($row) >= 2;
+        return count($row) === 2;
     }
 
     public function collection(Collection $rows)
