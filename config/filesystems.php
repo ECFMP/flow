@@ -35,6 +35,11 @@ return [
             'root' => storage_path('app'),
             'throw' => false,
         ],
+        'imports' => [
+            'driver' => 'local',
+            'root' => storage_path('imports'),
+            'throw' => false,
+        ],
         'api-spec' => [
             'driver' => 'local',
             'root' => __DIR__ . '/../spec',
