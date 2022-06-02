@@ -125,16 +125,29 @@ class FlowMeasure extends Model
         );
     }
 
+    public function scopeNotified(Builder $builder): Builder
+    {
+        return $builder->where('start_time', '<', Carbon::now()->addDay())
+            ->where('start_time', '>', Carbon::now());
+    }
+
+    public function scopeEndTimeWithinOneDay(Builder $builder): Builder
+    {
+        return $builder->where('start_time', '<', Carbon::now())
+            ->where('end_time', '>', Carbon::now()->subDay());
+
+    }
+
     public function status(): Attribute
     {
         return new Attribute(function () {
             if ($this->trashed()) {
                 return FlowMeasureStatus::DELETED;
-            };
+            }
 
             if ($this->end_time->lt(now())) {
                 return FlowMeasureStatus::EXPIRED;
-            };
+            }
 
             if ($this->start_time->lt(now())) {
                 return FlowMeasureStatus::ACTIVE;

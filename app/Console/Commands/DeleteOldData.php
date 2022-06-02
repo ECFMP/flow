@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 
 class DeleteOldData extends Command
 {
-    private const MONTHS_TO_KEEP = 3;
+    private const MONTHS_TO_KEEP = 2;
 
     /**
      * The name and signature of the console command.
