@@ -93,10 +93,9 @@ class EventResource extends Resource
                     ->label(__('Start'))
                     ->dateTime('M j, Y H:i\z')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('date_end')
-                    ->label(__('End'))
-                    ->dateTime('M j, Y H:i\z')
-                    ->sortable(),
+                Tables\Columns\ViewColumn::make('date_end')
+                    ->alignCenter()
+                    ->view('filament.tables.columns.event.date-end')->sortable(),
                 Tables\Columns\BadgeColumn::make('vatcan_code')
                     ->label('VATCAN code'),
             ])
