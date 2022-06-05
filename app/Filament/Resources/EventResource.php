@@ -117,6 +117,13 @@ class EventResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('date_end', '<=', $date),
                             );
                     }),
+            ])
+            ->prependActions([
+                Tables\Actions\Action::make('import_participants')
+                    ->url(fn (Event $record): string => route('filament.resources.events.import-participants', $record))
+                    ->visible(fn (Event $record): bool => auth()->user()->can('update', $record))
+                    ->button()
+                    ->icon('heroicon-o-database')
             ]);
     }
 
@@ -134,6 +141,7 @@ class EventResource extends Resource
             'create' => Pages\CreateEvent::route('/create'),
             'view' => Pages\ViewEvent::route('{record}'),
             'edit' => Pages\EditEvent::route('/{record}/edit'),
+            'import-participants' => Pages\ImportParticipants::route('/{record}/import-participants'),
         ];
     }
 }
