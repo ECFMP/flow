@@ -61,12 +61,12 @@ class EventResource extends Resource
                     )
                     ->required(),
                 Forms\Components\DateTimePicker::make('date_start')
-                    ->label('Start (UTC)')
+                    ->label('Start [UTC]')
                     ->default(now()->addWeek()->startOfHour())
                     ->withoutSeconds()
                     ->required(),
                 Forms\Components\DateTimePicker::make('date_end')
-                    ->label('End (UTC)')
+                    ->label('End [UTC]')
                     ->default(now()->addWeek()->addHours(4)->startOfHour())
                     ->withoutSeconds()
                     ->after('date_start')

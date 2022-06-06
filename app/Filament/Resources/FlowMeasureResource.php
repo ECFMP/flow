@@ -104,6 +104,7 @@ class FlowMeasureResource extends Resource
                     })
                     ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
                 Forms\Components\DateTimePicker::make('start_time')
+                    ->label(__('Start time [UTC]'))
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
                     ->afterOrEqual(now())
@@ -117,6 +118,7 @@ class FlowMeasureResource extends Resource
                     })
                     ->required(),
                 Forms\Components\DateTimePicker::make('end_time')
+                    ->label(__('End time [UTC]'))
                     ->default(now()->addHours(2)->addMinutes(5))
                     ->withoutSeconds()
                     ->after('start_time')
