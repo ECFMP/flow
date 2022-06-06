@@ -26,6 +26,7 @@ use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
+use Filament\Forms\Components\TextInput;
 
 class FlowMeasureResource extends Resource
 {
@@ -63,7 +64,17 @@ class FlowMeasureResource extends Resource
                     )
                     ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
+                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->required(fn (Closure $get) => $get('event_id') == null),
+                Forms\Components\TextInput::make('flight_information_region_name')
+                    ->label('Flight Information Region')
+                    ->hintIcon('heroicon-o-folder')
+                    ->disabled(true)
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function (TextInput $component, Closure $get, $state) {
+                        $component->state(FlightInformationRegion::find($get('flight_information_region_id'))?->identifier_name ?? null);
+                    })
+                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
                 Forms\Components\Select::make('event_id')
                     ->label(__('Event'))
                     ->hintIcon('heroicon-o-calendar')
@@ -81,7 +92,17 @@ class FlowMeasureResource extends Resource
                     ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->reactive()
+                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
+                Forms\Components\TextInput::make('event_name')
+                    ->label(__('Event'))
+                    ->hintIcon('heroicon-o-calendar')
+                    ->disabled(true)
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function (TextInput $component, Closure $get, $state) {
+                        $component->state(Event::find($get('event_id'))?->name_date ?? null);
+                    })
+                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
                 Forms\Components\DateTimePicker::make('start_time')
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
