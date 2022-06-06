@@ -19,12 +19,7 @@ class CreateFlowMeasure extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if (!$data['event_id']) {
-            $fir = FlightInformationRegion::find($data['flight_information_region_id']);
-        } else {
-            $fir = Event::find($data['event_id'])->flightInformationRegion;
-            $data['flight_information_region_id'] ??= $fir->id;
-        }
+        $fir = FlightInformationRegion::find($data['flight_information_region_id']);
 
         $startTime = Carbon::parse($data['start_time']);
         $data['identifier'] = FlowMeasureIdentifierGenerator::generateIdentifier($startTime, $fir);
