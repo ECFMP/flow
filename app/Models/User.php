@@ -26,6 +26,12 @@ class User extends Authenticatable implements FilamentUser
         'role_id',
     ];
 
+    protected $hidden = [
+        'token',
+        'refresh_token',
+        'refresh_token_expires_at',
+    ];
+
     protected $casts = [
         'role_id' => 'integer',
     ];
