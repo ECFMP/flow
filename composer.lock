@@ -1220,16 +1220,16 @@
         },
         {
             "name": "filament/filament",
-            "version": "v2.12.26",
+            "version": "v2.12.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-filament/admin.git",
-                "reference": "b411c620f3bfc705570fe4cfba8fda8f920e7f65"
+                "reference": "408ba76a6b96f951e046de48aeebd14182418b80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-filament/admin/zipball/b411c620f3bfc705570fe4cfba8fda8f920e7f65",
-                "reference": "b411c620f3bfc705570fe4cfba8fda8f920e7f65",
+                "url": "https://api.github.com/repos/laravel-filament/admin/zipball/408ba76a6b96f951e046de48aeebd14182418b80",
+                "reference": "408ba76a6b96f951e046de48aeebd14182418b80",
                 "shasum": ""
             },
             "require": {
@@ -1277,20 +1277,20 @@
                 "issues": "https://github.com/laravel-filament/filament/issues",
                 "source": "https://github.com/laravel-filament/filament"
             },
-            "time": "2022-06-04T12:05:16+00:00"
+            "time": "2022-06-06T08:36:06+00:00"
         },
         {
             "name": "filament/forms",
-            "version": "v2.12.26",
+            "version": "v2.12.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-filament/forms.git",
-                "reference": "ff27e836e165f7a870bf8601a06a5ae4b19ca9ba"
+                "reference": "9a93a9f9cb2e12ec4fa9d0131182152a7606e584"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-filament/forms/zipball/ff27e836e165f7a870bf8601a06a5ae4b19ca9ba",
-                "reference": "ff27e836e165f7a870bf8601a06a5ae4b19ca9ba",
+                "url": "https://api.github.com/repos/laravel-filament/forms/zipball/9a93a9f9cb2e12ec4fa9d0131182152a7606e584",
+                "reference": "9a93a9f9cb2e12ec4fa9d0131182152a7606e584",
                 "shasum": ""
             },
             "require": {
@@ -1334,20 +1334,20 @@
                 "issues": "https://github.com/laravel-filament/filament/issues",
                 "source": "https://github.com/laravel-filament/filament"
             },
-            "time": "2022-06-04T12:05:18+00:00"
+            "time": "2022-06-06T08:35:57+00:00"
         },
         {
             "name": "filament/support",
-            "version": "v2.12.26",
+            "version": "v2.12.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-filament/support.git",
-                "reference": "120c027fa021c80f5d57d1f40f44eaa6c812878a"
+                "reference": "dc12170f92a27477acdd311d5e3bdab0da5e343a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-filament/support/zipball/120c027fa021c80f5d57d1f40f44eaa6c812878a",
-                "reference": "120c027fa021c80f5d57d1f40f44eaa6c812878a",
+                "url": "https://api.github.com/repos/laravel-filament/support/zipball/dc12170f92a27477acdd311d5e3bdab0da5e343a",
+                "reference": "dc12170f92a27477acdd311d5e3bdab0da5e343a",
                 "shasum": ""
             },
             "require": {
@@ -1383,11 +1383,11 @@
                 "issues": "https://github.com/laravel-filament/filament/issues",
                 "source": "https://github.com/laravel-filament/filament"
             },
-            "time": "2022-06-04T12:05:19+00:00"
+            "time": "2022-06-06T08:35:59+00:00"
         },
         {
             "name": "filament/tables",
-            "version": "v2.12.26",
+            "version": "v2.12.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-filament/tables.git",
@@ -12121,5 +12121,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
