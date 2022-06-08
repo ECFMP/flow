@@ -33,7 +33,18 @@ class ImportParticipants extends Page implements HasForms
             FileUpload::make('file')
                 ->helperText(__("CSV file, containing only Vatsim ID's. Please note that this **overwrites** any previous imports."))
                 ->disk('imports')
-                ->acceptedFileTypes(['text/csv', 'text/plain'])
+                ->acceptedFileTypes([
+                    // Source: https://stackoverflow.com/a/42140178/6365367
+                    'text/csv',
+                    'text/plain',
+                    'text/x-csv',
+                    'application/vnd.ms-excel',
+                    'application/csv',
+                    'application/x-csv',
+                    'text/comma-separated-values',
+                    'text/x-comma-separated-values',
+                    'text/tab-separated-values'
+                ])
                 ->required()
         ];
     }
