@@ -31,7 +31,7 @@ class ImportParticipants extends Page implements HasForms
     {
         return [
             FileUpload::make('file')
-                ->helperText(__("CSV file, containing only Vatsim ID's"))
+                ->helperText(__("CSV file, containing only Vatsim ID's. Please note that this **overwrites** any previous imports."))
                 ->disk('imports')
                 ->acceptedFileTypes(['text/csv', 'text/plain'])
                 ->required()
