@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
+use App\Enums\FlowMeasureType;
 use Illuminate\Support\Arr;
 use Filament\Resources\Pages\ViewRecord;
 use App\Filament\Resources\FlowMeasureResource;
 use App\Models\AirportGroup;
+use Carbon\CarbonInterval;
 
 class ViewFlowMeasure extends ViewRecord
 {
@@ -45,6 +47,17 @@ class ViewFlowMeasure extends ViewRecord
         $filters->pull('ades');
         $filters->pull('ADEP');
         $filters->pull('ADES');
+
+        if (in_array($data['type'], [FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL,])) {
+            // Fill in minutes (if any) and seconds
+            $interval = CarbonInterval::seconds($data['value'])->cascade();
+            $data['minutes'] = $interval->minutes;
+            $data['seconds'] = $interval->seconds;
+            $data['value'] = null;
+        }
+
+        // Convert to value so we don't have to write extra condition
+        $data['type'] = $data['type']->value;
 
         $newFilters = collect();
         $filters->each(function (array $filter) use ($newFilters) {
