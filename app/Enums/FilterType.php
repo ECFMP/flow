@@ -12,6 +12,7 @@ enum FilterType: string
     case LEVEL = 'level';
     case MEMBER_EVENT = 'member_event';
     case MEMBER_NOT_EVENT = 'member_not_event';
+    case RANGE_TO_DESTINATION = 'range_to_destination';
 
     public function getShortName(): string
     {
