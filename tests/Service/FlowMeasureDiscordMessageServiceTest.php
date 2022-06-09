@@ -75,6 +75,31 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         );
     }
 
+    public function testItLogsActivityForActivatedFlowMeasures()
+    {
+        $measure1 = FlowMeasure::factory()->create();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Active'
+            )
+        )
+            ->once();
+
+        $this->service->sendMeasureActivatedDiscordNotifications();
+
+        $this->assertDatabaseHas(
+            'activity_log',
+            [
+                'log_name' => 'Discord',
+                'description' => 'Sending discord notification',
+                'subject_type' => 'App\Models\DiscordNotification',
+                'event' => $measure1->identifier . ' - Activated',
+            ]
+        );
+    }
+
     public function testItDoesntSendNotificationFlowMeasureNotStarted()
     {
         FlowMeasure::factory()->notStarted()->create();
@@ -244,6 +269,40 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         );
     }
 
+    public function testItLogsActivityForWithdrawnFlowMeasures()
+    {
+        $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+            $flowMeasure->delete();
+        })->create();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Withdrawn'
+            )
+        )
+            ->once();
+
+        $this->service->sendMeasureWithdrawnDiscordNotifications();
+
+        $this->assertDatabaseHas(
+            'activity_log',
+            [
+                'log_name' => 'Discord',
+                'description' => 'Sending discord notification',
+                'subject_type' => 'App\Models\DiscordNotification',
+                'event' => $measure1->identifier . ' - Withdrawn',
+            ]
+        );
+    }
+
     public function testItDoesntSendWithdrawnNotificationsIfNotDeleted()
     {
         FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
@@ -367,6 +426,39 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             [
                 'flow_measure_id' => $measure2->id,
                 'type' => DiscordNotificationType::FLOW_MEASURE_EXPIRED->value,
+            ]
+        );
+    }
+
+    public function testItLogsActivityForExpiredFlowMeasures()
+    {
+        $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
+            $flowMeasure->discordNotifications()->create(
+                [
+                    'flow_measure_id' => $flowMeasure->id,
+                    'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                    'content' => 'abc',
+                ]
+            );
+        })->finished()->create();
+
+        $this->discord->expects('sendMessage')->with(
+            Mockery::on(
+                fn(FlowMeasureExpiredMessage $message) => $message->embeds()->toArray(
+                    )[0]['title'] === $measure1->identifier . ' - ' . 'Expired'
+            )
+        )
+            ->once();
+
+        $this->service->sendMeasureExpiredDiscordNotifications();
+
+        $this->assertDatabaseHas(
+            'activity_log',
+            [
+                'log_name' => 'Discord',
+                'description' => 'Sending discord notification',
+                'subject_type' => 'App\Models\DiscordNotification',
+                'event' => $measure1->identifier . ' - Expired',
             ]
         );
     }
