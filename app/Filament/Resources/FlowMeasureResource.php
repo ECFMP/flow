@@ -293,11 +293,11 @@ class FlowMeasureResource extends Resource
                                         )
                                 ]),
                             Block::make('range_to_destination')
-                                ->icon('heroicon-o-map')
+                                ->icon('heroicon-o-x-circle')
                                 ->schema([
                                     Forms\Components\TextInput::make('value')
                                         ->label(__('Range to destination'))
-                                        ->hintIcon('heroicon-o-map')
+                                        ->hintIcon('heroicon-o-x-circle')
                                         ->numeric()
                                         ->step(5)
                                         ->suffix('NM')
