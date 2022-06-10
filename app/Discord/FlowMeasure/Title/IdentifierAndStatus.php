@@ -24,11 +24,22 @@ class IdentifierAndStatus extends AbstractFlowMeasureTitle
         }
 
         if ($this->flowMeasure->start_time > Carbon::now()) {
-            return 'Notified';
+            return $this->withReissued('Notified');
         }
 
         return $this->flowMeasure->end_time > Carbon::now()
-            ? 'Active'
+            ? $this->withReissued('Active')
             : 'Expired';
+    }
+
+    private function withReissued(string $status): string
+    {
+        $lastNotification = $this->flowMeasure->discordNotifications()
+            ->latest()
+            ->first();
+
+        return !$lastNotification || $lastNotification->pivot->notified_as === $this->flowMeasure->identifier
+            ? $status
+            : $status . ' (Reissued)';
     }
 }
