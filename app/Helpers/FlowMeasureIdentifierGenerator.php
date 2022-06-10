@@ -21,7 +21,7 @@ class FlowMeasureIdentifierGenerator
             $identifierParts[1],
             $identifierParts[2],
             $identifierParts[3],
-            isset($identifierParts[5]) ? ((int)$identifierParts[5]) + 1 : 1
+            isset($identifierParts[5]) ? ((int)$identifierParts[5]) + 1 : 2
         );
     }
 

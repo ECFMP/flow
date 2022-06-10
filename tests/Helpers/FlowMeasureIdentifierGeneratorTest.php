@@ -123,11 +123,11 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
     public function revisionProvider()
     {
         return [
-            'First revision' => ['EGTT01A', 'EGTT01A-1'],
-            'Second revision' => ['EGTT01A-1', 'EGTT01A-2'],
+            'First revision' => ['EGTT01A', 'EGTT01A-2'],
+            'Second revision' => ['EGTT01A-2', 'EGTT01A-3'],
             'Tenth revision' => ['EGTT01A-9', 'EGTT01A-10'],
-            'End of the month first revision' => ['EGTT25A', 'EGTT25A-1'],
-            'End of the month second revision' => ['EGTT25A-1', 'EGTT25A-2'],
+            'End of the month first revision' => ['EGTT25A', 'EGTT25A-2'],
+            'End of the month second revision' => ['EGTT25A-2', 'EGTT25A-3'],
             'Someone really messed up revision' => ['EGTT25A-9999', 'EGTT25A-10000'],
         ];
     }
