@@ -121,13 +121,26 @@ class FlowMeasureDiscordMessageService
         DiscordNotificationType $type,
         MessageInterface $message
     ): void {
-        $flowMeasure->discordNotifications()->create(
-            [
-                'type' => $type,
-                'content' => $message->content(),
-                'embeds' => $message->embeds()->toArray()
-            ]
-        );
+        $notificationInfo =             [
+            'type' => $type,
+            'content' => $message->content(),
+            'embeds' => $message->embeds()->toArray()
+        ];
+        $notification = $flowMeasure->discordNotifications()->create($notificationInfo);
+        activity()
+            ->inLog('Discord')
+            ->performedOn($notification)
+            ->event(sprintf('%s - %s', $flowMeasure->identifier, $type->name()))
+            ->causedByAnonymous()
+            ->withProperties(
+                [
+                    'type' => $type->name(),
+                    'content' => $message->content(),
+                    'embeds' => json_encode($message->embeds()->toArray())
+                ]
+            )
+            ->log('Sending discord notification');
+
         $this->discord->sendMessage($message);
     }
 }
