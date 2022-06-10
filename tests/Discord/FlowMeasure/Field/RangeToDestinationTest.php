@@ -12,7 +12,7 @@ class RangeToDestinationTest extends TestCase
         return new RangeToDestination(
             [
                 'type' => 'range_to_destination',
-                'value' => ["250"],
+                'value' => '250',
             ]
         );
     }

@@ -11,6 +11,6 @@ class RangeToDestination extends AbstractFlowMeasureFilterField
 
     public function value(): string
     {
-        return $this->joinedValues("\n");
+        return $this->filter['value'];
     }
 }
