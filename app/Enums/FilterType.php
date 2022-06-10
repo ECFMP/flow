@@ -12,18 +12,5 @@ enum FilterType: string
     case LEVEL = 'level';
     case MEMBER_EVENT = 'member_event';
     case MEMBER_NOT_EVENT = 'member_not_event';
-
-    public function getShortName(): string
-    {
-        return match ($this) {
-            self::DEPARTURE_AIRPORTS => 'DEPA',
-            self::ARRIVAL_AIRPORTS => 'DEST',
-            self::WAYPOINT => 'VIA WPT',
-            self::LEVEL_ABOVE => 'LVL ABV',
-            self::LEVEL_BELOW => 'LVL BLW',
-            self::LEVEL => 'LVL',
-            self::MEMBER_EVENT => 'EVENT',
-            self::MEMBER_NOT_EVENT => 'NON EVENT',
-        };
-    }
+    case RANGE_TO_DESTINATION = 'range_to_destination';
 }

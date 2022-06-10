@@ -8,6 +8,7 @@ use App\Discord\FlowMeasure\Field\Filters\LevelAbove;
 use App\Discord\FlowMeasure\Field\Filters\LevelBelow;
 use App\Discord\FlowMeasure\Field\Filters\MemberEvent;
 use App\Discord\FlowMeasure\Field\Filters\MemberNotEvent;
+use App\Discord\FlowMeasure\Field\Filters\RangeToDestination;
 use App\Discord\FlowMeasure\Field\Filters\ViaWaypoint;
 use App\Models\FlowMeasure;
 use Tests\TestCase;
@@ -96,6 +97,20 @@ class AdditionalFilterParserTest extends TestCase
         $collection = AdditionalFilterParser::parseAdditionalFilters($measure);
         $this->assertCount(1, $collection);
         $this->assertInstanceOf(MemberNotEvent::class, $collection->first());
+    }
+
+    public function testItParsesRangeToDestinationFilter()
+    {
+        $measure = FlowMeasure::factory()->withAdditionalFilter(
+            [
+                'type' => 'range_to_destination',
+                'value' => [123],
+            ]
+        )->create();
+
+        $collection = AdditionalFilterParser::parseAdditionalFilters($measure);
+        $this->assertCount(1, $collection);
+        $this->assertInstanceOf(RangeToDestination::class, $collection->first());
     }
 
     public function testItParsesMultipleFilters()

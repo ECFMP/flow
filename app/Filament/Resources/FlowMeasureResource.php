@@ -292,6 +292,19 @@ class FlowMeasureResource extends Resource
                                             $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
+                            Block::make('range_to_destination')
+                                ->icon('heroicon-o-x-circle')
+                                ->schema([
+                                    Forms\Components\TextInput::make('value')
+                                        ->label(__('Range to destination'))
+                                        ->hintIcon('heroicon-o-x-circle')
+                                        ->numeric()
+                                        ->step(5)
+                                        ->suffix('NM')
+                                        ->minLength(0)
+                                        ->maxLength(1000)
+                                        ->required()
+                                ]),
                         ]),
                 ]),
                 // TODO: Make it possible to also search by identifier
