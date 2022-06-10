@@ -38,11 +38,57 @@ it('can render create page', function () {
     $this->get(FlowMeasureResource::getUrl('create'))->assertSuccessful();
 });
 
-it('can create', function () {
+it('can create mdi flow measure', function () {
     /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
 
     $newData = FlowMeasure::factory()->notStarted()->make();
+
+    $livewire = livewire(FlowMeasureResource\Pages\CreateFlowMeasure::class)
+        ->set('data.flight_information_region_id', $newData->flight_information_region_id)
+        ->set('data.event_id', $newData->event_id)
+        ->set('data.start_time', $newData->start_time)
+        ->set('data.end_time', $newData->end_time)
+        ->set('data.reason', $newData->reason)
+        ->set('data.type', $newData->type->value)
+        ->set('data.minutes', 1)
+        ->set('data.seconds', 30)
+        ->set('data.mandatory_route', $newData->mandatory_route);
+
+    // I honestly have no idea if this can be done better. Feel free to improve
+
+    /** @var array $data */
+    $data = $livewire->get('data');
+    $adep = Arr::get($data, 'adep');
+    $ades = Arr::get($data, 'ades');
+    $adepKey = key($adep);
+    $adesKey = key($ades);
+
+    $livewire->set("data.adep.{$adepKey}.value_type", 'custom_value')
+        ->set("data.adep.{$adepKey}.airport_group", null)
+        ->set("data.adep.{$adepKey}.custom_value", $newData->filters[0]['value'][0])
+        ->set("data.ades.{$adesKey}.value_type", 'custom_value')
+        ->set("data.ades.{$adesKey}.airport_group", null)
+        ->set("data.ades.{$adesKey}.custom_value", $newData->filters[1]['value'][0])
+        ->call('create');
+
+    $this->assertDatabaseHas(FlowMeasure::class, [
+        'flight_information_region_id' => $newData->flight_information_region_id,
+        'event_id' => $newData->event_id,
+        'start_time' => $newData->start_time->startOfMinute(),
+        'end_time' => $newData->end_time->startOfMinute(),
+        'reason' => $newData->reason,
+        'type' => $newData->type,
+        'value' => 90,
+        'mandatory_route' => $newData->mandatory_route,
+    ]);
+});
+
+it('can create per hour measure', function () {
+    /** @var FrontendTestCase $this */
+    $this->actingAs(User::factory()->system()->create());
+
+    $newData = FlowMeasure::factory()->notStarted()->withMeasure(FlowMeasureType::PER_HOUR, 30)->make();
 
     $livewire = livewire(FlowMeasureResource\Pages\CreateFlowMeasure::class)
         ->set('data.flight_information_region_id', $newData->flight_information_region_id)
@@ -165,10 +211,12 @@ it('can render edit page', function () {
     ]))->assertSuccessful();
 });
 
-it('can retrieve data for edit page', function () {
+it('can retrieve data for edit page with mdi measure', function () {
     /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
-    $flowMeasure = FlowMeasure::factory()->create();
+
+    /** @var FlowMeasure $flowMeasure */
+    $flowMeasure = FlowMeasure::factory()->withMeasure(FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, 90)->create();
 
     livewire(FlowMeasureResource\Pages\EditFlowMeasure::class, [
         'record' => $flowMeasure->getKey(),
@@ -178,8 +226,32 @@ it('can retrieve data for edit page', function () {
         ->assertSet('data.start_time', $flowMeasure->start_time->toDateTimeString())
         ->assertSet('data.end_time', $flowMeasure->end_time->toDateTimeString())
         ->assertSet('data.reason', $flowMeasure->reason)
-        ->assertSet('data.type', $flowMeasure->type)
+        ->assertSet('data.type', $flowMeasure->type->value)
+        ->assertSet('data.value', null)
+        ->assertSet('data.minutes', 1)
+        ->assertSet('data.seconds', 30)
+        ->assertSet('data.mandatory_route', $flowMeasure->mandatory_route ?? []);
+});
+
+it('can retrieve data for edit page with per hour measure', function () {
+    /** @var FrontendTestCase $this */
+    $this->actingAs(User::factory()->system()->create());
+
+    /** @var FlowMeasure $flowMeasure */
+    $flowMeasure = FlowMeasure::factory()->withMeasure(FlowMeasureType::PER_HOUR, 30)->create();
+
+    livewire(FlowMeasureResource\Pages\EditFlowMeasure::class, [
+        'record' => $flowMeasure->getKey(),
+    ])
+        ->assertSet('data.flight_information_region_id', $flowMeasure->flight_information_region_id)
+        ->assertSet('data.event_id', $flowMeasure->event_id)
+        ->assertSet('data.start_time', $flowMeasure->start_time->toDateTimeString())
+        ->assertSet('data.end_time', $flowMeasure->end_time->toDateTimeString())
+        ->assertSet('data.reason', $flowMeasure->reason)
+        ->assertSet('data.type', $flowMeasure->type->value)
         ->assertSet('data.value', $flowMeasure->value)
+        ->assertSet('data.minutes', null)
+        ->assertSet('data.seconds', null)
         ->assertSet('data.mandatory_route', $flowMeasure->mandatory_route ?? []);
 });
 
@@ -189,6 +261,7 @@ it('can edit', function () {
 
     /** @var FlowMeasure $flowMeasure */
     $flowMeasure = FlowMeasure::factory()->create();
+
     /** @var FlowMeasure $newData */
     $newData = FlowMeasure::factory()->make();
 
@@ -228,6 +301,7 @@ it('can validate edit input', function () {
     /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
 
+    /** @var FlowMeasure $flowMeasure */
     $flowMeasure = FlowMeasure::factory()->create();
 
     livewire(FlowMeasureResource\Pages\EditFlowMeasure::class, [
@@ -260,9 +334,11 @@ it('can render view page', function () {
     ]))->assertSuccessful();
 });
 
-it('can retrieve data for view page', function () {
+it('can retrieve data for view page with mdi measure', function () {
     /** @var FrontendTestCase $this */
-    $flowMeasure = FlowMeasure::factory()->create();
+
+    /** @var FlowMeasure $flowMeasure */
+    $flowMeasure = FlowMeasure::factory()->withMeasure(FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, 90)->create();
 
     livewire(FlowMeasureResource\Pages\ViewFlowMeasure::class, [
         'record' => $flowMeasure->getKey(),
@@ -281,7 +357,39 @@ it('can retrieve data for view page', function () {
         ->assertSet('data.start_time', $flowMeasure->start_time->toDateTimeString())
         ->assertSet('data.end_time', $flowMeasure->end_time->toDateTimeString())
         ->assertSet('data.reason', $flowMeasure->reason)
-        ->assertSet('data.type', $flowMeasure->type)
+        ->assertSet('data.type', $flowMeasure->type->value)
+        ->assertSet('data.value', null)
+        ->assertSet('data.minutes', 1)
+        ->assertSet('data.seconds', 30)
+        ->assertSet('data.mandatory_route', $flowMeasure->mandatory_route ?? []);
+});
+
+it('can retrieve data for view page with per hour measure', function () {
+    /** @var FrontendTestCase $this */
+
+    /** @var FlowMeasure $flowMeasure */
+    $flowMeasure = FlowMeasure::factory()->withMeasure(FlowMeasureType::PER_HOUR, 30)->create();
+
+    livewire(FlowMeasureResource\Pages\ViewFlowMeasure::class, [
+        'record' => $flowMeasure->getKey(),
+    ])->assertSuccessful();
+
+    $this->actingAs(User::factory()->flowManager()->create());
+    livewire(FlowMeasureResource\Pages\ViewFlowMeasure::class, [
+        'record' => $flowMeasure->getKey(),
+    ])->assertSuccessful();
+
+    $this->actingAs(User::factory()->networkManager()->create());
+    livewire(FlowMeasureResource\Pages\ViewFlowMeasure::class, [
+        'record' => $flowMeasure->getKey(),
+    ])->assertSet('data.flight_information_region_id', $flowMeasure->flight_information_region_id)
+        ->assertSet('data.event_id', $flowMeasure->event_id)
+        ->assertSet('data.start_time', $flowMeasure->start_time->toDateTimeString())
+        ->assertSet('data.end_time', $flowMeasure->end_time->toDateTimeString())
+        ->assertSet('data.reason', $flowMeasure->reason)
+        ->assertSet('data.type', $flowMeasure->type->value)
         ->assertSet('data.value', $flowMeasure->value)
+        ->assertSet('data.minutes', null)
+        ->assertSet('data.seconds', null)
         ->assertSet('data.mandatory_route', $flowMeasure->mandatory_route ?? []);
 });

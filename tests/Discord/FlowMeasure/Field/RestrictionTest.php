@@ -156,7 +156,7 @@ class RestrictionTest extends TestCase
         $field = $this->getField($measure);
 
         $this->assertEquals(
-            'Per hour',
+            'Rate Per Hour',
             $field->name()
         );
 

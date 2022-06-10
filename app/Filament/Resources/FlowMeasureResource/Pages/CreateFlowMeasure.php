@@ -19,25 +19,26 @@ class CreateFlowMeasure extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if (!$data['event_id']) {
-            $fir = FlightInformationRegion::find($data['flight_information_region_id']);
-        } else {
-            $fir = Event::find($data['event_id'])->flightInformationRegion;
-            $data['flight_information_region_id'] ??= $fir->id;
-        }
+        $fir = FlightInformationRegion::find($data['flight_information_region_id']);
 
         $startTime = Carbon::parse($data['start_time']);
         $data['identifier'] = FlowMeasureIdentifierGenerator::generateIdentifier($startTime, $fir);
         $data['user_id'] = auth()->id();
 
-        if ($data['type'] == FlowMeasureType::MANDATORY_ROUTE) {
-            Arr::pull($data, 'value');
+        switch ($data['type']) {
+            case FlowMeasureType::MANDATORY_ROUTE->value:
+                Arr::pull($data, 'value');
+                break;
+            case FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value:
+            case FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value:
+                $data['value'] = $data['seconds'] + ($data['minutes'] * 60);
+                break;
         }
 
         $filters = collect($data['filters'])
             ->groupBy('type')
             ->transform(function (Collection $filter, string $type) {
-                if (in_array($type, ['level_above', 'level_below'])) {
+                if (in_array($type, ['level_above', 'level_below', 'range_to_destination'])) {
                     return collect([
                         'type' => $type,
                         'value' => $filter->pluck('data')->value('value')

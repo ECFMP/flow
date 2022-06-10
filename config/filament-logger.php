@@ -35,7 +35,11 @@ return [
             //App\Models\User::class,
         ],
     ],
-
+    'discord' => [
+        'enabled' => true,
+        'log_name' => 'Discord',
+        'color' => 'primary',
+    ],
     'custom' => [
         // [
         //     'log_name' => 'Custom',

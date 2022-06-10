@@ -65,13 +65,13 @@ class FlowMeasureResource extends Resource
                     ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->required(fn (Closure $get) => $get('event_id') == null),
+                    ->required(),
                 Forms\Components\TextInput::make('flight_information_region_name')
                     ->label('Flight Information Region')
                     ->hintIcon('heroicon-o-folder')
                     ->disabled(true)
                     ->dehydrated(false)
-                    ->afterStateHydrated(function (TextInput $component, Closure $get, $state) {
+                    ->afterStateHydrated(function (TextInput $component, Closure $get) {
                         $component->state(FlightInformationRegion::find($get('flight_information_region_id'))?->identifier_name ?? null);
                     })
                     ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
@@ -92,8 +92,7 @@ class FlowMeasureResource extends Resource
                     ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->reactive()
-                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
+                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord),
                 Forms\Components\TextInput::make('event_name')
                     ->label(__('Event'))
                     ->hintIcon('heroicon-o-calendar')
@@ -104,6 +103,7 @@ class FlowMeasureResource extends Resource
                     })
                     ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
                 Forms\Components\DateTimePicker::make('start_time')
+                    ->label(__('Start time [UTC]'))
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
                     ->afterOrEqual(now())
@@ -117,6 +117,7 @@ class FlowMeasureResource extends Resource
                     })
                     ->required(),
                 Forms\Components\DateTimePicker::make('end_time')
+                    ->label(__('End time [UTC]'))
                     ->default(now()->addHours(2)->addMinutes(5))
                     ->withoutSeconds()
                     ->after('start_time')
@@ -127,36 +128,61 @@ class FlowMeasureResource extends Resource
                     ->required()
                     ->columnSpan('full')
                     ->maxLength(65535),
-                Forms\Components\Fieldset::make(__('Flow measure'))->schema([
-                    Forms\Components\Select::make('type')
-                        ->options(collect(FlowMeasureType::cases())
-                            ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
-                        ->helperText(function (string|FlowMeasureType|null $state) {
-                            if (is_a($state, FlowMeasureType::class)) {
-                                return $state->getDescription();
-                            }
+                Forms\Components\Fieldset::make(__('Flow measure'))
+                    ->columns(4)->schema([
+                        Forms\Components\Select::make('type')
+                            ->options(collect(FlowMeasureType::cases())
+                                ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
+                            ->helperText(function (string|FlowMeasureType|null $state) {
+                                if (is_a($state, FlowMeasureType::class)) {
+                                    return $state->getDescription();
+                                }
 
-                            return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
-                        })
-                        ->reactive()
-                        ->required(),
-                    Forms\Components\TextInput::make('value')
-                        ->disabled(fn (Closure $get) => in_array($get('type'), [
-                            FlowMeasureType::MANDATORY_ROUTE->value,
-                            FlowMeasureType::PROHIBIT->value,
-                        ]) || $get('type') == null)
-                        ->required(fn (Closure $get) => !in_array($get('type'), [
-                            FlowMeasureType::MANDATORY_ROUTE->value,
-                            FlowMeasureType::PROHIBIT->value,
-                        ])),
-                    Forms\Components\Repeater::make('mandatory_route')
-                        ->columnSpan('full')
-                        ->required()
-                        ->visible(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value)
-                        ->schema([
-                            Forms\Components\Textarea::make('')->required()
-                        ]),
-                ]),
+                                return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
+                            })
+                            ->reactive()
+                            ->columnSpan(2)
+                            ->required(),
+                        Forms\Components\TextInput::make('value')
+                            ->columnSpan(2)
+                            ->disabled(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MANDATORY_ROUTE->value,
+                                FlowMeasureType::PROHIBIT->value,
+                            ]) || $get('type') == null)
+                            ->required(fn (Closure $get) => !in_array($get('type'), [
+                                FlowMeasureType::MANDATORY_ROUTE->value,
+                                FlowMeasureType::PROHIBIT->value,
+                            ]))
+                            ->hidden(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ])),
+                        Forms\Components\TextInput::make('minutes')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->visible(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ]))
+                            ->required(),
+                        Forms\Components\TextInput::make('seconds')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(59)
+                            ->visible(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ]))
+                            ->required(),
+                        Forms\Components\Repeater::make('mandatory_route')
+                            ->columnSpan('full')
+                            ->required()
+                            ->visible(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value)
+                            ->schema([
+                                Forms\Components\Textarea::make('')->required()
+                            ]),
+                    ]),
                 Forms\Components\Fieldset::make(__('Filters'))->schema([
 
                     Forms\Components\Repeater::make('adep')
@@ -291,6 +317,19 @@ class FlowMeasureResource extends Resource
                                         ->options(
                                             $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
+                                ]),
+                            Block::make('range_to_destination')
+                                ->icon('heroicon-o-x-circle')
+                                ->schema([
+                                    Forms\Components\TextInput::make('value')
+                                        ->label(__('Range to destination'))
+                                        ->hintIcon('heroicon-o-x-circle')
+                                        ->numeric()
+                                        ->step(5)
+                                        ->suffix('NM')
+                                        ->minLength(0)
+                                        ->maxLength(1000)
+                                        ->required()
                                 ]),
                         ]),
                 ]),
