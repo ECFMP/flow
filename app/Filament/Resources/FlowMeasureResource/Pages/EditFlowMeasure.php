@@ -93,6 +93,12 @@ class EditFlowMeasure extends EditRecord
                 'type' => 'ADES',
                 'value' => $this->getAirportValues($data, 'ades')
             ]);
+
+        $data['filters'] = $filters->toArray();
+        Arr::pull($data, 'adep');
+        Arr::pull($data, 'ades');
+
+        return $data;
     }
 
     private function buildAirportFilter(string $value): array
