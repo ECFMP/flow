@@ -44,10 +44,7 @@ class FlowMeasureDiscordMessageService
 
     public function sendMeasureActivatedDiscordNotifications(): void
     {
-        FlowMeasure::with('discordNotifications')
-            ->whereDoesntHave('discordNotifications', function (Builder $notification) {
-                $notification->type(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-            })
+        FlowMeasure::whereDoesntHave('activatedDiscordNotifications')
             ->active()
             ->get()
             ->each(function (FlowMeasure $flowMeasure) {
@@ -65,18 +62,17 @@ class FlowMeasureDiscordMessageService
     {
         return $measure->discordNotifications->firstWhere(
                 fn(DiscordNotification $notification
-                ) => $notification->type === DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED &&
+                ) => $notification->pivot->discord_notification_type_id === DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                    ) &&
                     $notification->created_at > Carbon::now()->subHour()
             ) !== null;
     }
 
     public function sendMeasureWithdrawnDiscordNotifications(): void
     {
-        FlowMeasure::whereHas('discordNotifications', function (Builder $notification) {
-            $notification->type(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-        })->whereDoesntHave('discordNotifications', function (Builder $notification) {
-            $notification->type(DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN);
-        })
+        FlowMeasure::whereHas('activatedDiscordNotifications')
+            ->whereDoesntHave('withdrawnDiscordNotifications')
             ->onlyTrashed()
             ->active()
             ->get()
@@ -91,13 +87,8 @@ class FlowMeasureDiscordMessageService
 
     public function sendMeasureExpiredDiscordNotifications(): void
     {
-        FlowMeasure::whereHas('discordNotifications', function (Builder $notification) {
-            $notification->type(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-        })->whereDoesntHave('discordNotifications', function (Builder $notification) {
-            $notification->types(
-                [DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN, DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED]
-            );
-        })
+        FlowMeasure::whereHas('activatedDiscordNotifications')
+            ->whereDoesntHave('withdrawnAndExpiredDiscordNotifications')
             ->withTrashed()
             ->expired()
             ->get()

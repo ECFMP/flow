@@ -33,12 +33,12 @@ return new class extends Migration {
 
             $table->foreign('flow_measure_id', 'discord_flow_measure_flow')
                 ->references('id')
-                ->on('discord_notifications')
+                ->on('flow_measures')
                 ->cascadeOnDelete();
             
             $table->foreign('discord_notification_type_id', 'discord_flow_measure_type')
                 ->references('id')
-                ->on('discord_notifications')
+                ->on('discord_notification_types')
                 ->cascadeOnDelete();
         });
 

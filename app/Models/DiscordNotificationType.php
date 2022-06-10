@@ -28,4 +28,15 @@ class DiscordNotificationType extends Model
     {
         return $query->whereIn('type', $types);
     }
+
+    public static function fromEnum(DiscordNotificationTypeEnum $type): DiscordNotificationType
+    {
+        return static::where('type', $type)
+            ->firstOrFail();
+    }
+
+    public static function idFromEnum(DiscordNotificationTypeEnum $type): int
+    {
+        return static::fromEnum($type)->id;
+    }
 }

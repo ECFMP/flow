@@ -9,6 +9,7 @@ use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Enums\DiscordNotificationTypeEnum;
+use App\Models\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Service\FlowMeasureDiscordMessageService;
 use Carbon\Carbon;
@@ -58,19 +59,27 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->service->sendMeasureActivatedDiscordNotifications();
 
+        $this->assertDatabaseCount('discord_notifications', 2);
+        $this->assertDatabaseCount('discord_notification_flow_measure', 2);
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure1->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                ),
+                'notified_as' => $measure1->identifier,
             ]
         );
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure2->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                ),
+                'notified_as' => $measure2->identifier,
             ]
         );
     }
@@ -104,9 +113,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->create();
@@ -121,9 +135,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->create();
@@ -142,10 +161,13 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->service->sendMeasureActivatedDiscordNotifications();
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                ),
+                'notified_as' => $measure->identifier,
             ]
         );
         $this->assertDatabaseCount('discord_notifications', 2);
@@ -156,9 +178,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->create();
@@ -177,10 +204,13 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->service->sendMeasureActivatedDiscordNotifications();
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                ),
+                'notified_as' => $measure->identifier,
             ]
         );
         $this->assertDatabaseCount('discord_notifications', 2);
@@ -191,9 +221,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->delete();
@@ -201,9 +236,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure2 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->delete();
@@ -227,19 +267,27 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->service->sendMeasureWithdrawnDiscordNotifications();
 
+        $this->assertDatabaseCount('discord_notifications', 4);
+        $this->assertDatabaseCount('discord_notification_flow_measure', 4);
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure1->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                ),
+                'notified_as' => $measure1->identifier,
             ]
         );
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure2->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                ),
+                'notified_as' => $measure2->identifier,
             ]
         );
     }
@@ -249,9 +297,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->create();
@@ -266,9 +319,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         FlowMeasure::factory()->notStarted()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->delete();
@@ -295,16 +353,26 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->delete();
@@ -320,18 +388,28 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->finished()->create();
         $measure2 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->finished()->create();
@@ -354,19 +432,27 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->service->sendMeasureExpiredDiscordNotifications();
 
+        $this->assertDatabaseCount('discord_notifications', 4);
+        $this->assertDatabaseCount('discord_notification_flow_measure', 4);
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure1->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED
+                ),
+                'notified_as' => $measure1->identifier,
             ]
         );
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure2->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED
+                ),
+                'notified_as' => $measure2->identifier,
             ]
         );
     }
@@ -376,9 +462,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure1 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->delete();
@@ -386,9 +477,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure2 = FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->delete();
@@ -412,19 +508,27 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 
         $this->service->sendMeasureExpiredDiscordNotifications();
 
+        $this->assertDatabaseCount('discord_notifications', 4);
+        $this->assertDatabaseCount('discord_notification_flow_measure', 4);
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure1->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                ),
+                'notified_as' => $measure1->identifier,
             ]
         );
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure2->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                ),
+                'notified_as' => $measure2->identifier,
             ]
         );
     }
@@ -434,9 +538,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->create();
@@ -460,16 +569,26 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->finished()->create();
@@ -484,16 +603,26 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         FlowMeasure::factory()->afterCreating(function (FlowMeasure $flowMeasure) {
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
             $flowMeasure->discordNotifications()->create(
                 [
-                    'flow_measure_id' => $flowMeasure->id,
-                    'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED,
-                    'content' => 'abc',
+                    'content' => '',
+                    'embeds' => [],
+                ],
+                [
+                    'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                        DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED
+                    ),
+                    'notified_as' => $flowMeasure->identifier,
                 ]
             );
         })->finished()->create();
@@ -527,19 +656,26 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->service->sendMeasureNotifiedDiscordNotifications();
 
         $this->assertDatabaseCount('discord_notifications', 2);
+        $this->assertDatabaseCount('discord_notification_flow_measure', 2);
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure1->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                ),
+                'notified_as' => $measure1->identifier,
             ]
         );
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'discord_notification_flow_measure',
             [
                 'flow_measure_id' => $measure2->id,
-                'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED->value,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                ),
+                'notified_as' => $measure2->identifier,
             ]
         );
     }
@@ -567,9 +703,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             ->afterCreating(function (FlowMeasure $flowMeasure) {
                 $flowMeasure->discordNotifications()->create(
                     [
-                        'flow_measure_id' => $flowMeasure->id,
-                        'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                        'content' => 'abc',
+                        'content' => '',
+                        'embeds' => [],
+                    ],
+                    [
+                        'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                            DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                        ),
+                        'notified_as' => $flowMeasure->identifier,
                     ]
                 );
             })->create();
@@ -587,9 +728,14 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             ->afterCreating(function (FlowMeasure $flowMeasure) {
                 $flowMeasure->discordNotifications()->create(
                     [
-                        'flow_measure_id' => $flowMeasure->id,
-                        'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                        'content' => 'abc',
+                        'content' => '',
+                        'embeds' => [],
+                    ],
+                    [
+                        'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                            DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                        ),
+                        'notified_as' => $flowMeasure->identifier,
                     ]
                 );
             })->create();
