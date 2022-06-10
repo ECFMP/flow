@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DiscordNotificationTypeEnum;
 use Carbon\Carbon;
 use App\Enums\FilterType;
 use App\Enums\FlowMeasureType;
@@ -10,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -94,9 +94,63 @@ class FlowMeasure extends Model
         return $query->where('flight_information_region_id', $flightInformationRegion->id);
     }
 
-    public function discordNotifications(): HasMany
+    public function discordNotifications(): BelongsToMany
     {
-        return $this->hasMany(DiscordNotification::class);
+        return $this->belongsToMany(DiscordNotification::class)
+            ->withPivot(['type', 'notified_as'])
+            ->withTimestamps();
+    }
+
+    public function notifiedDiscordNotifications(): BelongsToMany
+    {
+        return $this->belongsToMany(DiscordNotification::class)
+            ->wherePivot(
+                'discord_notification_type_id',
+                DiscordNotificationType::where('type', DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED)->firstOrFail(
+                )->id
+            )
+            ->withPivot(['notified_as'])
+            ->withTimestamps();
+    }
+
+    public function activatedDiscordNotifications(): BelongsToMany
+    {
+        return $this->belongsToMany(DiscordNotification::class)
+            ->wherePivot(
+                'discord_notification_type_id',
+                DiscordNotificationType::where(
+                    'type',
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                )->firstOrFail()->id
+            )
+            ->withPivot(['notified_as'])
+            ->withTimestamps();
+    }
+
+    public function withdrawnDiscordNotifications(): BelongsToMany
+    {
+        return $this->belongsToMany(DiscordNotification::class)
+            ->wherePivot(
+                'discord_notification_type_id',
+                DiscordNotificationType::where(
+                    'type',
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                )->firstOrFail()->id
+            )
+            ->withPivot(['notified_as'])
+            ->withTimestamps();
+    }
+
+    public function expiredDiscordNotifications(): BelongsToMany
+    {
+        return $this->belongsToMany(DiscordNotification::class)
+            ->wherePivot(
+                'discord_notification_type_id',
+                DiscordNotificationType::where('type', DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED)->firstOrFail(
+                )->id
+            )
+            ->withPivot(['notified_as'])
+            ->withTimestamps();
     }
 
     public function filtersByType(FilterType $filterType): array
@@ -104,7 +158,7 @@ class FlowMeasure extends Model
         return array_values(
             array_filter(
                 $this->filters,
-                fn (array $filter) => FilterType::tryFrom($filter['type']) === $filterType
+                fn(array $filter) => FilterType::tryFrom($filter['type']) === $filterType
             )
         );
     }
@@ -118,7 +172,7 @@ class FlowMeasure extends Model
     {
         return array_filter(
             $this->filters,
-            fn (array $filter) => !in_array(
+            fn(array $filter) => !in_array(
                 FilterType::tryFrom($filter['type']),
                 [FilterType::DEPARTURE_AIRPORTS, FilterType::ARRIVAL_AIRPORTS]
             )
@@ -135,7 +189,6 @@ class FlowMeasure extends Model
     {
         return $builder->where('start_time', '<', Carbon::now())
             ->where('end_time', '>', Carbon::now()->subDay());
-
     }
 
     public function status(): Attribute

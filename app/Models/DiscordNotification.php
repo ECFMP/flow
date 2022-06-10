@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Enums\DiscordNotificationType;
+use App\Enums\DiscordNotificationTypeEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class DiscordNotification extends Model
 {
@@ -22,16 +22,18 @@ class DiscordNotification extends Model
     ];
 
     protected $casts = [
-        'type' => DiscordNotificationType::class,
+        'type' => DiscordNotificationTypeEnum::class,
         'embeds' => 'array',
     ];
 
-    public function flowMeasure(): BelongsTo
+    public function flowMeasure(): BelongsToMany
     {
-        return $this->belongsTo(FlowMeasure::class);
+        return $this->belongsToMany(FlowMeasure::class)
+            ->withPivot(['type', 'notified_as'])
+            ->withTimestamps();
     }
 
-    public function scopeType(Builder $query, DiscordNotificationType $type): Builder
+    public function scopeType(Builder $query, DiscordNotificationTypeEnum $type): Builder
     {
         return $query->where('type', $type);
     }

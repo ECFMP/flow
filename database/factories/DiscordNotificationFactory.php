@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\DiscordNotificationType;
+use App\Enums\DiscordNotificationTypeEnum;
 use App\Models\FlowMeasure;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +20,7 @@ class DiscordNotificationFactory extends Factory
     {
         return [
             'flow_measure_id' => FlowMeasure::factory()->create()->id,
-            'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+            'type' => DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
             'content' => 'ohai',
         ];
     }
