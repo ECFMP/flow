@@ -34,8 +34,8 @@ enum FlowMeasureType: string
     public function getDescription(): string
     {
         return match ($this) {
-            self::MINIMUM_DEPARTURE_INTERVAL => 'Minimum departure interval in seconds',
-            self::AVERAGE_DEPARTURE_INTERVAL => 'Average departure interval applied over 3 aircraft in seconds',
+            self::MINIMUM_DEPARTURE_INTERVAL => 'Minimum departure interval in minutes + seconds',
+            self::AVERAGE_DEPARTURE_INTERVAL => 'Average departure interval applied over 3 aircraft in minutes + seconds',
             self::PER_HOUR => 'Number of flights per hour permitted - must be > 0',
             self::MILES_IN_TRAIL => 'Distance in NM of aircraft in trail',
             self::MAX_IAS => 'Maximum speed in IAS',

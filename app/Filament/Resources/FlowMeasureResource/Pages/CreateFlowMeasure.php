@@ -30,8 +30,14 @@ class CreateFlowMeasure extends CreateRecord
         $data['identifier'] = FlowMeasureIdentifierGenerator::generateIdentifier($startTime, $fir);
         $data['user_id'] = auth()->id();
 
-        if ($data['type'] == FlowMeasureType::MANDATORY_ROUTE) {
-            Arr::pull($data, 'value');
+        switch ($data['type']) {
+            case FlowMeasureType::MANDATORY_ROUTE->value:
+                Arr::pull($data, 'value');
+                break;
+            case FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value:
+            case FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value:
+                $data['value'] = $data['seconds'] + ($data['minutes'] * 60);
+                break;
         }
 
         $filters = collect($data['filters'])

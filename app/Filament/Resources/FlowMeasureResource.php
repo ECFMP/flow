@@ -127,36 +127,61 @@ class FlowMeasureResource extends Resource
                     ->required()
                     ->columnSpan('full')
                     ->maxLength(65535),
-                Forms\Components\Fieldset::make(__('Flow measure'))->schema([
-                    Forms\Components\Select::make('type')
-                        ->options(collect(FlowMeasureType::cases())
-                            ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
-                        ->helperText(function (string|FlowMeasureType|null $state) {
-                            if (is_a($state, FlowMeasureType::class)) {
-                                return $state->getDescription();
-                            }
+                Forms\Components\Fieldset::make(__('Flow measure'))
+                    ->columns(4)->schema([
+                        Forms\Components\Select::make('type')
+                            ->options(collect(FlowMeasureType::cases())
+                                ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
+                            ->helperText(function (string|FlowMeasureType|null $state) {
+                                if (is_a($state, FlowMeasureType::class)) {
+                                    return $state->getDescription();
+                                }
 
-                            return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
-                        })
-                        ->reactive()
-                        ->required(),
-                    Forms\Components\TextInput::make('value')
-                        ->disabled(fn (Closure $get) => in_array($get('type'), [
-                            FlowMeasureType::MANDATORY_ROUTE->value,
-                            FlowMeasureType::PROHIBIT->value,
-                        ]) || $get('type') == null)
-                        ->required(fn (Closure $get) => !in_array($get('type'), [
-                            FlowMeasureType::MANDATORY_ROUTE->value,
-                            FlowMeasureType::PROHIBIT->value,
-                        ])),
-                    Forms\Components\Repeater::make('mandatory_route')
-                        ->columnSpan('full')
-                        ->required()
-                        ->visible(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value)
-                        ->schema([
-                            Forms\Components\Textarea::make('')->required()
-                        ]),
-                ]),
+                                return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
+                            })
+                            ->reactive()
+                            ->columnSpan(2)
+                            ->required(),
+                        Forms\Components\TextInput::make('value')
+                            ->columnSpan(2)
+                            ->disabled(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MANDATORY_ROUTE->value,
+                                FlowMeasureType::PROHIBIT->value,
+                            ]) || $get('type') == null)
+                            ->required(fn (Closure $get) => !in_array($get('type'), [
+                                FlowMeasureType::MANDATORY_ROUTE->value,
+                                FlowMeasureType::PROHIBIT->value,
+                            ]))
+                            ->hidden(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ])),
+                        Forms\Components\TextInput::make('minutes')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->visible(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ]))
+                            ->required(),
+                        Forms\Components\TextInput::make('seconds')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(59)
+                            ->visible(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ]))
+                            ->required(),
+                        Forms\Components\Repeater::make('mandatory_route')
+                            ->columnSpan('full')
+                            ->required()
+                            ->visible(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value)
+                            ->schema([
+                                Forms\Components\Textarea::make('')->required()
+                            ]),
+                    ]),
                 Forms\Components\Fieldset::make(__('Filters'))->schema([
 
                     Forms\Components\Repeater::make('adep')

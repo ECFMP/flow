@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
+use Carbon\CarbonInterval;
 use Illuminate\Support\Arr;
 use App\Models\AirportGroup;
 use App\Enums\FlowMeasureType;
@@ -34,6 +35,17 @@ class EditFlowMeasure extends EditRecord
         $filters->pull('ADEP');
         $filters->pull('ADES');
 
+        if (in_array($data['type'], [FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL,])) {
+            // Fill in minutes (if any) and seconds
+            $interval = CarbonInterval::seconds($data['value'])->cascade();
+            $data['minutes'] = $interval->minutes;
+            $data['seconds'] = $interval->seconds;
+            $data['value'] = null;
+        }
+
+        // Convert to value so we don't have to write extra condition
+        $data['type'] = $data['type']->value;
+
         $newFilters = collect();
         $filters->each(function (array $filter) use ($newFilters) {
             if (in_array($filter['type'], ['level_above', 'level_below', 'range_to_destination'])) {
@@ -65,8 +77,14 @@ class EditFlowMeasure extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if ($data['type'] == FlowMeasureType::MANDATORY_ROUTE) {
-            Arr::pull($data, 'value');
+        switch ($data['type']) {
+            case FlowMeasureType::MANDATORY_ROUTE->value:
+                Arr::pull($data, 'value');
+                break;
+            case FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value:
+            case FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value:
+                $data['value'] = $data['seconds'] + ($data['minutes'] * 60);
+                break;
         }
 
         $filters = collect($data['filters'])
