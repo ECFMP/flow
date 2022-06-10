@@ -65,13 +65,13 @@ class FlowMeasureResource extends Resource
                     ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->required(fn (Closure $get) => $get('event_id') == null),
+                    ->required(),
                 Forms\Components\TextInput::make('flight_information_region_name')
                     ->label('Flight Information Region')
                     ->hintIcon('heroicon-o-folder')
                     ->disabled(true)
                     ->dehydrated(false)
-                    ->afterStateHydrated(function (TextInput $component, Closure $get, $state) {
+                    ->afterStateHydrated(function (TextInput $component, Closure $get) {
                         $component->state(FlightInformationRegion::find($get('flight_information_region_id'))?->identifier_name ?? null);
                     })
                     ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
@@ -92,8 +92,7 @@ class FlowMeasureResource extends Resource
                     ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
                     ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
                     ->reactive()
-                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
+                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord),
                 Forms\Components\TextInput::make('event_name')
                     ->label(__('Event'))
                     ->hintIcon('heroicon-o-calendar')
@@ -104,6 +103,7 @@ class FlowMeasureResource extends Resource
                     })
                     ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
                 Forms\Components\DateTimePicker::make('start_time')
+                    ->label(__('Start time [UTC]'))
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
                     ->afterOrEqual(now())
@@ -117,6 +117,7 @@ class FlowMeasureResource extends Resource
                     })
                     ->required(),
                 Forms\Components\DateTimePicker::make('end_time')
+                    ->label(__('End time [UTC]'))
                     ->default(now()->addHours(2)->addMinutes(5))
                     ->withoutSeconds()
                     ->after('start_time')

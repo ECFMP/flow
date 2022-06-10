@@ -20,7 +20,7 @@ enum FlowMeasureType: string
         return match ($this) {
             self::MINIMUM_DEPARTURE_INTERVAL => 'Minimum Departure Interval [MDI]',
             self::AVERAGE_DEPARTURE_INTERVAL => 'Average Departure Interval [ADI]',
-            self::PER_HOUR => 'Per hour',
+            self::PER_HOUR => 'Rate Per Hour',
             self::MILES_IN_TRAIL => 'Miles In Trail [MIT]',
             self::MAX_IAS => 'Max IAS',
             self::MAX_MACH => 'Max Mach',
