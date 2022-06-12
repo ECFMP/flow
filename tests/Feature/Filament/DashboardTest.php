@@ -1,12 +1,13 @@
 <?php
 
-use App\Enums\FlowMeasureType;
-use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
-use App\Filament\Resources\FlowMeasureResource\Widgets\NotifiedFlowMeasures;
-use App\Models\FlowMeasure;
 use App\Models\User;
+use App\Models\FlowMeasure;
 use Tests\FrontendTestCase;
 use Filament\Pages\Dashboard;
+use App\Enums\FlowMeasureType;
+use App\Filament\Resources\EventResource\Widgets\UpcomingEvents;
+use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
+use App\Models\Event;
 
 use function Pest\Livewire\livewire;
 
@@ -40,4 +41,22 @@ test('ActiveFlowMeasures: it shows active flow measures', function () {
         ->assertDontSee($upcomingFlowMeasure->identifier)
         ->assertDontSee($endedFlowMeasure->identifier)
         ->assertSee($activeFlowMeasure->identifier);
+});
+
+test('UpcomingEvents: it shows empty', function () {
+    /** @var FrontendTestCase $this */
+    livewire(UpcomingEvents::class)->assertSee('No records found');
+});
+
+
+test('UpcomingEvents: it shows events', function () {
+    $upcomingEvent = Event::factory()->notStarted()->create();
+    $activeEvent = Event::factory()->create();
+    $endedEvent = Event::factory()->finished()->create();
+
+    /** @var FrontendTestCase $this */
+    livewire(UpcomingEvents::class)
+        ->assertSee($upcomingEvent->name)
+        ->assertDontSee($endedEvent->name)
+        ->assertSee($activeEvent->name);
 });
