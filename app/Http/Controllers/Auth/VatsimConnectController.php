@@ -18,7 +18,7 @@ class VatsimConnectController
         $user = User::firstWhere('id', $vatsimUser->getId());
         if (!$user) {
             $user = new User([
-                'id' => $vatsimUser->id,
+                'id' => $vatsimUser->getId(),
                 'role_id' => Role::firstWhere('key', RoleKey::USER)->id
             ]);
         }
