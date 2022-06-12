@@ -15,7 +15,7 @@ class VatsimConnectController
         /** @var \SocialiteProviders\Manager\OAuth2\User $vatsimUser */
         $vatsimUser = Socialite::driver('vatsimconnect')->user();
 
-        $user = User::firstWhere('id', $vatsimUser->getId());
+        $user = User::firstWhere('id', $vatsimUser->id);
         if (!$user) {
             $user = new User([
                 'id' => $vatsimUser->getId(),
