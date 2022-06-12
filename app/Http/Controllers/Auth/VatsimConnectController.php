@@ -13,20 +13,20 @@ class VatsimConnectController
     public function callback()
     {
         /** @var \SocialiteProviders\Manager\OAuth2\User $vatsimUser */
-        //$vatsimUser = Socialite::driver('vatsimconnect')->user();
+        $vatsimUser = Socialite::driver('vatsimconnect')->user();
 
-        $user = User::firstWhere('id', 1203533);
+        $user = User::firstWhere('id', $vatsimUser->id);
         if (!$user) {
             $user = new User([
-                'id' => 1203533,
-                'role_id' => Role::firstWhere('key', RoleKey::SYSTEM)->id
+                'id' => $vatsimUser->id,
+                'role_id' => Role::firstWhere('key', RoleKey::USER)->id
             ]);
         }
 
-        $user->name = 'a';
-        $user->token = 'b';
-        $user->refresh_token = 'c';
-        $user->refresh_token_expires_at = now()->addSeconds(9999);
+        $user->name = $vatsimUser->name;
+        $user->token = $vatsimUser->token;
+        $user->refresh_token = $vatsimUser->refreshToken;
+        $user->refresh_token_expires_at = now()->addSeconds($vatsimUser->expiresIn);
         $user->save();
 
         Auth::login($user);
