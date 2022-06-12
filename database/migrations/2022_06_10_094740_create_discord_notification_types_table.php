@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\DiscordNotificationTypeEnum as DiscordNotificationTypeEnum;
+use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use App\Models\DiscordNotificationType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

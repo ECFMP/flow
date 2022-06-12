@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\DiscordNotificationTypeEnum as DiscordNotificationTypeEnum;
+use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +19,7 @@ class DiscordNotificationType extends Model
         'embeds' => 'array',
     ];
 
-    public function scopeType(Builder $query, DiscordNotificationType $type): Builder
+    public function scopeType(Builder $query, DiscordNotificationTypeEnum $type): Builder
     {
         return $query->where('type', $type);
     }

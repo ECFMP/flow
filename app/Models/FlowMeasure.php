@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\DiscordNotificationTypeEnum;
+use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
+use App\Helpers\FlowMeasureIdentifierGenerator;
+use App\Models\DiscordNotificationType;
 use Carbon\Carbon;
 use App\Enums\FilterType;
 use App\Enums\FlowMeasureType;
@@ -198,5 +200,13 @@ class FlowMeasure extends Model
 
             return FlowMeasureStatus::NOTIFIED;
         });
+    }
+
+    public function reissueIdentifier(bool $save = true): void
+    {
+        $this->identifier = FlowMeasureIdentifierGenerator::generateRevisedIdentifier($this);
+        if ($save) {
+            $this->save();
+        }
     }
 }

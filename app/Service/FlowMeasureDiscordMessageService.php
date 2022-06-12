@@ -9,11 +9,12 @@ use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Discord\Message\MessageInterface;
-use App\Enums\DiscordNotificationTypeEnum;
+use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use App\Models\DiscordNotification;
 use App\Models\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Database\Eloquent\Builder;
 use JetBrains\PhpStorm\NoReturn;
 
@@ -28,7 +29,9 @@ class FlowMeasureDiscordMessageService
 
     public function sendMeasureNotifiedDiscordNotifications(): void
     {
-        FlowMeasure::whereDoesntHave('notifiedDiscordNotifications')
+        FlowMeasure::whereDoesntHave('notifiedDiscordNotifications', function (Builder $builder) {
+            $builder->where('discord_notification_flow_measure.notified_as', '=', DB::raw('flow_measures.identifier'));
+        })
             ->whereDoesntHave('activatedDiscordNotifications')
             ->where('start_time', '<', Carbon::now()->addDay())
             ->where('start_time', '>', Carbon::now())
@@ -44,7 +47,14 @@ class FlowMeasureDiscordMessageService
 
     public function sendMeasureActivatedDiscordNotifications(): void
     {
-        FlowMeasure::whereDoesntHave('activatedDiscordNotifications')
+        FlowMeasure::with('notifiedDiscordNotifications')
+            ->whereDoesntHave('activatedDiscordNotifications', function (Builder $builder) {
+                $builder->where(
+                    'discord_notification_flow_measure.notified_as',
+                    '=',
+                    DB::raw('flow_measures.identifier')
+                );
+            })
             ->active()
             ->get()
             ->each(function (FlowMeasure $flowMeasure) {
@@ -60,12 +70,9 @@ class FlowMeasureDiscordMessageService
 
     private function notifiedMessageSentWithinTheLastHour(FlowMeasure $measure): bool
     {
-        return $measure->discordNotifications->firstWhere(
-                fn(DiscordNotification $notification
-                ) => $notification->pivot->discord_notification_type_id === DiscordNotificationType::idFromEnum(
-                        DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
-                    ) &&
-                    $notification->created_at > Carbon::now()->subHour()
+        return $measure->notifiedDiscordNotifications->firstWhere(
+                fn(DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
+                    $notification->pivot->notified_as === $measure->identifier
             ) !== null;
     }
 
@@ -116,7 +123,7 @@ class FlowMeasureDiscordMessageService
                 'embeds' => $message->embeds()->toArray(),
             ],
             [
-                'discord_notification_type_id' => DiscordNotificationType::where('type', $type)->firstOrFail()->id,
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum($type),
                 'notified_as' => $flowMeasure->identifier,
             ]
         );
@@ -129,7 +136,7 @@ class FlowMeasureDiscordMessageService
                 [
                     'type' => $type->name(),
                     'content' => $message->content(),
-                    'embeds' => json_encode($message->embeds()->toArray())
+                    'embeds' => json_encode($message->embeds()->toArray()),
                 ]
             )
             ->log('Sending discord notification');

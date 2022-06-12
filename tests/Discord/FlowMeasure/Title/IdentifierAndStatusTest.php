@@ -3,7 +3,7 @@
 namespace Tests\Discord\FlowMeasure\Title;
 
 use App\Discord\FlowMeasure\Title\IdentifierAndStatus;
-use App\Enums\DiscordNotificationTypeEnum;
+use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use App\Models\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use Tests\TestCase;

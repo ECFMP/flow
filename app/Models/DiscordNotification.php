@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\DiscordNotificationTypeEnum;
+use App\Enums\DiscordNotificationType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +22,7 @@ class DiscordNotification extends Model
     ];
 
     protected $casts = [
-        'type' => DiscordNotificationTypeEnum::class,
+        'type' => DiscordNotificationType::class,
         'embeds' => 'array',
     ];
 
@@ -33,7 +33,7 @@ class DiscordNotification extends Model
             ->withTimestamps();
     }
 
-    public function scopeType(Builder $query, DiscordNotificationTypeEnum $type): Builder
+    public function scopeType(Builder $query, DiscordNotificationType $type): Builder
     {
         return $query->where('type', $type);
     }
