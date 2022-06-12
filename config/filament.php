@@ -145,7 +145,6 @@ return [
         'path' => app_path('Filament/Widgets'),
         'register' => [
             ActiveFlowMeasures::class,
-            NotifiedFlowMeasures::class
         ],
     ],
 
