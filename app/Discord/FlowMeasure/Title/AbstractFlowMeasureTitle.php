@@ -13,4 +13,18 @@ abstract class AbstractFlowMeasureTitle implements TitleInterface
     {
         $this->flowMeasure = $flowMeasure;
     }
+
+    protected function formatIdentifierAndStatus(string $status): string
+    {
+        return sprintf('%s - %s', $this->flowMeasure->identifier, $status);
+    }
+
+    protected function formatIdentifierStatusAndReissued(string $status, bool $reissued): string
+    {
+        return sprintf(
+            '%s%s',
+            $this->formatIdentifierAndStatus($status),
+            $reissued  ? ' (Reissued)' : ''
+        );
+    }
 }

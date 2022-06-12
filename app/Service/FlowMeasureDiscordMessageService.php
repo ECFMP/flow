@@ -40,7 +40,7 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                    new FlowMeasureNotifiedMessage($flowMeasure)
+                    new FlowMeasureNotifiedMessage($flowMeasure, $this->isReissued($flowMeasure))
                 );
             });
     }
@@ -61,14 +61,14 @@ class FlowMeasureDiscordMessageService
                 $this->sendDiscordNotification(
                     $flowMeasure,
                     DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                    $this->notifiedMessageSentWithinTheLastHour($flowMeasure)
+                    $this->notifiedMessageSentWithinTheLastHourAndNotReissued($flowMeasure)
                         ? new FlowMeasureActivatedWithoutRecipientsMessage($flowMeasure)
-                        : new FlowMeasureActivatedMessage($flowMeasure)
+                        : new FlowMeasureActivatedMessage($flowMeasure, $this->isReissued($flowMeasure))
                 );
             });
     }
 
-    private function notifiedMessageSentWithinTheLastHour(FlowMeasure $measure): bool
+    private function notifiedMessageSentWithinTheLastHourAndNotReissued(FlowMeasure $measure): bool
     {
         return $measure->notifiedDiscordNotifications->firstWhere(
                 fn(DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
@@ -141,5 +141,14 @@ class FlowMeasureDiscordMessageService
             )
             ->log('Sending discord notification');
         $this->discord->sendMessage($message);
+    }
+
+    private function isReissued(FlowMeasure $measure): bool
+    {
+        $lastNotification = $measure->discordNotifications()
+            ->latest()
+            ->first();
+
+        return $lastNotification && $lastNotification->pivot->notified_as !== $measure->identifier;
     }
 }

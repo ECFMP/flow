@@ -223,7 +223,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $this->discord->expects('sendMessage')->with(
             Mockery::on(
                 fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
-                    )[0]['title'] === $measure->identifier . ' - ' . 'Active'
+                    )[0]['title'] === $measure->identifier . ' - ' . 'Active (Reissued)'
             )
         )
             ->once();

@@ -10,7 +10,7 @@ use App\Discord\FlowMeasure\Field\Filters\AdditionalFilterParser;
 use App\Discord\FlowMeasure\Field\Reason;
 use App\Discord\FlowMeasure\Field\Restriction;
 use App\Discord\FlowMeasure\Field\StartTime;
-use App\Discord\FlowMeasure\Title\IdentifierAndStatus;
+use App\Discord\FlowMeasure\Title\IdentifierAndNotifiedStatus;
 use App\Discord\Message\Embed\BlankField;
 use App\Discord\Message\Embed\Colour;
 use App\Discord\Message\Embed\Embed;
@@ -23,10 +23,12 @@ use App\Models\FlowMeasure;
 class FlowMeasureNotifiedMessage implements MessageInterface
 {
     private readonly FlowMeasure $measure;
+    private readonly bool $isReissue;
 
-    public function __construct(FlowMeasure $measure)
+    public function __construct(FlowMeasure $measure, bool $isReissue)
     {
         $this->measure = $measure;
+        $this->isReissue = $isReissue;
     }
 
     public function content(): string
@@ -38,7 +40,11 @@ class FlowMeasureNotifiedMessage implements MessageInterface
     {
         return (new EmbedCollection())->add(
             Embed::make()->withColour(Colour::NOTIFIED)
-                ->withTitle(new IdentifierAndStatus($this->measure))
+                ->withTitle(
+                    $this->isReissue
+                        ? IdentifierAndNotifiedStatus::createReissued($this->measure)
+                        : IdentifierAndNotifiedStatus::create($this->measure)
+                )
                 ->withDescription(new EventNameAndInterestedParties($this->measure))
                 ->withField(Field::makeInline(new Restriction($this->measure)))
                 ->withField(Field::makeInline(new StartTime($this->measure)))
