@@ -9133,16 +9133,16 @@
         },
         {
             "name": "laravel-lang/lang",
-            "version": "10.9.1",
+            "version": "10.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/lang.git",
-                "reference": "07e100bbe05a876baed68b2dab12742e4f705ec8"
+                "reference": "0ab2e88f2772ae4f604ee25efe49e3f2bbf83146"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/07e100bbe05a876baed68b2dab12742e4f705ec8",
-                "reference": "07e100bbe05a876baed68b2dab12742e4f705ec8",
+                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/0ab2e88f2772ae4f604ee25efe49e3f2bbf83146",
+                "reference": "0ab2e88f2772ae4f604ee25efe49e3f2bbf83146",
                 "shasum": ""
             },
             "require": {
@@ -9207,7 +9207,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2022-05-26T13:57:11+00:00"
+            "time": "2022-06-06T10:31:09+00:00"
         },
         {
             "name": "laravel-lang/publisher",
