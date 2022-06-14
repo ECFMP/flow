@@ -25,7 +25,7 @@ class FlowMeasureNotifiedMessageTest extends TestCase
 
         $this->assertEquals(
             '',
-            (new FlowMeasureNotifiedMessage($measure))->content()
+            (new FlowMeasureNotifiedMessage($measure, false))->content()
         );
     }
 
@@ -90,7 +90,72 @@ class FlowMeasureNotifiedMessageTest extends TestCase
                     ],
                 ],
             ],
-            (new FlowMeasureNotifiedMessage($measure))->embeds()->toArray()
+            (new FlowMeasureNotifiedMessage($measure, false))->embeds()->toArray()
+        );
+    }
+
+    public function testItHasEmbedsWhenReissued()
+    {
+        $measure = FlowMeasure::factory()
+            ->notStarted()
+            ->withTimes(Carbon::parse('2022-05-22T14:54:23Z'), Carbon::parse('2022-05-22T16:37:22Z'))
+            ->withEvent()
+            ->withAdditionalFilter(['type' => 'level_below', 'value' => 220])->create();
+
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->count(2))->create();
+        $measure->notifiedFlightInformationRegions()->sync([$fir->id]);
+
+        $this->assertEquals(
+            [
+                [
+                    'title' => $measure->identifier . ' - ' . 'Notified (Reissued)',
+                    'color' => Colour::NOTIFIED->value,
+                    'description' => (new EventNameAndInterestedParties($measure))->description(),
+                    'fields' => [
+                        [
+                            'name' => 'Minimum Departure Interval [MDI]',
+                            'value' => '2 Minutes',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Start Time',
+                            'value' => '22/05 1454Z',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'End Time',
+                            'value' => '1637Z',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Departure Airports',
+                            'value' => 'EG**',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Arrival Airports',
+                            'value' => 'EHAM',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => "\u{200b}",
+                            'value' => "\u{200b}",
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Level at or Below',
+                            'value' => '220',
+                            'inline' => false,
+                        ],
+                        [
+                            'name' => 'Reason',
+                            'value' => $measure->reason,
+                            'inline' => false,
+                        ],
+                    ],
+                ],
+            ],
+            (new FlowMeasureNotifiedMessage($measure, true))->embeds()->toArray()
         );
     }
 }

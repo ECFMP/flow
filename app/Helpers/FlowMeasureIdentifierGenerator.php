@@ -9,6 +9,22 @@ use Illuminate\Support\Str;
 
 class FlowMeasureIdentifierGenerator
 {
+    private const IDENTIFIER_REGEX = '/^([A-Z]{4})(\d{2})([A-Z]{1,2})(-(\d+))?$/';
+
+    public static function generateRevisedIdentifier(FlowMeasure $measure): string
+    {
+        $identifierParts = [];
+        preg_match(self::IDENTIFIER_REGEX, $measure->identifier, $identifierParts);
+
+        return sprintf(
+            '%s%s%s-%d',
+            $identifierParts[1],
+            $identifierParts[2],
+            $identifierParts[3],
+            isset($identifierParts[5]) ? ((int)$identifierParts[5]) + 1 : 2
+        );
+    }
+
     public static function generateIdentifier(
         Carbon $startTime,
         FlightInformationRegion $flightInformationRegion

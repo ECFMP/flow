@@ -98,4 +98,37 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
             'Measures deleted' => [0, '2022-04-09 12:00:00', '09', 'A', true],
         ];
     }
+
+    /**
+     * @dataProvider revisionProvider
+     */
+    public function testItGeneratesRevisedFlowMeasures(
+        string $existingIdentifier,
+        string $expected
+    ) {
+        $fir = FlightInformationRegion::factory()->create(['identifier' => 'EGTT']);
+
+        $measure = FlowMeasure::factory()->state(
+            [
+                'identifier' => $existingIdentifier,
+                'flight_information_region_id' => $fir->id,
+                'start_time' => Carbon::now(),
+                'end_time' => Carbon::now(),
+            ]
+        )->create();
+
+        $this->assertEquals($expected, FlowMeasureIdentifierGenerator::generateRevisedIdentifier($measure));
+    }
+
+    public function revisionProvider()
+    {
+        return [
+            'First revision' => ['EGTT01A', 'EGTT01A-2'],
+            'Second revision' => ['EGTT01A-2', 'EGTT01A-3'],
+            'Tenth revision' => ['EGTT01A-9', 'EGTT01A-10'],
+            'End of the month first revision' => ['EGTT25A', 'EGTT25A-2'],
+            'End of the month second revision' => ['EGTT25A-2', 'EGTT25A-3'],
+            'Someone really messed up revision' => ['EGTT25A-9999', 'EGTT25A-10000'],
+        ];
+    }
 }

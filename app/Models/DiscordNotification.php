@@ -6,7 +6,7 @@ use App\Enums\DiscordNotificationType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class DiscordNotification extends Model
 {
@@ -26,9 +26,11 @@ class DiscordNotification extends Model
         'embeds' => 'array',
     ];
 
-    public function flowMeasure(): BelongsTo
+    public function flowMeasure(): BelongsToMany
     {
-        return $this->belongsTo(FlowMeasure::class);
+        return $this->belongsToMany(FlowMeasure::class)
+            ->withPivot(['type', 'notified_as'])
+            ->withTimestamps();
     }
 
     public function scopeType(Builder $query, DiscordNotificationType $type): Builder
