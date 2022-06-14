@@ -168,6 +168,7 @@ class FlowMeasureResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('seconds')
                             ->numeric()
+                            ->default(0)
                             ->minValue(0)
                             ->maxValue(59)
                             ->visible(fn (Closure $get) => in_array($get('type'), [
@@ -333,13 +334,19 @@ class FlowMeasureResource extends Resource
                                 ]),
                         ]),
                 ]),
-                // TODO: Make it possible to also search by identifier
                 Forms\Components\Fieldset::make('FAO')
                     ->schema([
                         Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
                             ->columnSpan('full')
                             ->label(__("FIR's"))
                             ->relationship('notifiedFlightInformationRegions', 'name')
+                            ->getSearchResultsUsing(
+                                fn (string $searchQuery) => FlightInformationRegion::where('name', 'like', "%{$searchQuery}%")
+                                    ->orWhere('identifier', 'like', "%{$searchQuery}%")
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifier_name])
+                            )
                             ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->identifierName)
                     ])
             ]);
