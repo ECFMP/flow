@@ -61,7 +61,7 @@ class ViewFlowMeasure extends ViewRecord
 
         $newFilters = collect();
         $filters->each(function (array $filter) use ($newFilters) {
-            if (in_array($filter['type'], ['level_above', 'level_below'])) {
+            if (in_array($filter['type'], ['level_above', 'level_below', 'range_to_destination'])) {
                 $newFilters->push([
                     'type' => $filter['type'],
                     'value' => $filter['value'],
