@@ -1,12 +1,15 @@
 <?php
 
-use App\Enums\FlowMeasureType;
-use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
-use App\Filament\Resources\FlowMeasureResource\Widgets\NotifiedFlowMeasures;
-use App\Models\FlowMeasure;
 use App\Models\User;
+use App\Models\Event;
+use App\Models\FlowMeasure;
 use Tests\FrontendTestCase;
 use Filament\Pages\Dashboard;
+use App\Enums\FlowMeasureType;
+use App\Filament\Widgets\MyPermissions;
+use App\Models\FlightInformationRegion;
+use App\Filament\Resources\EventResource\Widgets\UpcomingEvents;
+use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
 
 use function Pest\Livewire\livewire;
 
@@ -22,6 +25,96 @@ it('can render page', function () {
 
     $this->actingAs(User::factory()->system()->create());
     $this->get(Dashboard::getUrl())->assertSuccessful();
+});
+
+test('MyPermissions: it renders for User', function () {
+    /** @var FrontendTestCase $this */
+    livewire(MyPermissions::class)
+        ->assertSee('Normal User - View Only')
+        ->assertDontSee('Flight Information Regions');
+});
+
+test('MyPermissions: it renders for FlowManager', function () {
+    /** @var FrontendTestCase $this */
+
+    /** @var FlightInformationRegion $firstFir */
+    $firstFir = FlightInformationRegion::factory()->create();
+
+    /** @var FlightInformationRegion $secondFir */
+    $secondFir = FlightInformationRegion::factory()->create();
+
+    /** @var User $user */
+    $user = User::factory()->flowManager()->create();
+
+    $this->actingAs($user);
+
+    livewire(MyPermissions::class)
+        ->assertSee('Flow Manager')
+        ->assertSee('Flight Information Regions')
+        ->assertSee('None');
+
+    $user->flightInformationRegions()->sync($firstFir->id);
+    $user->refresh();
+
+    livewire(MyPermissions::class)
+        ->assertSee($firstFir->identifier_name)
+        ->assertDontSee($secondFir->identifier_name);
+});
+
+test('MyPermissions: it renders for NMT', function () {
+    /** @var FrontendTestCase $this */
+
+    /** @var FlightInformationRegion $firstFir */
+    $firstFir = FlightInformationRegion::factory()->create();
+
+    /** @var FlightInformationRegion $secondFir */
+    $secondFir = FlightInformationRegion::factory()->create();
+
+    /** @var User $user */
+    $user = User::factory()->networkManager()->create();
+
+    $this->actingAs($user);
+
+    livewire(MyPermissions::class)
+        ->assertSee('Network Management Team')
+        ->assertSee('Flight Information Regions')
+        ->assertSee('All');
+
+    $user->flightInformationRegions()->sync($firstFir->id);
+    $user->refresh();
+
+    livewire(MyPermissions::class)
+        ->assertSee('All')
+        ->assertDontSee($firstFir->identifier_name)
+        ->assertDontSee($secondFir->identifier_name);
+});
+
+test('MyPermissions: it renders for System', function () {
+    /** @var FrontendTestCase $this */
+
+    /** @var FlightInformationRegion $firstFir */
+    $firstFir = FlightInformationRegion::factory()->create();
+
+    /** @var FlightInformationRegion $secondFir */
+    $secondFir = FlightInformationRegion::factory()->create();
+
+    /** @var User $user */
+    $user = User::factory()->system()->create();
+
+    $this->actingAs($user);
+
+    livewire(MyPermissions::class)
+        ->assertSee('System user')
+        ->assertSee('Flight Information Regions')
+        ->assertSee('All');
+
+    $user->flightInformationRegions()->sync($firstFir->id);
+    $user->refresh();
+
+    livewire(MyPermissions::class)
+        ->assertSee('All')
+        ->assertDontSee($firstFir->identifier_name)
+        ->assertDontSee($secondFir->identifier_name);
 });
 
 test('ActiveFlowMeasures: it shows empty', function () {
@@ -42,22 +135,20 @@ test('ActiveFlowMeasures: it shows active flow measures', function () {
         ->assertSee($activeFlowMeasure->identifier);
 });
 
-test('NotifiedFlowMeasures: it shows empty', function () {
+test('UpcomingEvents: it shows empty', function () {
     /** @var FrontendTestCase $this */
-    livewire(NotifiedFlowMeasures::class)->assertSee('No records found');
+    livewire(UpcomingEvents::class)->assertSee('No records found');
 });
 
-test('NotifiedFlowMeasures: it shows notified flow measures', function () {
+
+test('UpcomingEvents: it shows events', function () {
+    $upcomingEvent = Event::factory()->notStarted()->create();
+    $activeEvent = Event::factory()->create();
+    $endedEvent = Event::factory()->finished()->create();
+
     /** @var FrontendTestCase $this */
-
-    $notNotifiedFlowMeasure = FlowMeasure::factory()->notNotified()->create();
-    $upcomingFlowMeasure = FlowMeasure::factory()->notStarted()->create();
-    $activeFlowMeasure = FlowMeasure::factory()->withMeasure(FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, 120)->create();
-    $endedFlowMeasure = FlowMeasure::factory()->finished()->create();
-
-    livewire(NotifiedFlowMeasures::class)
-        ->assertDontSee($notNotifiedFlowMeasure->identifier)
-        ->assertDontSee($activeFlowMeasure->identifier)
-        ->assertDontSee($endedFlowMeasure->identifier)
-        ->assertSee($upcomingFlowMeasure->identifier);
+    livewire(UpcomingEvents::class)
+        ->assertSee($upcomingEvent->name)
+        ->assertDontSee($endedEvent->name)
+        ->assertSee($activeEvent->name);
 });
