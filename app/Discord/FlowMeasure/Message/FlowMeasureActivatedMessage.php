@@ -2,7 +2,8 @@
 
 namespace App\Discord\FlowMeasure\Message;
 
-use App\Discord\FlowMeasure\Description\EventNameAndInterestedParties;
+use App\Discord\FlowMeasure\Content\InterestedParties;
+use App\Discord\FlowMeasure\Description\EventName;
 use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
 use App\Discord\FlowMeasure\Field\EndTime;
@@ -33,7 +34,7 @@ class FlowMeasureActivatedMessage implements MessageInterface
 
     public function content(): string
     {
-        return '';
+        return InterestedParties::interestedPartiesString($this->measure);
     }
 
     public function embeds(): EmbedCollection
@@ -45,7 +46,7 @@ class FlowMeasureActivatedMessage implements MessageInterface
                         ? IdentifierAndActiveStatus::createReissued($this->measure)
                         : IdentifierAndActiveStatus::create($this->measure)
                 )
-                ->withDescription(new EventNameAndInterestedParties($this->measure))
+                ->withDescription(new EventName($this->measure))
                 ->withField(Field::makeInline(new Restriction($this->measure)))
                 ->withField(Field::makeInline(new StartTime($this->measure)))
                 ->withField(Field::makeInline(new EndTime($this->measure)))

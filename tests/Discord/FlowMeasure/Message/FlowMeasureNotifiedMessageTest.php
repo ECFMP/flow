@@ -2,7 +2,7 @@
 
 namespace Tests\Discord\FlowMeasure\Message;
 
-use App\Discord\FlowMeasure\Description\EventNameAndInterestedParties;
+use App\Discord\FlowMeasure\Description\EventName;
 use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\Message\Embed\Colour;
 use App\Models\DiscordTag;
@@ -19,12 +19,17 @@ class FlowMeasureNotifiedMessageTest extends TestCase
         Carbon::setTestNow(Carbon::parse('2022-05-22T13:54:23Z'));
     }
 
-    public function testItHasNoContent()
+    public function testItHasFaoContent()
     {
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->count(2))->create();
         $measure = FlowMeasure::factory()->create();
+        $measure->notifiedFlightInformationRegions()->sync([$fir->id]);
 
         $this->assertEquals(
-            '',
+            sprintf(
+                "**FAO**: %s\nPlease acknowledge receipt with a :white_check_mark: reaction.",
+                $fir->discordTags->pluck('tag')->map(fn(string $tag) => '<' . $tag . '>')->join(' ')
+            ),
             (new FlowMeasureNotifiedMessage($measure, false))->content()
         );
     }
@@ -45,7 +50,7 @@ class FlowMeasureNotifiedMessageTest extends TestCase
                 [
                     'title' => $measure->identifier . ' - ' . 'Notified',
                     'color' => Colour::NOTIFIED->value,
-                    'description' => (new EventNameAndInterestedParties($measure))->description(),
+                    'description' => (new EventName($measure))->description(),
                     'fields' => [
                         [
                             'name' => 'Minimum Departure Interval [MDI]',
@@ -110,7 +115,7 @@ class FlowMeasureNotifiedMessageTest extends TestCase
                 [
                     'title' => $measure->identifier . ' - ' . 'Notified (Reissued)',
                     'color' => Colour::NOTIFIED->value,
-                    'description' => (new EventNameAndInterestedParties($measure))->description(),
+                    'description' => (new EventName($measure))->description(),
                     'fields' => [
                         [
                             'name' => 'Minimum Departure Interval [MDI]',
