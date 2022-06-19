@@ -10,7 +10,6 @@ use App\Models\Event;
 use App\Enums\RoleKey;
 use Filament\Pages\Page;
 use App\Models\FlowMeasure;
-use App\Models\AirportGroup;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use App\Enums\FlowMeasureType;
@@ -22,14 +21,16 @@ use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
+use App\Filament\Resources\FlowMeasureResource\Traits\Filters;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
 use Filament\Forms\Components\TextInput;
 
 class FlowMeasureResource extends Resource
 {
+    use Filters;
+
     protected static ?string $model = FlowMeasure::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-check';
@@ -184,156 +185,7 @@ class FlowMeasureResource extends Resource
                                 Forms\Components\Textarea::make('')->required()
                             ]),
                     ]),
-                Forms\Components\Fieldset::make(__('Filters'))->schema([
-
-                    Forms\Components\Repeater::make('adep')
-                        ->label('ADEP')
-                        ->required()
-                        ->label('Departure(s) [ADEP]')
-                        ->disableItemMovement()
-                        ->hintIcon('heroicon-o-trending-up')
-                        ->schema([
-                            Forms\Components\Select::make('value_type')
-                                ->options([
-                                    'airport_group' => __('Airport Group'),
-                                    'custom_value' => __('Custom value'),
-                                ])
-                                ->reactive()
-                                ->required(),
-                            Forms\Components\Select::make('airport_group')
-                                ->hintIcon('heroicon-o-collection')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
-                                ->searchable()
-                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
-                                ->required(),
-                            Forms\Components\TextInput::make('custom_value')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
-                                ->length(4)
-                                ->default('****')
-                                ->required()
-                        ]),
-                    Forms\Components\Repeater::make('ades')
-                        ->label('ADES')
-                        ->required()
-                        ->label('Arrival(s) [ADES]')
-                        ->disableItemMovement()
-                        ->hintIcon('heroicon-o-trending-down')
-                        ->schema([
-                            Forms\Components\Select::make('value_type')
-                                ->options([
-                                    'airport_group' => __('Airport Group'),
-                                    'custom_value' => __('Custom value'),
-                                ])
-                                ->reactive()
-                                ->required(),
-                            Forms\Components\Select::make('airport_group')
-                                ->hintIcon('heroicon-o-collection')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
-                                ->searchable()
-                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
-                                ->required(),
-                            Forms\Components\TextInput::make('custom_value')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
-                                ->length(4)
-                                ->default('****')
-                                ->required()
-                        ]),
-                    Forms\Components\Builder::make('filters')
-                        ->label('Optional filters')
-                        ->createItemButtonLabel(__('Add optional filter'))
-                        ->columnSpan('full')
-                        ->inset()
-                        ->disableItemMovement()
-                        ->blocks([
-                            Block::make('waypoint')
-                                ->icon('heroicon-o-view-list')
-                                ->schema([
-                                    Forms\Components\Textarea::make('value')
-                                        ->label(__('Waypoint'))
-                                        ->hintIcon('heroicon-o-view-list')
-                                        ->required()
-                                ]),
-                            Block::make('level_above')
-                                ->icon('heroicon-o-arrow-up')
-                                ->schema([
-                                    // TODO: Add mask?
-                                    Forms\Components\TextInput::make('value')
-                                        ->label(__('Level above'))
-                                        ->hintIcon('heroicon-o-arrow-up')
-                                        ->numeric()
-                                        ->step(5)
-                                        ->prefix('FL')
-                                        ->minLength(0)
-                                        ->maxLength(660)
-                                        ->required()
-                                ]),
-                            Block::make('level_below')
-                                ->icon('heroicon-o-arrow-down')
-                                ->schema([
-                                    // TODO: Add mask?
-                                    Forms\Components\TextInput::make('value')
-                                        ->label(__('Level below'))
-                                        ->hintIcon('heroicon-o-arrow-down')
-                                        ->numeric()
-                                        ->step(5)
-                                        ->prefix('FL')
-                                        ->minLength(0)
-                                        ->maxLength(660)
-                                        ->required()
-                                ]),
-                            Block::make('level')
-                                ->icon('heroicon-o-arrow-right')
-                                ->schema([
-                                    // TODO: Add mask?
-                                    Forms\Components\TextInput::make('value')
-                                        ->label(__('Level'))
-                                        ->hintIcon('heroicon-o-arrow-right')
-                                        ->numeric()
-                                        ->step(5)
-                                        ->prefix('FL')
-                                        ->minLength(0)
-                                        ->maxLength(660)
-                                        ->required()
-                                ]),
-                            Block::make('member_event')
-                                ->icon('heroicon-o-calendar')
-                                ->schema([
-                                    Forms\Components\Select::make('member_event')
-                                        ->label(__('Event'))
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->searchable()
-                                        ->options(
-                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
-                                        )
-                                ]),
-                            Block::make('member_non_event')
-                                ->icon('heroicon-o-calendar')
-                                ->schema([
-                                    Forms\Components\Select::make('member_non_event')
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->label(__('Event'))
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->searchable()
-                                        ->options(
-                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
-                                        )
-                                ]),
-                            Block::make('range_to_destination')
-                                ->icon('heroicon-o-x-circle')
-                                ->schema([
-                                    Forms\Components\TextInput::make('value')
-                                        ->label(__('Range to destination'))
-                                        ->hintIcon('heroicon-o-x-circle')
-                                        ->numeric()
-                                        ->step(5)
-                                        ->suffix('NM')
-                                        ->minLength(0)
-                                        ->maxLength(1000)
-                                        ->required()
-                                ]),
-                        ]),
-                ]),
+                self::filters($events),
                 Forms\Components\Fieldset::make('FAO')
                     ->schema([
                         Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
