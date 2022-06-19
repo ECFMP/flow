@@ -2,7 +2,8 @@
 
 namespace App\Discord\FlowMeasure\Message;
 
-use App\Discord\FlowMeasure\Description\EventNameAndInterestedParties;
+use App\Discord\FlowMeasure\Content\InterestedParties;
+use App\Discord\FlowMeasure\Description\EventName;
 use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
 use App\Discord\FlowMeasure\Field\Restriction;
@@ -25,7 +26,7 @@ class FlowMeasureWithdrawnMessage implements MessageInterface
 
     public function content(): string
     {
-        return '';
+        return InterestedParties::interestedPartiesString($this->measure);
     }
 
     public function embeds(): EmbedCollection
@@ -33,7 +34,7 @@ class FlowMeasureWithdrawnMessage implements MessageInterface
         return (new EmbedCollection())->add(
             Embed::make()->withColour(Colour::WITHDRAWN)
                 ->withTitle(new IdentifierAndWithdrawnStatus($this->measure))
-                ->withDescription(new EventNameAndInterestedParties($this->measure))
+                ->withDescription(new EventName($this->measure))
                 ->withField(Field::makeInline(new Restriction($this->measure)))
                 ->withField(Field::makeInline(new DepartureAirports($this->measure)))
                 ->withField(Field::makeInline(new ArrivalAirports($this->measure)))
