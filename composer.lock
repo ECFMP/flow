@@ -9133,23 +9133,23 @@
         },
         {
             "name": "laravel-lang/lang",
-            "version": "10.9.2",
+            "version": "10.9.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/lang.git",
-                "reference": "0ab2e88f2772ae4f604ee25efe49e3f2bbf83146"
+                "reference": "cba583678d506ee86154510232168a98b6553345"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/0ab2e88f2772ae4f604ee25efe49e3f2bbf83146",
-                "reference": "0ab2e88f2772ae4f604ee25efe49e3f2bbf83146",
+                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/cba583678d506ee86154510232168a98b6553345",
+                "reference": "cba583678d506ee86154510232168a98b6553345",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*"
             },
             "conflict": {
-                "laravel-lang/publisher": "<12.0"
+                "laravel-lang/publisher": "<12.0 >=14.0"
             },
             "require-dev": {
                 "dragon-code/pretty-array": "^4.0",
@@ -9207,7 +9207,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2022-06-06T10:31:09+00:00"
+            "time": "2022-06-16T19:28:24+00:00"
         },
         {
             "name": "laravel-lang/publisher",
