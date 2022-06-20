@@ -1101,16 +1101,16 @@
         },
         {
             "name": "egulias/email-validator",
-            "version": "3.2",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egulias/EmailValidator.git",
-                "reference": "a5ed8d58ed0c340a7c2109f587951b1c84cf6286"
+                "reference": "f88dcf4b14af14a98ad96b14b2b317969eab6715"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/a5ed8d58ed0c340a7c2109f587951b1c84cf6286",
-                "reference": "a5ed8d58ed0c340a7c2109f587951b1c84cf6286",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/f88dcf4b14af14a98ad96b14b2b317969eab6715",
+                "reference": "f88dcf4b14af14a98ad96b14b2b317969eab6715",
                 "shasum": ""
             },
             "require": {
@@ -1157,7 +1157,7 @@
             ],
             "support": {
                 "issues": "https://github.com/egulias/EmailValidator/issues",
-                "source": "https://github.com/egulias/EmailValidator/tree/3.2"
+                "source": "https://github.com/egulias/EmailValidator/tree/3.2.1"
             },
             "funding": [
                 {
@@ -1165,7 +1165,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-05-28T22:19:18+00:00"
+            "time": "2022-06-18T20:57:19+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -8785,16 +8785,16 @@
         },
         {
             "name": "dragon-code/support",
-            "version": "v6.1.2",
+            "version": "v6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheDragonCode/support.git",
-                "reference": "c8ec19e8c1e219013438bbcef0db7eea3138aa04"
+                "reference": "99087ac766de4fdad144eca23d835077b740e91d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheDragonCode/support/zipball/c8ec19e8c1e219013438bbcef0db7eea3138aa04",
-                "reference": "c8ec19e8c1e219013438bbcef0db7eea3138aa04",
+                "url": "https://api.github.com/repos/TheDragonCode/support/zipball/99087ac766de4fdad144eca23d835077b740e91d",
+                "reference": "99087ac766de4fdad144eca23d835077b740e91d",
                 "shasum": ""
             },
             "require": {
@@ -8887,7 +8887,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2022-04-24T21:41:07+00:00"
+            "time": "2022-06-16T10:58:36+00:00"
         },
         {
             "name": "facade/ignition-contracts",
@@ -9211,16 +9211,16 @@
         },
         {
             "name": "laravel-lang/publisher",
-            "version": "v13.0.0",
+            "version": "v13.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/publisher.git",
-                "reference": "ecd13b0484fb3307d3261f6785e22f895e43fe74"
+                "reference": "0af88a10d491138c1b7e492d0f4556bb474816df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/publisher/zipball/ecd13b0484fb3307d3261f6785e22f895e43fe74",
-                "reference": "ecd13b0484fb3307d3261f6785e22f895e43fe74",
+                "url": "https://api.github.com/repos/Laravel-Lang/publisher/zipball/0af88a10d491138c1b7e492d0f4556bb474816df",
+                "reference": "0af88a10d491138c1b7e492d0f4556bb474816df",
                 "shasum": ""
             },
             "require": {
@@ -9232,6 +9232,11 @@
                 "illuminate/contracts": "^7.0 || ^8.0 || ^9.0",
                 "illuminate/support": "^7.0 || ^8.0 || ^9.0",
                 "php": "^8.0"
+            },
+            "conflict": {
+                "laravel-lang/attributes": ">=2.0.0",
+                "laravel-lang/http-statuses": ">=3.0.0",
+                "laravel-lang/lang": ">=11.0.0"
             },
             "require-dev": {
                 "laravel-lang/http-statuses": "^2.0",
@@ -9301,7 +9306,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2022-04-21T13:04:36+00:00"
+            "time": "2022-06-17T21:15:34+00:00"
         },
         {
             "name": "laravel/sail",
