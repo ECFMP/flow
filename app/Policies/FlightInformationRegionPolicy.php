@@ -19,10 +19,7 @@ class FlightInformationRegionPolicy
      */
     public function viewAny(User $user)
     {
-        return in_array($user->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-        ]);
+        return true;
     }
 
     /**
@@ -37,6 +34,7 @@ class FlightInformationRegionPolicy
         return in_array($user->role->key, [
             RoleKey::SYSTEM,
             RoleKey::NMT,
+            RoleKey::FLOW_MANAGER
         ]);
     }
 
