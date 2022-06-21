@@ -88,10 +88,10 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
+                Tables\Columns\TextColumn::make('flightInformationRegion.identifier_name')
                     ->label('FIR')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(['identifier', 'name'])
+                    ->sortable(['identifier', 'name']),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
