@@ -59,6 +59,17 @@ it('can create', function () {
     ]);
 });
 
+test('CreateEvent: End date changes when Start date is changed', function () {
+    /** @var FrontendTestCase $this */
+    $this->actingAs(User::factory()->system()->create());
+
+    $newData = Event::factory()->make();
+
+    livewire(EventResource\Pages\CreateEvent::class)
+        ->set('data.date_start', $newData->date_start)
+        ->assertSet('data.date_end', $newData->date_start->addHours(4));
+});
+
 it('can validate create input', function () {
     /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());

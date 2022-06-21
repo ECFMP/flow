@@ -2,20 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\RoleKey;
+use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Event;
+use App\Enums\RoleKey;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
+use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
+use Illuminate\Support\Collection;
+use Filament\Tables\Filters\Filter;
+use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
-use App\Models\FlightInformationRegion;
-use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 
 class EventResource extends Resource
 {
@@ -64,6 +66,10 @@ class EventResource extends Resource
                     ->label('Start [UTC]')
                     ->default(now()->startOfHour())
                     ->withoutSeconds()
+                    ->afterStateUpdated(function (Closure $set, $state) {
+                        $set('date_end', Carbon::parse($state)->addHours(4));
+                    })
+                    ->reactive()
                     ->required(),
                 Forms\Components\DateTimePicker::make('date_end')
                     ->label('End [UTC]')
