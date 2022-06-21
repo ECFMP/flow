@@ -11,11 +11,13 @@ use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
+use Filament\Resources\Pages\Page;
 use Illuminate\Support\Collection;
 use Filament\Tables\Filters\Filter;
 use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
 
@@ -81,6 +83,13 @@ class EventResource extends Resource
                     ->label(__('VATCAN code'))
                     ->helperText(__('Leave empty if no there\'s no code available'))
                     ->maxLength(6),
+                Forms\Components\TagsInput::make('participants')
+                    ->columnSpan('full')
+                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord && in_array(auth()->user()->role->key, [
+                        RoleKey::SYSTEM,
+                        RoleKey::NMT,
+                        RoleKey::FLOW_MANAGER
+                    ])),
             ]);
     }
 

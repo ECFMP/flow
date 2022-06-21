@@ -155,7 +155,7 @@ it('can render edit page', function () {
 it('can retrieve data for edit page', function () {
     /** @var FrontendTestCase $this */
     $this->actingAs(User::factory()->system()->create());
-    $event = Event::factory()->create();
+    $event = Event::factory()->withParticipants()->create();
 
     livewire(EventResource\Pages\EditEvent::class, [
         'record' => $event->getKey(),
@@ -164,7 +164,8 @@ it('can retrieve data for edit page', function () {
         ->assertSet('data.flight_information_region_id', $event->flight_information_region_id)
         ->assertSet('data.date_start', $event->date_start->toDateTimeString())
         ->assertSet('data.date_end', $event->date_end->toDateTimeString())
-        ->assertSet('data.vatcan_code', $event->vatcan_code);
+        ->assertSet('data.vatcan_code', $event->vatcan_code)
+        ->assertSet('data.participants', $event->participants);
 });
 
 it('can edit', function () {
@@ -231,23 +232,14 @@ it('can render view page', function () {
 
 it('can retrieve data for view page', function () {
     /** @var FrontendTestCase $this */
-    $event = Event::factory()->create();
+    $event = Event::factory()->withParticipants()->create();
 
-    livewire(EventResource\Pages\ViewEvent::class, [
-        'record' => $event->getKey(),
-    ])->assertSuccessful();
-
-    $this->actingAs(User::factory()->flowManager()->create());
-    livewire(EventResource\Pages\ViewEvent::class, [
-        'record' => $event->getKey(),
-    ])->assertSuccessful();
-
-    $this->actingAs(User::factory()->networkManager()->create());
     livewire(EventResource\Pages\ViewEvent::class, [
         'record' => $event->getKey(),
     ])->assertSet('data.name', $event->name)
         ->assertSet('data.flight_information_region_id', $event->flight_information_region_id)
         ->assertSet('data.date_start', $event->date_start->toDateTimeString())
         ->assertSet('data.date_end', $event->date_end->toDateTimeString())
-        ->assertSet('data.vatcan_code', $event->vatcan_code);
+        ->assertSet('data.vatcan_code', $event->vatcan_code)
+        ->assertSet('data.participants', $event->participants);
 });
