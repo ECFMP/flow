@@ -20,12 +20,6 @@ class FlightInformationRegionResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?string $navigationGroup = 'Admin';
-
-    // TODO: Do we want to show 'Flight Information Region' or 'FIR'?
-    // protected static ?string $label = 'FIR';
-    // protected static ?string $pluralLabel = 'FIR\'s';
-
     public static function getGloballySearchableAttributes(): array
     {
         return ['identifier', 'name'];
