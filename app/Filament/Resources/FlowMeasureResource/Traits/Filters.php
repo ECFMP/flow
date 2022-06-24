@@ -27,6 +27,7 @@ trait Filters
                             'airport_group' => __('Airport Group'),
                             'custom_value' => __('Custom value'),
                         ])
+                        ->default('custom_value')
                         ->reactive()
                         ->required(),
                     Forms\Components\Select::make('airport_group')
@@ -53,6 +54,7 @@ trait Filters
                             'airport_group' => __('Airport Group'),
                             'custom_value' => __('Custom value'),
                         ])
+                        ->default('custom_value')
                         ->reactive()
                         ->required(),
                     Forms\Components\Select::make('airport_group')
