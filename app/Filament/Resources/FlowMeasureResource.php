@@ -195,6 +195,8 @@ class FlowMeasureResource extends Resource
                             ->getSearchResultsUsing(
                                 fn (string $searchQuery) => FlightInformationRegion::where('name', 'like', "%{$searchQuery}%")
                                     ->orWhere('identifier', 'like', "%{$searchQuery}%")
+                                    ->orWhereHas('discordTags', fn (Builder $query) => $query->where('tag', 'like', "%{$searchQuery}%")
+                                        ->orWhere('description', 'like', "%{$searchQuery}%"))
                                     ->limit(50)
                                     ->get()
                                     ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifier_name])
