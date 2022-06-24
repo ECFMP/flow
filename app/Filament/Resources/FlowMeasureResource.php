@@ -57,9 +57,11 @@ class FlowMeasureResource extends Resource
                     ->options(
                         $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                     )
-                    ->afterStateUpdated(function (Closure $set, $state) use ($events) {
+                    ->afterStateUpdated(function (Closure $set, Closure $get, $state) use ($events) {
                         if ($state) {
-                            $set('flight_information_region_id', $events[$state]->flight_information_region_id);
+                            if (!$get('flight_information_region_id')) {
+                                $set('flight_information_region_id', $events[$state]->flight_information_region_id);
+                            }
                             $set('start_time', $events[$state]->date_start);
                             $set('end_time', $events[$state]->date_end);
                         }
