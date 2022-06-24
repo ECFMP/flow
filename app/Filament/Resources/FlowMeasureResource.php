@@ -50,32 +50,6 @@ class FlowMeasureResource extends Resource
 
         return $form
             ->schema([
-                Forms\Components\Select::make('flight_information_region_id')
-                    ->label('Flight Information Region')
-                    ->helperText(__('Required if event is left empty'))
-                    ->hintIcon('heroicon-o-folder')
-                    ->searchable()
-                    ->options(
-                        in_array(auth()->user()->role->key, [
-                            RoleKey::SYSTEM,
-                            RoleKey::NMT
-                        ]) ? self::setFirOptions(FlightInformationRegion::all()) :
-                            self::setFirOptions(auth()->user()
-                                ->flightInformationRegions)
-                    )
-                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
-                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->required(),
-                Forms\Components\TextInput::make('flight_information_region_name')
-                    ->label('Flight Information Region')
-                    ->hintIcon('heroicon-o-folder')
-                    ->disabled(true)
-                    ->dehydrated(false)
-                    ->afterStateHydrated(function (TextInput $component, Closure $get) {
-                        $component->state(FlightInformationRegion::find($get('flight_information_region_id'))?->identifier_name ?? null);
-                    })
-                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
                 Forms\Components\Select::make('event_id')
                     ->label(__('Event'))
                     ->hintIcon('heroicon-o-calendar')
@@ -101,6 +75,32 @@ class FlowMeasureResource extends Resource
                     ->dehydrated(false)
                     ->afterStateHydrated(function (TextInput $component, Closure $get, $state) {
                         $component->state(Event::find($get('event_id'))?->name_date ?? null);
+                    })
+                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
+                Forms\Components\Select::make('flight_information_region_id')
+                    ->label('Flight Information Region')
+                    ->helperText(__('Required if event is left empty'))
+                    ->hintIcon('heroicon-o-folder')
+                    ->searchable()
+                    ->options(
+                        in_array(auth()->user()->role->key, [
+                            RoleKey::SYSTEM,
+                            RoleKey::NMT
+                        ]) ? self::setFirOptions(FlightInformationRegion::all()) :
+                            self::setFirOptions(auth()->user()
+                                ->flightInformationRegions)
+                    )
+                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
+                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
+                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
+                    ->required(),
+                Forms\Components\TextInput::make('flight_information_region_name')
+                    ->label('Flight Information Region')
+                    ->hintIcon('heroicon-o-folder')
+                    ->disabled(true)
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function (TextInput $component, Closure $get) {
+                        $component->state(FlightInformationRegion::find($get('flight_information_region_id'))?->identifier_name ?? null);
                     })
                     ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
                 Forms\Components\DateTimePicker::make('start_time')
