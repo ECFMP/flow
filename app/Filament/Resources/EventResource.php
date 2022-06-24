@@ -2,20 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\RoleKey;
+use Closure;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Event;
+use App\Enums\RoleKey;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
+use Illuminate\Support\Carbon;
 use Filament\Resources\Resource;
+use Filament\Resources\Pages\Page;
+use Illuminate\Support\Collection;
+use Filament\Tables\Filters\Filter;
+use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
-use App\Models\FlightInformationRegion;
-use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 
 class EventResource extends Resource
 {
@@ -62,12 +66,16 @@ class EventResource extends Resource
                     ->required(),
                 Forms\Components\DateTimePicker::make('date_start')
                     ->label('Start [UTC]')
-                    ->default(now()->addWeek()->startOfHour())
+                    ->default(now()->startOfHour())
                     ->withoutSeconds()
+                    ->afterStateUpdated(function (Closure $set, $state) {
+                        $set('date_end', Carbon::parse($state)->addHours(4));
+                    })
+                    ->reactive()
                     ->required(),
                 Forms\Components\DateTimePicker::make('date_end')
                     ->label('End [UTC]')
-                    ->default(now()->addWeek()->addHours(4)->startOfHour())
+                    ->default(now()->addHours(4)->startOfHour())
                     ->withoutSeconds()
                     ->after('date_start')
                     ->required(),
@@ -75,6 +83,13 @@ class EventResource extends Resource
                     ->label(__('VATCAN code'))
                     ->helperText(__('Leave empty if no there\'s no code available'))
                     ->maxLength(6),
+                Forms\Components\TagsInput::make('participants')
+                    ->columnSpan('full')
+                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord && in_array(auth()->user()->role->key, [
+                        RoleKey::SYSTEM,
+                        RoleKey::NMT,
+                        RoleKey::FLOW_MANAGER
+                    ])),
             ]);
     }
 
@@ -82,10 +97,10 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('flightInformationRegion.identifierName')
+                Tables\Columns\TextColumn::make('flightInformationRegion.identifier_name')
                     ->label('FIR')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(['identifier', 'name'])
+                    ->sortable(['identifier', 'name']),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
