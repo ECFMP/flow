@@ -6,9 +6,12 @@ use Carbon\CarbonInterval;
 use Illuminate\Support\Arr;
 use App\Models\AirportGroup;
 use App\Enums\FlowMeasureType;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\FlowMeasureResource;
+use App\Helpers\FlowMeasureIdentifierGenerator;
 
 class EditFlowMeasure extends EditRecord
 {
@@ -16,6 +19,8 @@ class EditFlowMeasure extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        $data['edit_mode'] = $this->determineEditMode($data);
+
         $filters = collect($data['filters'])->keyBy('type');
 
         $filters['adep'] = collect($filters['ADEP']['value'])
@@ -119,6 +124,45 @@ class EditFlowMeasure extends EditRecord
         return $data;
     }
 
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        if ($data['edit_mode'] == FlowMeasureResource::FULL_EDIT) {
+            $newFlowMeasure = $record->replicate();
+            $newFlowMeasure->fill($data);
+            $newFlowMeasure->identifier = FlowMeasureIdentifierGenerator::generateIdentifier($newFlowMeasure->start_time, $newFlowMeasure->flightInformationRegion);
+            $newFlowMeasure->push();
+
+            $record->delete();
+
+            $this->record = $newFlowMeasure;
+            return $newFlowMeasure;
+        }
+
+        $record->identifier = FlowMeasureIdentifierGenerator::generateRevisedIdentifier($record);
+
+        $record->update($data);
+
+        return $record;
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        if ($this->record->wasRecentlyCreated) {
+            return $this->getResource()::getUrl('index');
+        }
+
+        return '';
+    }
+
+    protected function getSavedNotificationMessage(): ?string
+    {
+        if ($this->record->wasRecentlyCreated) {
+            return __('Flow Measure re-issued');
+        }
+
+        return parent::getSavedNotificationMessage();
+    }
+
     private function buildAirportFilter(string $value): array
     {
         if (AirportGroup::find($value)) {
@@ -151,5 +195,20 @@ class EditFlowMeasure extends EditRecord
         }
 
         return $output;
+    }
+
+    private function determineEditMode(array $data)
+    {
+        $startTime = Carbon::parse($data['start_time']);
+
+        if ($startTime->gt(now())) {
+            if ($startTime->gt(now()->addMinutes(30))) {
+                return FlowMeasureResource::FULL_EDIT;
+            }
+
+            return FlowMeasureResource::PARTIAL_EDIT_WITH_START_TIME;
+        }
+
+        return FlowMeasureResource::PARTIAL_EDIT;
     }
 }

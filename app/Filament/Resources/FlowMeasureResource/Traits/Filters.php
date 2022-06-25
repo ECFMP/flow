@@ -5,10 +5,12 @@ namespace App\Filament\Resources\FlowMeasureResource\Traits;
 use Closure;
 use Filament\Forms;
 use App\Models\Event;
+use Filament\Pages\Page;
 use App\Models\AirportGroup;
 use Illuminate\Support\Collection;
-use Filament\Forms\Components\Builder\Block;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Builder\Block;
+use App\Filament\Resources\FlowMeasureResource;
 
 trait Filters
 {
@@ -20,6 +22,8 @@ trait Filters
                 ->required()
                 ->label('Departure(s) [ADEP]')
                 ->disableItemMovement()
+                ->disableItemCreation(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT)
+                ->disabled(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT)
                 ->hintIcon('heroicon-o-trending-up')
                 ->schema([
                     Forms\Components\Select::make('value_type')
@@ -47,6 +51,8 @@ trait Filters
                 ->required()
                 ->label('Arrival(s) [ADES]')
                 ->disableItemMovement()
+                ->disableItemCreation(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT)
+                ->disabled(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT)
                 ->hintIcon('heroicon-o-trending-down')
                 ->schema([
                     Forms\Components\Select::make('value_type')
@@ -74,7 +80,9 @@ trait Filters
                 ->createItemButtonLabel(__('Add optional filter'))
                 ->columnSpan('full')
                 ->inset()
+                ->disableItemCreation(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT)
                 ->disableItemMovement()
+                ->disabled(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT)
                 ->blocks([
                     Block::make('waypoint')
                         ->icon('heroicon-o-view-list')
