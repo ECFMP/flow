@@ -307,10 +307,10 @@ class FlowMeasureResource extends Resource
                                             $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
                                         )
                                 ]),
-                            Block::make('member_non_event')
+                            Block::make('member_not_event')
                                 ->icon('heroicon-o-calendar')
                                 ->schema([
-                                    Forms\Components\Select::make('member_non_event')
+                                    Forms\Components\Select::make('member_not_event')
                                         ->hintIcon('heroicon-o-calendar')
                                         ->label(__('Event'))
                                         ->hintIcon('heroicon-o-calendar')
