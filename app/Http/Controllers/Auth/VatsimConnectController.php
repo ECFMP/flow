@@ -27,7 +27,7 @@ class VatsimConnectController
         $user->token = $vatsimUser->token;
         $user->refresh_token = $vatsimUser->refreshToken;
         $user->refresh_token_expires_at = now()->addSeconds($vatsimUser->expiresIn);
-        $user->save();
+        $user->saveQuietly();
 
         Auth::login($user);
 
