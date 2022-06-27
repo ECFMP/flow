@@ -15,6 +15,8 @@ class FlowMeasuresTwo extends Page
 
     protected static ?int $navigationSort = 2;
 
+    protected static ?string $slug = 'user-guide/flow-measures-2';
+
     protected function getViewData(): array
     {
         return [

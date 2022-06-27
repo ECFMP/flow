@@ -15,6 +15,8 @@ class Discord extends Page
 
     protected static ?int $navigationSort = 3;
 
+    protected static ?string $slug = 'custom-url-slug';
+
     protected function getViewData(): array
     {
         return [
