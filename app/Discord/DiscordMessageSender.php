@@ -26,6 +26,7 @@ class DiscordMessageSender implements DiscordInterface
                 'allowed_mentions' => [
                     'parse' => [
                         'users',
+                        'roles',
                     ],
                 ],
             ]

@@ -83,6 +83,7 @@ class DiscordMessageSenderTest extends TestCase
                     'allowed_mentions' => [
                         'parse' => [
                             'users',
+                            'roles',
                         ],
                     ],
                 ]
@@ -118,6 +119,7 @@ class DiscordMessageSenderTest extends TestCase
                     'allowed_mentions' => [
                         'parse' => [
                             'users',
+                            'roles',
                         ],
                     ],
                 ]

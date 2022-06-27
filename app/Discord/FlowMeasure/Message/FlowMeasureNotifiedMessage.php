@@ -2,7 +2,8 @@
 
 namespace App\Discord\FlowMeasure\Message;
 
-use App\Discord\FlowMeasure\Description\EventNameAndInterestedParties;
+use App\Discord\FlowMeasure\Content\InterestedParties;
+use App\Discord\FlowMeasure\Description\EventName;
 use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
 use App\Discord\FlowMeasure\Field\EndTime;
@@ -10,7 +11,7 @@ use App\Discord\FlowMeasure\Field\Filters\AdditionalFilterParser;
 use App\Discord\FlowMeasure\Field\Reason;
 use App\Discord\FlowMeasure\Field\Restriction;
 use App\Discord\FlowMeasure\Field\StartTime;
-use App\Discord\FlowMeasure\Title\IdentifierAndStatus;
+use App\Discord\FlowMeasure\Title\IdentifierAndNotifiedStatus;
 use App\Discord\Message\Embed\BlankField;
 use App\Discord\Message\Embed\Colour;
 use App\Discord\Message\Embed\Embed;
@@ -23,23 +24,29 @@ use App\Models\FlowMeasure;
 class FlowMeasureNotifiedMessage implements MessageInterface
 {
     private readonly FlowMeasure $measure;
+    private readonly bool $isReissue;
 
-    public function __construct(FlowMeasure $measure)
+    public function __construct(FlowMeasure $measure, bool $isReissue)
     {
         $this->measure = $measure;
+        $this->isReissue = $isReissue;
     }
 
     public function content(): string
     {
-        return '';
+        return InterestedParties::interestedPartiesString($this->measure);
     }
 
     public function embeds(): EmbedCollection
     {
         return (new EmbedCollection())->add(
             Embed::make()->withColour(Colour::NOTIFIED)
-                ->withTitle(new IdentifierAndStatus($this->measure))
-                ->withDescription(new EventNameAndInterestedParties($this->measure))
+                ->withTitle(
+                    $this->isReissue
+                        ? IdentifierAndNotifiedStatus::createReissued($this->measure)
+                        : IdentifierAndNotifiedStatus::create($this->measure)
+                )
+                ->withDescription(new EventName($this->measure))
                 ->withField(Field::makeInline(new Restriction($this->measure)))
                 ->withField(Field::makeInline(new StartTime($this->measure)))
                 ->withField(Field::makeInline(new EndTime($this->measure)))

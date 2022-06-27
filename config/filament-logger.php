@@ -8,7 +8,7 @@ return [
         'logger' => \Z3d0X\FilamentLogger\Loggers\ResourceLogger::class,
         'color' => 'success',
         'exclude' => [
-            App\Filament\Resources\UserResource::class,
+            // App\Filament\Resources\UserResource::class,
         ],
     ],
 
@@ -35,7 +35,11 @@ return [
             //App\Models\User::class,
         ],
     ],
-
+    'discord' => [
+        'enabled' => true,
+        'log_name' => 'Discord',
+        'color' => 'primary',
+    ],
     'custom' => [
         // [
         //     'log_name' => 'Custom',

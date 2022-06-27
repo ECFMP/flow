@@ -2,12 +2,16 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
+use Carbon\CarbonInterval;
 use Illuminate\Support\Arr;
 use App\Models\AirportGroup;
 use App\Enums\FlowMeasureType;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\FlowMeasureResource;
+use App\Helpers\FlowMeasureIdentifierGenerator;
 
 class EditFlowMeasure extends EditRecord
 {
@@ -15,6 +19,8 @@ class EditFlowMeasure extends EditRecord
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
+        $data['edit_mode'] = $this->determineEditMode($data);
+
         $filters = collect($data['filters'])->keyBy('type');
 
         $filters['adep'] = collect($filters['ADEP']['value'])
@@ -34,9 +40,20 @@ class EditFlowMeasure extends EditRecord
         $filters->pull('ADEP');
         $filters->pull('ADES');
 
+        if (in_array($data['type'], [FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL,])) {
+            // Fill in minutes (if any) and seconds
+            $interval = CarbonInterval::seconds($data['value'])->cascade();
+            $data['minutes'] = $interval->minutes;
+            $data['seconds'] = $interval->seconds;
+            $data['value'] = null;
+        }
+
+        // Convert to value so we don't have to write extra condition
+        $data['type'] = $data['type']->value;
+
         $newFilters = collect();
         $filters->each(function (array $filter) use ($newFilters) {
-            if (in_array($filter['type'], ['level_above', 'level_below'])) {
+            if (in_array($filter['type'], ['level_above', 'level_below', 'range_to_destination'])) {
                 $newFilters->push([
                     'type' => $filter['type'],
                     'value' => $filter['value'],
@@ -65,14 +82,20 @@ class EditFlowMeasure extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        if ($data['type'] == FlowMeasureType::MANDATORY_ROUTE) {
-            Arr::pull($data, 'value');
+        switch ($data['type']) {
+            case FlowMeasureType::MANDATORY_ROUTE->value:
+                Arr::pull($data, 'value');
+                break;
+            case FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value:
+            case FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value:
+                $data['value'] = $data['seconds'] + ($data['minutes'] * 60);
+                break;
         }
 
         $filters = collect($data['filters'])
             ->groupBy('type')
             ->transform(function (Collection $filter, string $type) {
-                if (in_array($type, ['level_above', 'level_below'])) {
+                if (in_array($type, ['level_above', 'level_below', 'range_to_destination'])) {
                     return collect([
                         'type' => $type,
                         'value' => $filter->pluck('data')->value('value')
@@ -93,6 +116,51 @@ class EditFlowMeasure extends EditRecord
                 'type' => 'ADES',
                 'value' => $this->getAirportValues($data, 'ades')
             ]);
+
+        $data['filters'] = $filters->toArray();
+        Arr::pull($data, 'adep');
+        Arr::pull($data, 'ades');
+
+        return $data;
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        if ($data['edit_mode'] == FlowMeasureResource::FULL_EDIT) {
+            $newFlowMeasure = $record->replicate();
+            $newFlowMeasure->fill($data);
+            $newFlowMeasure->identifier = FlowMeasureIdentifierGenerator::generateIdentifier($newFlowMeasure->start_time, $newFlowMeasure->flightInformationRegion);
+            $newFlowMeasure->push();
+
+            $record->delete();
+
+            $this->record = $newFlowMeasure;
+            return $newFlowMeasure;
+        }
+
+        $record->identifier = FlowMeasureIdentifierGenerator::generateRevisedIdentifier($record);
+
+        $record->update($data);
+
+        return $record;
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        if ($this->record->wasRecentlyCreated) {
+            return $this->getResource()::getUrl('index');
+        }
+
+        return '';
+    }
+
+    protected function getSavedNotificationMessage(): ?string
+    {
+        if ($this->record->wasRecentlyCreated) {
+            return __('Flow Measure re-issued');
+        }
+
+        return parent::getSavedNotificationMessage();
     }
 
     private function buildAirportFilter(string $value): array
@@ -127,5 +195,20 @@ class EditFlowMeasure extends EditRecord
         }
 
         return $output;
+    }
+
+    private function determineEditMode(array $data)
+    {
+        $startTime = Carbon::parse($data['start_time']);
+
+        if ($startTime->gt(now())) {
+            if ($startTime->gt(now()->addMinutes(30))) {
+                return FlowMeasureResource::FULL_EDIT;
+            }
+
+            return FlowMeasureResource::PARTIAL_EDIT_WITH_START_TIME;
+        }
+
+        return FlowMeasureResource::PARTIAL_EDIT;
     }
 }

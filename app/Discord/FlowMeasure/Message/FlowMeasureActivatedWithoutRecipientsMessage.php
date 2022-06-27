@@ -10,7 +10,7 @@ use App\Discord\FlowMeasure\Field\Filters\AdditionalFilterParser;
 use App\Discord\FlowMeasure\Field\Reason;
 use App\Discord\FlowMeasure\Field\Restriction;
 use App\Discord\FlowMeasure\Field\StartTime;
-use App\Discord\FlowMeasure\Title\IdentifierAndStatus;
+use App\Discord\FlowMeasure\Title\IdentifierAndActiveStatus;
 use App\Discord\Message\Embed\BlankField;
 use App\Discord\Message\Embed\Colour;
 use App\Discord\Message\Embed\Embed;
@@ -38,7 +38,7 @@ class FlowMeasureActivatedWithoutRecipientsMessage implements MessageInterface
     {
         return (new EmbedCollection())->add(
             Embed::make()->withColour(Colour::ACTIVATED)
-                ->withTitle(new IdentifierAndStatus($this->measure))
+                ->withTitle(IdentifierAndActiveStatus::create($this->measure))
                 ->withDescription(new EventName($this->measure))
                 ->withField(Field::makeInline(new Restriction($this->measure)))
                 ->withField(Field::makeInline(new StartTime($this->measure)))

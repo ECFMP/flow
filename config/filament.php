@@ -1,7 +1,8 @@
 <?php
 
+use App\Filament\Resources\EventResource\Widgets\UpcomingEvents;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
-use App\Filament\Resources\FlowMeasureResource\Widgets\NotifiedFlowMeasures;
+use App\Filament\Widgets\MyPermissions;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -144,8 +145,9 @@ return [
         'namespace' => 'App\\Filament\\Widgets',
         'path' => app_path('Filament/Widgets'),
         'register' => [
+            MyPermissions::class,
             ActiveFlowMeasures::class,
-            NotifiedFlowMeasures::class
+            UpcomingEvents::class,
         ],
     ],
 

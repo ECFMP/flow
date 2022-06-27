@@ -29,6 +29,7 @@ class AdditionalFilterParser
             FilterType::LEVEL_BELOW => new LevelBelow($filter),
             FilterType::MEMBER_EVENT => new MemberEvent($filter),
             FilterType::MEMBER_NOT_EVENT => new MemberNotEvent($filter),
+            FilterType::RANGE_TO_DESTINATION => new RangeToDestination($filter),
             default => throw new InvalidArgumentException(),
         };
     }

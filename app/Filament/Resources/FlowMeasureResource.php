@@ -10,7 +10,6 @@ use App\Models\Event;
 use App\Enums\RoleKey;
 use Filament\Pages\Page;
 use App\Models\FlowMeasure;
-use App\Models\AirportGroup;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use App\Enums\FlowMeasureType;
@@ -22,14 +21,21 @@ use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Forms\Components\Builder\Block;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\RelationManagers;
+use App\Filament\Resources\FlowMeasureResource\Traits\Filters;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
 use Filament\Forms\Components\TextInput;
+use Filament\Resources\Pages\EditRecord;
 
 class FlowMeasureResource extends Resource
 {
+    use Filters;
+
+    public const FULL_EDIT = 1;
+    public const PARTIAL_EDIT_WITH_START_TIME = 2;
+    public const PARTIAL_EDIT = 3;
+
     protected static ?string $model = FlowMeasure::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-check';
@@ -49,6 +55,43 @@ class FlowMeasureResource extends Resource
 
         return $form
             ->schema([
+                Forms\Components\Hidden::make('edit_mode')
+                    ->visible(fn (Page $livewire) => $livewire instanceof EditRecord),
+                Forms\Components\Select::make('event_id')
+                    ->label(__('Event'))
+                    ->hintIcon('heroicon-o-calendar')
+                    ->searchable()
+                    ->options(
+                        $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
+                    )
+                    ->afterStateUpdated(function (Closure $set, Closure $get, $state) use ($events) {
+                        if ($state) {
+                            if (!$get('flight_information_region_id')) {
+                                $set('flight_information_region_id', $events[$state]->flight_information_region_id);
+                            }
+                            $set('start_time', $events[$state]->date_start);
+                            $set('end_time', $events[$state]->date_end);
+                        }
+                    })
+                    ->disabled(fn (Page $livewire, Closure $get) => !$livewire instanceof CreateRecord && !in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]))
+                    ->dehydrated(function (Page $livewire, Closure $get) {
+                        return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
+                    })
+                    ->reactive()
+                    ->visible((function (Page $livewire, Closure $get) {
+                        return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
+                    })),
+                Forms\Components\TextInput::make('event_name')
+                    ->label(__('Event'))
+                    ->hintIcon('heroicon-o-calendar')
+                    ->disabled(true)
+                    ->dehydrated(false)
+                    ->afterStateHydrated(function (TextInput $component, Closure $get) {
+                        $component->state(Event::find($get('event_id'))?->name_date ?? null);
+                    })
+                    ->hidden((function (Page $livewire, Closure $get) {
+                        return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
+                    })),
                 Forms\Components\Select::make('flight_information_region_id')
                     ->label('Flight Information Region')
                     ->helperText(__('Required if event is left empty'))
@@ -62,61 +105,42 @@ class FlowMeasureResource extends Resource
                             self::setFirOptions(auth()->user()
                                 ->flightInformationRegions)
                     )
-                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
-                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->required(fn (Closure $get) => $get('event_id') == null),
+                    ->disabled(fn (Page $livewire, Closure $get) => !$livewire instanceof CreateRecord && !in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]))
+                    ->dehydrated(function (Page $livewire, Closure $get) {
+                        return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
+                    })
+                    ->visible((function (Page $livewire, Closure $get) {
+                        return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
+                    }))
+                    ->required(),
                 Forms\Components\TextInput::make('flight_information_region_name')
                     ->label('Flight Information Region')
                     ->hintIcon('heroicon-o-folder')
                     ->disabled(true)
                     ->dehydrated(false)
-                    ->afterStateHydrated(function (TextInput $component, Closure $get, $state) {
+                    ->afterStateHydrated(function (TextInput $component, Closure $get) {
                         $component->state(FlightInformationRegion::find($get('flight_information_region_id'))?->identifier_name ?? null);
                     })
-                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
-                Forms\Components\Select::make('event_id')
-                    ->label(__('Event'))
-                    ->hintIcon('heroicon-o-calendar')
-                    ->searchable()
-                    ->options(
-                        $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
-                    )
-                    ->afterStateUpdated(function (Closure $set, $state) use ($events) {
-                        if ($state) {
-                            $set('flight_information_region_id', $events[$state]->flight_information_region_id);
-                            $set('start_time', $events[$state]->date_start);
-                            $set('end_time', $events[$state]->date_end);
-                        }
-                    })
-                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
-                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->reactive()
-                    ->visible(fn (Page $livewire) => $livewire instanceof CreateRecord)
-                    ->required(fn (Closure $get) => $get('flight_information_region_id') == null),
-                Forms\Components\TextInput::make('event_name')
-                    ->label(__('Event'))
-                    ->hintIcon('heroicon-o-calendar')
-                    ->disabled(true)
-                    ->dehydrated(false)
-                    ->afterStateHydrated(function (TextInput $component, Closure $get, $state) {
-                        $component->state(Event::find($get('event_id'))?->name_date ?? null);
-                    })
-                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord),
+                    ->hidden((function (Page $livewire, Closure $get) {
+                        return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
+                    })),
                 Forms\Components\DateTimePicker::make('start_time')
+                    ->label(__('Start time [UTC]'))
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
-                    ->afterOrEqual(now())
-                    ->minDate(now())
+                    ->minDate(fn (Page $livewire) => $livewire instanceof CreateRecord ? now() : now()->startOfDay())
                     ->maxDate(now()->addDays(10))
-                    ->disabled(fn (Page $livewire) => !$livewire instanceof CreateRecord)
-                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord)
+                    ->disabled(fn (Page $livewire, Closure $get) => !$livewire instanceof CreateRecord && !in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]))
+                    ->dehydrated(function (Page $livewire, Closure $get) {
+                        return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
+                    })
                     ->reactive()
                     ->afterStateUpdated(function (Closure $set, $state) {
                         $set('end_time', Carbon::parse($state)->addHours(2));
                     })
                     ->required(),
                 Forms\Components\DateTimePicker::make('end_time')
+                    ->label(__('End time [UTC]'))
                     ->default(now()->addHours(2)->addMinutes(5))
                     ->withoutSeconds()
                     ->after('start_time')
@@ -127,180 +151,81 @@ class FlowMeasureResource extends Resource
                     ->required()
                     ->columnSpan('full')
                     ->maxLength(65535),
-                Forms\Components\Fieldset::make(__('Flow measure'))->schema([
-                    Forms\Components\Select::make('type')
-                        ->options(collect(FlowMeasureType::cases())
-                            ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
-                        ->helperText(function (string|FlowMeasureType|null $state) {
-                            if (is_a($state, FlowMeasureType::class)) {
-                                return $state->getDescription();
-                            }
+                Forms\Components\Fieldset::make(__('Flow measure'))
+                    ->columns(4)->schema([
+                        Forms\Components\Select::make('type')
+                            ->disabled(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT)
+                            ->options(collect(FlowMeasureType::cases())
+                                ->mapWithKeys(fn (FlowMeasureType $type) => [$type->value => $type->getFormattedName()]))
+                            ->helperText(function (string|FlowMeasureType|null $state) {
+                                if (is_a($state, FlowMeasureType::class)) {
+                                    return $state->getDescription();
+                                }
 
-                            return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
-                        })
-                        ->reactive()
-                        ->required(),
-                    Forms\Components\TextInput::make('value')
-                        ->disabled(fn (Closure $get) => in_array($get('type'), [
-                            FlowMeasureType::MANDATORY_ROUTE->value,
-                            FlowMeasureType::PROHIBIT->value,
-                        ]) || $get('type') == null)
-                        ->required(fn (Closure $get) => !in_array($get('type'), [
-                            FlowMeasureType::MANDATORY_ROUTE->value,
-                            FlowMeasureType::PROHIBIT->value,
-                        ])),
-                    Forms\Components\Repeater::make('mandatory_route')
-                        ->columnSpan('full')
-                        ->required()
-                        ->visible(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value)
-                        ->schema([
-                            Forms\Components\Textarea::make('')->required()
-                        ]),
-                ]),
-                Forms\Components\Fieldset::make(__('Filters'))->schema([
-
-                    Forms\Components\Repeater::make('adep')
-                        ->label('ADEP')
-                        ->required()
-                        ->label('Departure(s) [ADEP]')
-                        ->disableItemMovement()
-                        ->hintIcon('heroicon-o-trending-up')
-                        ->schema([
-                            Forms\Components\Select::make('value_type')
-                                ->options([
-                                    'airport_group' => __('Airport Group'),
-                                    'custom_value' => __('Custom value'),
+                                return FlowMeasureType::tryFrom($state)?->getDescription() ?: '';
+                            })
+                            ->reactive()
+                            ->columnSpan(2)
+                            ->required(),
+                        Forms\Components\TextInput::make('value')
+                            ->columnSpan(2)
+                            ->disabled(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT ||
+                                in_array($get('type'), [
+                                    FlowMeasureType::MANDATORY_ROUTE->value,
+                                    FlowMeasureType::PROHIBIT->value,
                                 ])
-                                ->reactive()
-                                ->required(),
-                            Forms\Components\Select::make('airport_group')
-                                ->hintIcon('heroicon-o-collection')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
-                                ->searchable()
-                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
-                                ->required(),
-                            Forms\Components\TextInput::make('custom_value')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
-                                ->length(4)
-                                ->default('****')
-                                ->required()
-                        ]),
-                    Forms\Components\Repeater::make('ades')
-                        ->label('ADES')
-                        ->required()
-                        ->label('Arrival(s) [ADES]')
-                        ->disableItemMovement()
-                        ->hintIcon('heroicon-o-trending-down')
-                        ->schema([
-                            Forms\Components\Select::make('value_type')
-                                ->options([
-                                    'airport_group' => __('Airport Group'),
-                                    'custom_value' => __('Custom value'),
-                                ])
-                                ->reactive()
-                                ->required(),
-                            Forms\Components\Select::make('airport_group')
-                                ->hintIcon('heroicon-o-collection')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
-                                ->searchable()
-                                ->options(AirportGroup::all()->pluck('name_codes', 'id'))
-                                ->required(),
-                            Forms\Components\TextInput::make('custom_value')
-                                ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
-                                ->length(4)
-                                ->default('****')
-                                ->required()
-                        ]),
-                    Forms\Components\Builder::make('filters')
-                        ->label('Optional filters')
-                        ->createItemButtonLabel(__('Add optional filter'))
-                        ->columnSpan('full')
-                        ->inset()
-                        ->disableItemMovement()
-                        ->blocks([
-                            Block::make('waypoint')
-                                ->icon('heroicon-o-view-list')
-                                ->schema([
-                                    Forms\Components\Textarea::make('value')
-                                        ->label(__('Waypoint'))
-                                        ->hintIcon('heroicon-o-view-list')
-                                        ->required()
-                                ]),
-                            Block::make('level_above')
-                                ->icon('heroicon-o-arrow-up')
-                                ->schema([
-                                    // TODO: Add mask?
-                                    Forms\Components\TextInput::make('value')
-                                        ->label(__('Level above'))
-                                        ->hintIcon('heroicon-o-arrow-up')
-                                        ->numeric()
-                                        ->step(5)
-                                        ->prefix('FL')
-                                        ->minLength(0)
-                                        ->maxLength(660)
-                                        ->required()
-                                ]),
-                            Block::make('level_below')
-                                ->icon('heroicon-o-arrow-down')
-                                ->schema([
-                                    // TODO: Add mask?
-                                    Forms\Components\TextInput::make('value')
-                                        ->label(__('Level below'))
-                                        ->hintIcon('heroicon-o-arrow-down')
-                                        ->numeric()
-                                        ->step(5)
-                                        ->prefix('FL')
-                                        ->minLength(0)
-                                        ->maxLength(660)
-                                        ->required()
-                                ]),
-                            Block::make('level')
-                                ->icon('heroicon-o-arrow-right')
-                                ->schema([
-                                    // TODO: Add mask?
-                                    Forms\Components\TextInput::make('value')
-                                        ->label(__('Level'))
-                                        ->hintIcon('heroicon-o-arrow-right')
-                                        ->numeric()
-                                        ->step(5)
-                                        ->prefix('FL')
-                                        ->minLength(0)
-                                        ->maxLength(660)
-                                        ->required()
-                                ]),
-                            Block::make('member_event')
-                                ->icon('heroicon-o-calendar')
-                                ->schema([
-                                    Forms\Components\Select::make('member_event')
-                                        ->label(__('Event'))
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->searchable()
-                                        ->options(
-                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
-                                        )
-                                ]),
-                            Block::make('member_non_event')
-                                ->icon('heroicon-o-calendar')
-                                ->schema([
-                                    Forms\Components\Select::make('member_non_event')
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->label(__('Event'))
-                                        ->hintIcon('heroicon-o-calendar')
-                                        ->searchable()
-                                        ->options(
-                                            $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
-                                        )
-                                ]),
-                        ]),
-                ]),
-                // TODO: Make it possible to also search by identifier
+                                || $get('type') == null)
+                            ->required(fn (Closure $get) => !in_array($get('type'), [
+                                FlowMeasureType::MANDATORY_ROUTE->value,
+                                FlowMeasureType::PROHIBIT->value,
+                            ]))
+                            ->hidden(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ])),
+                        Forms\Components\TextInput::make('minutes')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->visible(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ]))
+                            ->required(),
+                        Forms\Components\TextInput::make('seconds')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->maxValue(59)
+                            ->visible(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                                FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                            ]))
+                            ->required(),
+                        Forms\Components\Repeater::make('mandatory_route')
+                            ->columnSpan('full')
+                            ->required()
+                            ->visible(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value)
+                            ->schema([
+                                Forms\Components\Textarea::make('')->required()
+                            ]),
+                    ]),
+                self::filters($events),
                 Forms\Components\Fieldset::make('FAO')
                     ->schema([
                         Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
                             ->columnSpan('full')
                             ->label(__("FIR's"))
                             ->relationship('notifiedFlightInformationRegions', 'name')
+                            ->getSearchResultsUsing(
+                                fn (string $searchQuery) => FlightInformationRegion::where('name', 'like', "%{$searchQuery}%")
+                                    ->orWhere('identifier', 'like', "%{$searchQuery}%")
+                                    ->orWhereHas('discordTags', fn (Builder $query) => $query->where('tag', 'like', "%{$searchQuery}%")
+                                        ->orWhere('description', 'like', "%{$searchQuery}%"))
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifier_name])
+                            )
                             ->getOptionLabelFromRecordUsing(fn (Model $record) => $record->identifierName)
                     ])
             ]);
