@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\UserGuide;
 
 use Filament\Pages\Page;
+use Illuminate\View\View;
 use Spatie\LaravelMarkdown\MarkdownRenderer;
 
 class Introduction extends Page
@@ -16,6 +17,11 @@ class Introduction extends Page
     protected static ?int $navigationSort = 1;
 
     protected static ?string $slug = 'user-guide/introduction';
+
+    protected function getHeader(): View
+    {
+        return view('empty');
+    }
 
     protected function getViewData(): array
     {

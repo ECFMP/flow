@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\UserGuide;
 
 use Filament\Pages\Page;
+use Illuminate\View\View;
 use Spatie\LaravelMarkdown\MarkdownRenderer;
 
 class Discord extends Page
@@ -16,6 +17,11 @@ class Discord extends Page
     protected static ?int $navigationSort = 3;
 
     protected static ?string $slug = 'custom-url-slug';
+
+    protected function getHeader(): View
+    {
+        return view('empty');
+    }
 
     protected function getViewData(): array
     {

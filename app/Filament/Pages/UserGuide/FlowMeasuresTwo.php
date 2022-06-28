@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\UserGuide;
 
 use Filament\Pages\Page;
+use Illuminate\View\View;
 use Spatie\LaravelMarkdown\MarkdownRenderer;
 
 class FlowMeasuresTwo extends Page
@@ -16,6 +17,11 @@ class FlowMeasuresTwo extends Page
     protected static ?int $navigationSort = 2;
 
     protected static ?string $slug = 'user-guide/flow-measures-2';
+
+    protected function getHeader(): View
+    {
+        return view('empty');
+    }
 
     protected function getViewData(): array
     {
