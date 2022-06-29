@@ -38,7 +38,31 @@ Reason should be provided for all flow measures, even if considered obvious. Thi
 
 # Types of Flow Measure
 
+Every flow measure has a specific meaning and accepts a specific value:
 
+### Minimum Departure Interval (MDI)
+A minimum time between which aircraft are permitted to depart. Once an aircraft subject to this restriction departs, another is not permitted until the end of the specified time. 
+
+This is a very specific and restrictive measure and should be targeted to areas where high volumes of traffic will produce congestion in a specific airspace. If attempting to more ‘generally’ restrict excessive departures, consider a rate per hour, or average departure interval.
+
+### Average Departure Interval (ADI)
+The average time between which aircraft are permitted to depart, averaged over 3 departures. 
+
+For the example of an ADI of 10 minutes: departures 1 and 2 could be departed 3 minutes apart, however the next departure would then have to wait 17 minutes until it was allowed airborne. 
+
+Likewise for an ADI of 10 minutes, departure 2 could be airborne 18 minutes after departure 1, meaning departure 3 could be airborne after only 2 minutes. The 4th departure however would then have to wait a further 16 minutes.
+
+### Rate Per Hour
+The number of flights permitted fitting a condition per hour. This can be applied to departures, or traffic via a certain route. 
+
+This method is highly effective at restricting traffic volume. It is much more practical to issue to traffic on the ground. Activating for airborne traffic may lead to prolonged enroute holding and sudden traffic ‘dumps’ when the hour is expired. Consider a MIT restriction for airborne traffic.
+
+### Miles in Trail (MIT)
+A number of NM that aircraft must be presented in trail according to a specific criteria. This measure requires a ‘via’ waypoint at which the traffic should be in trail. Where multiple waypoints are specified, all traffic via any of these waypoints must be separated by this number of miles. Separate flow measures are therefore required where 2 separate traffic streams are to be separated in trail.
+
+This method is ideal when adjacent area positions are well staffed, but only practical when the filters are simple. 
+
+Traffic from different direction required to separately be X miles in trail requires multiple rules.
 
 # Filters
 
