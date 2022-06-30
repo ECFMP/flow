@@ -49,7 +49,7 @@ class FlowMeasureResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $events = Event::where('date_end', '>', now()->addHours(6))
+        $events = Event::whereBetween('date_end', [now()->subHour(6), now()->addDays(10)->addHours(6)])
             ->get(['id', 'name', 'date_start', 'date_end', 'flight_information_region_id'])
             ->keyBy('id');
 
