@@ -9,6 +9,7 @@ use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
 use App\Discord\Message\MessageInterface;
+use App\Discord\Webhook\EcfmpWebhook;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use App\Models\DiscordNotification;
 use App\Models\DiscordNotificationType;
@@ -21,10 +22,12 @@ use JetBrains\PhpStorm\NoReturn;
 class FlowMeasureDiscordMessageService
 {
     private readonly DiscordInterface $discord;
+    private readonly EcfmpWebhook $ecfmpWebhook;
 
-    public function __construct(DiscordInterface $discord)
+    public function __construct(DiscordInterface $discord, EcfmpWebhook $ecfmpWebhook)
     {
         $this->discord = $discord;
+        $this->ecfmpWebhook = $ecfmpWebhook;
     }
 
     public function sendMeasureNotifiedDiscordNotifications(): void
@@ -140,7 +143,7 @@ class FlowMeasureDiscordMessageService
                 ]
             )
             ->log('Sending discord notification');
-        $this->discord->sendMessage($message);
+        $this->discord->sendMessage($this->ecfmpWebhook, $message);
     }
 
     private function isReissued(FlowMeasure $measure): bool

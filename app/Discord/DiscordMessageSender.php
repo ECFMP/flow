@@ -3,12 +3,13 @@
 namespace App\Discord;
 
 use App\Discord\Message\MessageInterface;
+use App\Discord\Webhook\WebhookInterface;
 use Illuminate\Support\Facades\Http;
 use Log;
 
 class DiscordMessageSender implements DiscordInterface
 {
-    public function sendMessage(MessageInterface $message): bool
+    public function sendMessage(WebhookInterface $webhook, MessageInterface $message): bool
     {
         if (!$this->messageSendingEnabled()) {
             Log::info('Skipping discord message as disabled.');
@@ -16,7 +17,7 @@ class DiscordMessageSender implements DiscordInterface
         }
 
         $response = Http::post(
-            config('discord.webhook_url'),
+            $webhook->url(),
             [
                 'username' => config('discord.username'),
                 'avatar_url' => config('discord.avatar_url'),

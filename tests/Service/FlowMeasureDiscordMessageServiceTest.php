@@ -8,6 +8,8 @@ use App\Discord\FlowMeasure\Message\FlowMeasureActivatedWithoutRecipientsMessage
 use App\Discord\FlowMeasure\Message\FlowMeasureNotifiedMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureExpiredMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureWithdrawnMessage;
+use App\Discord\Webhook\EcfmpWebhook;
+use App\Discord\Webhook\WebhookInterface;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use App\Models\DiscordNotificationType;
 use App\Models\FlowMeasure;
@@ -23,6 +25,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
 {
     private readonly MockInterface $discord;
     private readonly FlowMeasureDiscordMessageService $service;
+    private readonly EcfmpWebhook $webhook;
 
     public function setUp(): void
     {
@@ -31,6 +34,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         DB::table('flow_measures')->delete();
         $this->discord = Mockery::mock(DiscordInterface::class);
         $this->app->instance(DiscordInterface::class, $this->discord);
+        $this->webhook = $this->app->make(EcfmpWebhook::class);
         $this->service = $this->app->make(FlowMeasureDiscordMessageService::class);
         Config::set('discord.enabled', true);
     }
@@ -41,6 +45,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure2 = FlowMeasure::factory()->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Active'
@@ -49,6 +54,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             ->once();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure2->identifier . ' - ' . 'Active'
@@ -88,6 +94,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure1 = FlowMeasure::factory()->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Active'
@@ -174,6 +181,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Active (Reissued)'
@@ -221,6 +229,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $notification->save();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure->identifier . ' - ' . 'Active (Reissued)'
@@ -264,6 +273,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $notification->save();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureActivatedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure->identifier . ' - ' . 'Active'
@@ -307,6 +317,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $notification->save();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureActivatedWithoutRecipientsMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure->identifier . ' - ' . 'Active'
@@ -362,6 +373,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Withdrawn'
@@ -370,6 +382,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             ->once();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure2->identifier . ' - ' . 'Withdrawn'
@@ -423,6 +436,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Withdrawn'
@@ -566,6 +580,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->finished()->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureExpiredMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Expired'
@@ -574,6 +589,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             ->once();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureExpiredMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure2->identifier . ' - ' . 'Expired'
@@ -626,6 +642,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->finished()->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureExpiredMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Expired'
@@ -680,6 +697,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->finished()->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Withdrawn'
@@ -688,6 +706,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             ->once();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureWithdrawnMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure2->identifier . ' - ' . 'Withdrawn'
@@ -827,6 +846,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         $measure2 = FlowMeasure::factory()->notStarted()->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureNotifiedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Notified'
@@ -835,6 +855,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
             ->once();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureNotifiedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure2->identifier . ' - ' . 'Notified'
@@ -888,6 +909,7 @@ class FlowMeasureDiscordMessageServiceTest extends TestCase
         })->notStarted()->create();
 
         $this->discord->expects('sendMessage')->with(
+            Mockery::on(fn(WebhookInterface $webhook) => $webhook->url() === $this->webhook->url()),
             Mockery::on(
                 fn(FlowMeasureNotifiedMessage $message) => $message->embeds()->toArray(
                     )[0]['title'] === $measure1->identifier . ' - ' . 'Notified (Reissued)'

@@ -7,6 +7,7 @@ use App\Discord\Message\Embed\Embed;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Message\Embed\TitleInterface;
 use App\Discord\Message\MessageInterface;
+use App\Discord\Webhook\WebhookInterface;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -16,14 +17,16 @@ use Tests\TestCase;
 class DiscordMessageSenderTest extends TestCase
 {
     private readonly DiscordMessageSender $sender;
+    private readonly WebhookInterface $webhook;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->sender = $this->app->make(DiscordMessageSender::class);
+        $this->webhook = Mockery::mock(WebhookInterface::class);
+        $this->webhook->shouldReceive('url')->andReturn('https://vatsim.net');
 
         Config::set('discord.enabled', false);
-        Config::set('discord.webhook_url', 'https://vatsim.net');
         Config::set('discord.avatar_url', 'http://ecfmp.dev/images/avatar.png');
         Config::set('discord.token', 'abc');
         Config::set('discord.username', 'FlowBot');
@@ -50,7 +53,7 @@ class DiscordMessageSenderTest extends TestCase
     public function testItDoesntSendIfSendingOff()
     {
         Http::fake();
-        $this->assertFalse($this->sender->sendMessage($this->getMessage()));
+        $this->assertFalse($this->sender->sendMessage($this->webhook, $this->getMessage()));
         Http::assertNothingSent();
     }
 
@@ -63,7 +66,7 @@ class DiscordMessageSenderTest extends TestCase
             ]
         );
 
-        $this->assertTrue($this->sender->sendMessage($this->getMessage()));
+        $this->assertTrue($this->sender->sendMessage($this->webhook, $this->getMessage()));
 
         Http::assertSentCount(1);
         Http::assertSent(
@@ -99,7 +102,7 @@ class DiscordMessageSenderTest extends TestCase
             ]
         );
 
-        $this->assertFalse($this->sender->sendMessage($this->getMessage()));
+        $this->assertFalse($this->sender->sendMessage($this->webhook, $this->getMessage()));
 
         Http::assertSentCount(1);
         Http::assertSent(
