@@ -56,4 +56,9 @@ class FlightInformationRegion extends Model
             fn () => "{$this->identifier} | {$this->name}",
         );
     }
+
+    public function divisionDiscordWebhooks(): BelongsToMany
+    {
+        return $this->belongsToMany(DivisionDiscordWebhook::class);
+    }
 }
