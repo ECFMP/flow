@@ -3,7 +3,6 @@
 namespace App\Discord;
 
 use App\Discord\Message\MessageInterface;
-use App\Discord\Webhook\WebhookInterface;
 
 /**
  * To hide the details of how we go about doing Discord things...
@@ -12,5 +11,5 @@ use App\Discord\Webhook\WebhookInterface;
  */
 interface DiscordInterface
 {
-    public function sendMessage(WebhookInterface $webhook, MessageInterface $message): bool;
+    public function sendMessage(MessageInterface $message): bool;
 }
