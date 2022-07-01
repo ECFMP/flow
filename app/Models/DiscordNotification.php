@@ -6,6 +6,7 @@ use App\Enums\DiscordNotificationType;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class DiscordNotification extends Model
@@ -15,8 +16,7 @@ class DiscordNotification extends Model
     const UPDATED_AT = null;
 
     protected $fillable = [
-        'flow_measure_id',
-        'type',
+        'division_discord_webhook_id',
         'content',
         'embeds',
     ];
@@ -41,5 +41,10 @@ class DiscordNotification extends Model
     public function scopeTypes(Builder $query, array $types): Builder
     {
         return $query->whereIn('type', $types);
+    }
+
+    public function divisionDiscordWebhook(): BelongsTo
+    {
+        return $this->belongsTo(DivisionDiscordWebhook::class);
     }
 }
