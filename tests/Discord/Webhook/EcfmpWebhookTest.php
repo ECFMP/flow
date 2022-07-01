@@ -31,7 +31,7 @@ class EcfmpWebhookTest extends TestCase
     {
         $this->assertEquals(
             'ECFMP',
-            (new EcfmpWebhook())->url()
+            (new EcfmpWebhook())->description()
         );
     }
 }
