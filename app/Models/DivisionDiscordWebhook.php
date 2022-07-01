@@ -33,4 +33,9 @@ class DivisionDiscordWebhook extends Model implements WebhookInterface
     {
         return $this->url;
     }
+
+    public function description(): string
+    {
+        return $this->description;
+    }
 }
