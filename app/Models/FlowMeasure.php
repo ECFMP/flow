@@ -3,19 +3,18 @@
 namespace App\Models;
 
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
-use App\Helpers\FlowMeasureIdentifierGenerator;
-use App\Models\DiscordNotificationType;
-use Carbon\Carbon;
 use App\Enums\FilterType;
-use App\Enums\FlowMeasureType;
 use App\Enums\FlowMeasureStatus;
-use Illuminate\Database\Eloquent\Model;
+use App\Enums\FlowMeasureType;
+use App\Helpers\FlowMeasureIdentifierGenerator;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FlowMeasure extends Model
 {
@@ -79,6 +78,12 @@ class FlowMeasure extends Model
         return $query->where('end_time', '<', Carbon::now());
     }
 
+    public function scopeExpiredRecently(Builder $query): Builder
+    {
+        return $query->where('end_time', '<', Carbon::now())
+            ->where('end_time', '>', Carbon::now()->subHours(2));
+    }
+
     public function isActive(): bool
     {
         return Carbon::now()->between($this->start_time, $this->end_time);
@@ -128,7 +133,17 @@ class FlowMeasure extends Model
         return $this->notificationsOfType(
             [
                 DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED
+                DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED,
+            ]
+        );
+    }
+
+    public function activatedAndNotifiedNotifications(): BelongsToMany
+    {
+        return $this->notificationsOfType(
+            [
+                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
             ]
         );
     }
