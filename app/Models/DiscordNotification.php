@@ -47,4 +47,14 @@ class DiscordNotification extends Model
     {
         return $this->belongsTo(DivisionDiscordWebhook::class);
     }
+
+    public function scopeIsEcfmp(Builder $query): Builder
+    {
+        return $query->whereNull('division_discord_webhook_id');
+    }
+
+    public function scopeIsDivision(Builder $query): Builder
+    {
+        return $query->whereNotNull('division_discord_webhook_id');
+    }
 }
