@@ -2,6 +2,7 @@
 
 namespace App\Discord\FlowMeasure\Provider;
 
+use App\Discord\FlowMeasure\Helper\NotificationReissuerInterface;
 use App\Discord\Webhook\WebhookInterface;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
@@ -14,6 +15,7 @@ class PendingDiscordMessageTest extends TestCase
     private readonly DiscordNotificationType $type;
     private readonly WebhookInterface $webhook;
     private readonly PendingDiscordMessage $message;
+    private readonly NotificationReissuerInterface $reissue;
 
     public function setUp(): void
     {
@@ -21,7 +23,8 @@ class PendingDiscordMessageTest extends TestCase
         $this->measure = FlowMeasure::factory()->create();
         $this->type = DiscordNotificationType::FLOW_MEASURE_ACTIVATED;
         $this->webhook = Mockery::mock(WebhookInterface::class);
-        $this->message = new PendingDiscordMessage($this->measure, $this->type, $this->webhook, true);
+        $this->reissue = Mockery::mock(NotificationReissuerInterface::class);
+        $this->message = new PendingDiscordMessage($this->measure, $this->type, $this->webhook, $this->reissue);
     }
 
     public function testItHasAMeasure()
@@ -41,6 +44,6 @@ class PendingDiscordMessageTest extends TestCase
 
     public function testItIsReissued()
     {
-        $this->assertTrue($this->message->reissue());
+        $this->assertEquals($this->reissue, $this->message->reissue());
     }
 }

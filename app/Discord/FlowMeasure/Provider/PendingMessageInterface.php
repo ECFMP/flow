@@ -2,6 +2,7 @@
 
 namespace App\Discord\FlowMeasure\Provider;
 
+use App\Discord\FlowMeasure\Helper\NotificationReissuerInterface;
 use App\Discord\Webhook\WebhookInterface;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
@@ -14,5 +15,5 @@ interface PendingMessageInterface
 
     public function webhook(): WebhookInterface;
 
-    public function reissue(): bool;
+    public function reissue(): NotificationReissuerInterface;
 }

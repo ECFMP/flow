@@ -2,6 +2,7 @@
 
 namespace App\Discord\FlowMeasure\Provider;
 
+use App\Discord\FlowMeasure\Helper\NotificationReissuerInterface;
 use App\Discord\Webhook\WebhookInterface;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
@@ -11,13 +12,13 @@ class PendingDiscordMessage implements PendingMessageInterface
     private readonly FlowMeasure $measure;
     private readonly DiscordNotificationType $type;
     private readonly WebhookInterface $webhook;
-    private readonly bool $resissue;
+    private readonly NotificationReissuerInterface $resissue;
 
     public function __construct(
         FlowMeasure $measure,
         DiscordNotificationType $type,
         WebhookInterface $webhook,
-        bool $resissue
+        NotificationReissuerInterface $resissue
     ) {
         $this->measure = $measure;
         $this->type = $type;
@@ -40,7 +41,7 @@ class PendingDiscordMessage implements PendingMessageInterface
         return $this->webhook;
     }
 
-    public function reissue(): bool
+    public function reissue(): NotificationReissuerInterface
     {
         return $this->resissue;
     }
