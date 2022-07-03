@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->foreign('division_discord_webhook_id', 'discord_notifications_webhook')
                 ->references('id')
-                ->on('discord_notifications');
+                ->on('division_discord_webhooks');
         });
     }
 
