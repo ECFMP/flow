@@ -4,11 +4,10 @@ namespace App\Discord\FlowMeasure\Webhook\Filter;
 
 use App\Discord\Webhook\WebhookInterface;
 use App\Models\FlowMeasure;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class WithdrawnWebhookFilter implements FilterInterface
 {
-    use AppliesWebhookSpecificFilters;
+    use ChecksForDiscordNotificationsToWebhook;
 
     public function shouldUseWebhook(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
@@ -18,21 +17,17 @@ class WithdrawnWebhookFilter implements FilterInterface
 
     private function hasBeenActivatedOrNotified(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
-        return tap(
+        return $this->existingNotificationExists(
             $flowMeasure->activatedAndNotifiedNotifications(),
-            function (BelongsToMany $notifications) use ($webhook) {
-                $this->filterQueryForWebhook($notifications, $webhook);
-            }
-        )->exists();
+            $webhook
+        );
     }
 
     private function hasNotBeenWithdrawnOrExpired(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
-        return tap(
+        return $this->existingNotificationDoesntExist(
             $flowMeasure->withdrawnAndExpiredDiscordNotifications(),
-            function (BelongsToMany $notifications) use ($webhook) {
-                $this->filterQueryForWebhook($notifications, $webhook);
-            }
-        )->doesntExist();
+            $webhook
+        );
     }
 }
