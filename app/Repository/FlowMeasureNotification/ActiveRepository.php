@@ -2,6 +2,7 @@
 
 namespace App\Repository\FlowMeasureNotification;
 
+use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use Illuminate\Support\Collection;
 
@@ -12,5 +13,10 @@ class ActiveRepository implements RepositoryInterface
         return FlowMeasure::with('discordNotifications')
             ->active()
             ->get();
+    }
+
+    public function notificationType(): DiscordNotificationType
+    {
+        return DiscordNotificationType::FLOW_MEASURE_ACTIVATED;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Repository\FlowMeasureNotification;
 
+use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Repository\FlowMeasureNotification\ActiveRepository;
 use Tests\TestCase;
@@ -14,6 +15,14 @@ class ActiveRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = new ActiveRepository();
+    }
+
+    public function testItHasANotificationType()
+    {
+        $this->assertEquals(
+            DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+            $this->repository->notificationType()
+        );
     }
 
     public function testItReturnsActiveFlowMeasures()

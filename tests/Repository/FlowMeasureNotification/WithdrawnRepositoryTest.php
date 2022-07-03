@@ -2,6 +2,7 @@
 
 namespace Tests\Repository\FlowMeasureNotification;
 
+use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Repository\FlowMeasureNotification\WithdrawnRepository;
 use Carbon\Carbon;
@@ -15,6 +16,14 @@ class WithdrawnRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = new WithdrawnRepository();
+    }
+
+    public function testItHasANotificationType()
+    {
+        $this->assertEquals(
+            DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
+            $this->repository->notificationType()
+        );
     }
 
     public function testItReturnsWithdrawnWouldBeActiveFlowMeasures()

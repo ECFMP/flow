@@ -2,6 +2,7 @@
 
 namespace App\Repository\FlowMeasureNotification;
 
+use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,5 +23,10 @@ class WithdrawnRepository implements RepositoryInterface
         return FlowMeasure::with('discordNotifications')
             ->onlyTrashed()
             ->where('deleted_at', '>', Carbon::now()->subHour());
+    }
+
+    public function notificationType(): DiscordNotificationType
+    {
+        return DiscordNotificationType::FLOW_MEASURE_WITHDRAWN;
     }
 }

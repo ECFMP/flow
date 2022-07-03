@@ -2,6 +2,7 @@
 
 namespace Tests\Repository\FlowMeasureNotification;
 
+use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Repository\FlowMeasureNotification\ExpiredRepository;
 use Tests\TestCase;
@@ -14,6 +15,14 @@ class ExpiredRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = new ExpiredRepository();
+    }
+
+    public function testItHasANotificationType()
+    {
+        $this->assertEquals(
+            DiscordNotificationType::FLOW_MEASURE_EXPIRED,
+            $this->repository->notificationType()
+        );
     }
 
     public function testItReturnsRecentlyExpiredFlowMeasures()
