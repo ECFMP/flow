@@ -36,4 +36,14 @@ class NotificationReissuer implements NotificationReissuerInterface
                 ) => $notification->pivot->notified_as === $this->measure->identifier
             )->isEmpty();
     }
+
+    public function measure(): FlowMeasure
+    {
+        return $this->measure;
+    }
+
+    public function type(): DiscordNotificationType
+    {
+        return $this->type;
+    }
 }

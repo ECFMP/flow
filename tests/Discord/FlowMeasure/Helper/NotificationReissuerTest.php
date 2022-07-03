@@ -19,6 +19,26 @@ class NotificationReissuerTest extends TestCase
         $this->flowMeasure = FlowMeasure::factory()->create();
     }
 
+    public function testItHasAType()
+    {
+        $this->assertEquals(
+            DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+            (new NotificationReissuer(
+                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+            ))->type()
+        );
+    }
+
+    public function testItHasAFlowMeasure()
+    {
+        $this->assertEquals(
+            $this->flowMeasure,
+            (new NotificationReissuer(
+                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+            ))->measure()
+        );
+    }
+
     public function testItsAReissueIfItsNotifiedAndTheIdentifierHasChanged()
     {
         $previousNotification = DiscordNotification::factory()->create();
