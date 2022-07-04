@@ -7,9 +7,11 @@ use Filament\Tables;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Illuminate\Database\Eloquent\Model;
-use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
-class GroupsRelationManager extends BelongsToManyRelationManager
+class GroupsRelationManager extends RelationManager
 {
     protected static string $relationship = 'groups';
 
@@ -38,6 +40,19 @@ class GroupsRelationManager extends BelongsToManyRelationManager
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+                Tables\Actions\AttachAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DetachAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DetachBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }
