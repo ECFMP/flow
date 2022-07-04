@@ -22,6 +22,7 @@ class FlightInformationRegionsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('identifier')
                     ->required()
+                    ->unique()
                     ->length(4),
                 Forms\Components\TextInput::make('name')
                     ->required()
