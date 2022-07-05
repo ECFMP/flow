@@ -17,9 +17,9 @@ use Filament\Tables\Filters\Filter;
 use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\EventResource\Pages;
 use App\Filament\Resources\EventResource\RelationManagers;
+use Filament\Resources\Pages\ViewRecord;
 
 class EventResource extends Resource
 {
@@ -85,7 +85,7 @@ class EventResource extends Resource
                     ->maxLength(6),
                 Forms\Components\TagsInput::make('participants')
                     ->columnSpan('full')
-                    ->visible(fn (Page $livewire, $state) => !$livewire instanceof CreateRecord && in_array(auth()->user()->role->key, [
+                    ->visible(fn (Page $livewire, $state) => $livewire instanceof ViewRecord && in_array(auth()->user()->role->key, [
                         RoleKey::SYSTEM,
                         RoleKey::NMT,
                         RoleKey::FLOW_MANAGER
