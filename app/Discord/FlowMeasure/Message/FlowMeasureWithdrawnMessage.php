@@ -2,7 +2,7 @@
 
 namespace App\Discord\FlowMeasure\Message;
 
-use App\Discord\FlowMeasure\Content\InterestedParties;
+use App\Discord\FlowMeasure\Content\EcfmpInterestedParties;
 use App\Discord\FlowMeasure\Description\EventName;
 use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
@@ -26,7 +26,7 @@ class FlowMeasureWithdrawnMessage implements MessageInterface
 
     public function content(): string
     {
-        return InterestedParties::interestedPartiesString($this->measure);
+        return EcfmpInterestedParties::interestedPartiesString($this->measure);
     }
 
     public function embeds(): EmbedCollection
