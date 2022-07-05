@@ -85,11 +85,11 @@ class EventResource extends Resource
                     ->maxLength(6),
                 Forms\Components\TagsInput::make('participants')
                     ->columnSpan('full')
-                    ->visible(fn (Page $livewire) => !$livewire instanceof CreateRecord && in_array(auth()->user()->role->key, [
+                    ->visible(fn (Page $livewire, $state) => !$livewire instanceof CreateRecord && in_array(auth()->user()->role->key, [
                         RoleKey::SYSTEM,
                         RoleKey::NMT,
                         RoleKey::FLOW_MANAGER
-                    ])),
+                    ]) && !empty($state)),
             ]);
     }
 
