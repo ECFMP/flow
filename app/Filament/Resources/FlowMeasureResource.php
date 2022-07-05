@@ -93,7 +93,7 @@ class FlowMeasureResource extends Resource
                         return $livewire instanceof CreateRecord || in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]);
                     })),
                 Forms\Components\Select::make('flight_information_region_id')
-                    ->label('Flight Information Region')
+                    ->label('FIR issuing')
                     ->helperText(__('Required if event is left empty'))
                     ->hintIcon('heroicon-o-folder')
                     ->searchable()
@@ -114,7 +114,7 @@ class FlowMeasureResource extends Resource
                     }))
                     ->required(),
                 Forms\Components\TextInput::make('flight_information_region_name')
-                    ->label('Flight Information Region')
+                    ->label('FIR issuing')
                     ->hintIcon('heroicon-o-folder')
                     ->disabled(true)
                     ->dehydrated(false)
@@ -215,6 +215,7 @@ class FlowMeasureResource extends Resource
                     ->schema([
                         Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
                             ->columnSpan('full')
+                            ->helperText(__('The selected FIRs will receive a tag in discord and be visible in the API'))
                             ->label(__("FIR's"))
                             ->relationship('notifiedFlightInformationRegions', 'name')
                             ->getSearchResultsUsing(
