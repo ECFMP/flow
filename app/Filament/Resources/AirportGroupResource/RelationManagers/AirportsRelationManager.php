@@ -7,20 +7,17 @@ use Filament\Tables;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Illuminate\Database\Eloquent\Model;
-use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
-class AirportsRelationManager extends BelongsToManyRelationManager
+class AirportsRelationManager extends RelationManager
 {
     protected static string $relationship = 'airports';
 
-    protected static ?string $inverseRelationship = 'groups';
-
     protected static ?string $recordTitleAttribute = 'icao_code';
 
-    protected function canDelete(Model $record): bool
-    {
-        return false;
-    }
+    protected static ?string $inverseRelationship = 'groups';
 
     public static function form(Form $form): Form
     {
@@ -42,6 +39,17 @@ class AirportsRelationManager extends BelongsToManyRelationManager
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+                Tables\Actions\AttachAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DetachAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DetachBulkAction::make(),
             ]);
     }
 }

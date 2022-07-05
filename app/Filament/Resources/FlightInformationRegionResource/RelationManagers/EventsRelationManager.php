@@ -4,16 +4,14 @@ namespace App\Filament\Resources\FlightInformationRegionResource\RelationManager
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Enums\RoleKey;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
-use Illuminate\Support\Collection;
 use Filament\Tables\Filters\Filter;
-use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Resources\RelationManagers\HasManyRelationManager;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
-class EventsRelationManager extends HasManyRelationManager
+class EventsRelationManager extends RelationManager
 {
     protected static string $relationship = 'events';
 
@@ -80,6 +78,19 @@ class EventsRelationManager extends HasManyRelationManager
                                 fn (Builder $query, $date): Builder => $query->whereDate('date_end', '<=', $date),
                             );
                     }),
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+                Tables\Actions\AssociateAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DissociateAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DissociateBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 }

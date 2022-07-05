@@ -2,36 +2,21 @@
 
 namespace App\Filament\Resources\FlightInformationRegionResource\RelationManagers;
 
-use App\Enums\RoleKey;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\RelationManagers\BelongsToManyRelationManager;
-use Filament\Resources\Table;
 use Filament\Tables;
+use App\Enums\RoleKey;
+use Filament\Resources\Form;
+use Filament\Resources\Table;
 use Filament\Tables\Columns\BadgeColumn;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
-class UsersRelationManager extends BelongsToManyRelationManager
+class UsersRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
 
     protected static ?string $recordTitleAttribute = 'name';
-
-    protected function canCreate(): bool
-    {
-        return false;
-    }
-
-    protected function canDelete(Model $record): bool
-    {
-        return false;
-    }
-
-    protected function canEdit(Model $record): bool
-    {
-        // TODO: Might add role stuff here
-        return false;
-    }
 
     public static function table(Table $table): Table
     {
@@ -43,6 +28,15 @@ class UsersRelationManager extends BelongsToManyRelationManager
             ])
             ->filters([
                 //
+            ])
+            ->headerActions([
+                Tables\Actions\AttachAction::make(),
+            ])
+            ->actions([
+                Tables\Actions\DetachAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\DetachBulkAction::make(),
             ]);
     }
 }
