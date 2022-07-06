@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Service\FlowMeasureDiscordMessageService;
+use App\Discord\Message\Sender\Sender;
 use Illuminate\Console\Command;
 
 class SendDiscordNotifications extends Command
@@ -19,14 +19,14 @@ class SendDiscordNotifications extends Command
      *
      * @var string
      */
-    protected $description = 'Send discord notifications about active flow measures';
+    protected $description = 'Send discord notifications';
 
     /**
      * Execute the console command.
      *
      * @return int
      */
-    public function handle(FlowMeasureDiscordMessageService $discordMessageService)
+    public function handle(Sender $sender)
     {
         if (!config('discord.enabled')) {
             $this->info('Skipping discord notifications');
@@ -34,10 +34,7 @@ class SendDiscordNotifications extends Command
         }
 
         $this->info('Sending discord notifications');
-        $discordMessageService->sendMeasureNotifiedDiscordNotifications();
-        $discordMessageService->sendMeasureActivatedDiscordNotifications();
-        $discordMessageService->sendMeasureWithdrawnDiscordNotifications();
-        $discordMessageService->sendMeasureExpiredDiscordNotifications();
+        $sender->sendDiscordMessages();
         $this->info('Discord notification sending complete');
 
         return 0;

@@ -2,8 +2,10 @@
 
 namespace Tests\Discord\FlowMeasure\Message;
 
+use App\Discord\FlowMeasure\Associator\FlowMeasureAssociator;
 use App\Discord\FlowMeasure\Content\FlowMeasureRecipientsInterface;
 use App\Discord\FlowMeasure\Embed\FlowMeasureEmbedInterface;
+use App\Discord\FlowMeasure\Logger\FlowMeasureLogger;
 use App\Discord\FlowMeasure\Message\FlowMeasureMessage;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Webhook\WebhookInterface;
@@ -16,6 +18,8 @@ class FlowMeasureMessageTest extends TestCase
     private readonly FlowMeasureRecipientsInterface $recipients;
     private readonly FlowMeasureEmbedInterface $embeds;
     private readonly FlowMeasureMessage $message;
+    private readonly FlowMeasureAssociator $associator;
+    private readonly FlowMeasureLogger $logger;
 
     public function setUp(): void
     {
@@ -23,7 +27,15 @@ class FlowMeasureMessageTest extends TestCase
         $this->webhook = Mockery::mock(WebhookInterface::class);
         $this->recipients = Mockery::mock(FlowMeasureRecipientsInterface::class);
         $this->embeds = Mockery::mock(FlowMeasureEmbedInterface::class);
-        $this->message = new FlowMeasureMessage($this->webhook, $this->recipients, $this->embeds);
+        $this->associator = Mockery::mock(FlowMeasureAssociator::class);
+        $this->logger = Mockery::mock(FlowMeasureLogger::class);
+        $this->message = new FlowMeasureMessage(
+            $this->webhook,
+            $this->recipients,
+            $this->embeds,
+            $this->associator,
+            $this->logger
+        );
     }
 
     public function testItHasADestination()
@@ -42,5 +54,15 @@ class FlowMeasureMessageTest extends TestCase
         $embeds = new EmbedCollection();
         $this->embeds->shouldReceive('embeds')->andReturn($embeds);
         $this->assertEquals($embeds, $this->message->embeds());
+    }
+
+    public function testItHasAnAssociator()
+    {
+        $this->assertEquals($this->associator, $this->message->associator());
+    }
+
+    public function testItHasALogger()
+    {
+        $this->assertEquals($this->logger, $this->message->logger());
     }
 }

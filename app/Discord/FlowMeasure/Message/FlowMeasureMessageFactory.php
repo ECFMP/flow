@@ -2,8 +2,10 @@
 
 namespace App\Discord\FlowMeasure\Message;
 
+use App\Discord\FlowMeasure\Associator\FlowMeasureAssociator;
 use App\Discord\FlowMeasure\Content\FlowMeasureRecipientsFactory;
 use App\Discord\FlowMeasure\Embed\FlowMeasureEmbedFactory;
+use App\Discord\FlowMeasure\Logger\FlowMeasureLogger;
 use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
 
 class FlowMeasureMessageFactory
@@ -22,7 +24,9 @@ class FlowMeasureMessageFactory
         return new FlowMeasureMessage(
             $pendingMessage->webhook(),
             $this->recipientsFactory->makeRecipients($pendingMessage),
-            $this->embedFactory->make($pendingMessage)
+            $this->embedFactory->make($pendingMessage),
+            new FlowMeasureAssociator($pendingMessage->flowMeasure(), $pendingMessage->type()),
+            new FlowMeasureLogger($pendingMessage->flowMeasure(), $pendingMessage->type())
         );
     }
 }
