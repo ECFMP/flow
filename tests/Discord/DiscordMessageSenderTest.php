@@ -3,13 +3,15 @@
 namespace Tests\Discord;
 
 use App\Discord\DiscordMessageSender;
+use App\Discord\Message\Associator\AssociatorInterface;
 use App\Discord\Message\Embed\Embed;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Message\Embed\TitleInterface;
+use App\Discord\Message\Logger\LoggerInterface;
 use App\Discord\Message\MessageInterface;
 use App\Discord\Webhook\WebhookInterface;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Mockery;
 use Tests\TestCase;
@@ -53,6 +55,16 @@ class DiscordMessageSenderTest extends TestCase
                         $webhook->shouldReceive('url')->andReturn('https://vatsim.net');
                     }
                 );
+            }
+
+            public function associator(): AssociatorInterface
+            {
+                return Mockery::mock(AssociatorInterface::class);
+            }
+
+            public function logger(): LoggerInterface
+            {
+                return Mockery::mock(LoggerInterface::class);
             }
         };
     }
