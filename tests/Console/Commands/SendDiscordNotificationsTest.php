@@ -3,7 +3,6 @@
 namespace Tests\Console\Commands;
 
 use App\Discord\Message\Sender\Sender;
-use App\Service\FlowMeasureDiscordMessageService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Mockery;
@@ -17,7 +16,7 @@ class SendDiscordNotificationsTest extends TestCase
 
         $senderMock = Mockery::mock(Sender::class);
         $senderMock->shouldReceive('sendDiscordMessages')->once();
-        $this->app->instance(FlowMeasureDiscordMessageService::class, $senderMock);
+        $this->app->instance(Sender::class, $senderMock);
 
         Artisan::call('discord:send-notifications');
     }
@@ -28,7 +27,7 @@ class SendDiscordNotificationsTest extends TestCase
 
         $senderMock = Mockery::mock(Sender::class);
         $senderMock->shouldReceive('sendDiscordMessages')->never();
-        $this->app->instance(FlowMeasureDiscordMessageService::class, $senderMock);
+        $this->app->instance(Sender::class, $senderMock);
 
         Artisan::call('discord:send-notifications');
     }

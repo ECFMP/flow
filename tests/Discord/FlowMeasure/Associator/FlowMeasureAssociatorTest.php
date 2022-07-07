@@ -20,7 +20,7 @@ class FlowMeasureAssociatorTest extends TestCase
         $associator->associate($notification);
 
         $this->assertDatabaseCount('discord_notification_flow_measure', 1);
-        $this->assertDatabaseMissing(
+        $this->assertDatabaseHas(
             'discord_notification_flow_measure',
             [
                 'discord_notification_id' => $notification->id,

@@ -10,6 +10,7 @@ use App\Discord\FlowMeasure\Message\FlowMeasureMessageFactory;
 use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Webhook\WebhookInterface;
+use App\Models\FlowMeasure;
 use Mockery;
 use Tests\TestCase;
 
@@ -27,9 +28,11 @@ class FlowMeasureMessageFactoryTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        $flowMeasure = FlowMeasure::factory()->make();
         $this->webhook = Mockery::mock(WebhookInterface::class);
         $this->pendingMessage = Mockery::mock(PendingMessageInterface::class);
         $this->pendingMessage->shouldReceive('webhook')->andReturn($this->webhook);
+        $this->pendingMessage->shouldReceive('flowMeasure')->andReturn($flowMeasure);
         $this->embedCollection = new EmbedCollection();
         $this->embeds = Mockery::mock(FlowMeasureEmbedInterface::class);
         $this->embeds->shouldReceive('embeds')->andReturn($this->embedCollection);
