@@ -25,10 +25,11 @@ class WebhookMapper implements MapperInterface
         return Collection::make([$this->ecfmpWebhook])
             ->merge(
                 $measure->notifiedFlightInformationRegions->map(
-                    fn (FlightInformationRegion $fir) => $fir->divisionDiscordWebhooks
+                    fn(FlightInformationRegion $fir) => $fir->divisionDiscordWebhooks
                 )->flatten()
             )
-            ->filter(fn(WebhookInterface $webhook) => $this->filter->shouldUseWebhook($measure, $webhook))
+            ->filter(fn(WebhookInterface $webhook): bool => $this->filter->shouldUseWebhook($measure, $webhook))
+            ->unique(fn(WebhookInterface $webhook): ?int => $webhook->id())
             ->values();
     }
 }

@@ -5,6 +5,7 @@ namespace Tests\Discord\FlowMeasure\Webhook;
 use App\Discord\FlowMeasure\Webhook\Filter\FilterInterface;
 use App\Discord\FlowMeasure\Webhook\WebhookMapper;
 use App\Discord\Webhook\EcfmpWebhook;
+use App\Discord\Webhook\WebhookInterface;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
@@ -105,5 +106,49 @@ class WebhookMapperTest extends TestCase
             ->andReturnTrue();
 
         $this->assertCount(3, $this->mapper->mapToWebhooks($flowMeasure));
+    }
+
+    public function testItDeduplicatesWebhooks()
+    {
+        $webhook1 = DivisionDiscordWebhook::factory()->create();
+        $webhook2 = DivisionDiscordWebhook::factory()->create();
+
+        $flowMeasure = FlowMeasure::factory()->create();
+        $fir = FlightInformationRegion::factory()->afterCreating(
+            function (FlightInformationRegion $flightInformationRegion) use ($webhook1, $webhook2) {
+                $flightInformationRegion->divisionDiscordWebhooks()->sync(
+                    [
+                        $webhook1->id,
+                        $webhook2->id,
+                    ]
+                );
+            }
+        )->create();
+
+        $fir2 = FlightInformationRegion::factory()->afterCreating(
+            function (FlightInformationRegion $flightInformationRegion) use ($webhook1) {
+                $flightInformationRegion->divisionDiscordWebhooks()->sync(
+                    [
+                        $webhook1->id,
+                    ]
+                );
+            }
+        )->create();
+
+        $flowMeasure->notifiedFlightInformationRegions()->sync(
+            [
+                $fir->id,
+                $fir2->id,
+            ]
+        );
+
+        $this->filter->shouldReceive('shouldUseWebhook')
+            ->andReturnTrue();
+
+        $this->assertCount(3, $this->mapper->mapToWebhooks($flowMeasure));
+        $this->assertEquals(
+            new Collection([null, $webhook1->id, $webhook2->id]),
+            $this->mapper->mapToWebhooks($flowMeasure)->map(fn(WebhookInterface $webhook) => $webhook->id())
+        );
     }
 }
