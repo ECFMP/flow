@@ -36,7 +36,7 @@ Start and End times are in UTC. They are when the flow measure will be in effect
 
 Reason should be provided for all flow measures, even if considered obvious. This message should specifically indicate the flow limitation (e.g. EDDH landing rate, Jever sector capacity). The presence of an event is not in itself a reason to require flow control.
 
-#Types of Flow Measure
+# Types of Flow Measure
 
 Every flow measure has a specific meaning and accepts a specific value. You must understand the required/suggested values before applying a flow measure. If in doubt, ask.
 
