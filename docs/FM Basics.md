@@ -9,7 +9,7 @@ When applying flow measures further away from your airspace, the longer until yo
 
 ### Proportional
 
-Flow measures apply extra work to controllers across the network. Therefore extreme measures like a ground stop, or flow measures applying to the whole or Europe for minor events should be avoided.
+Flow measures apply extra work to controllers across the network. Therefore extreme measures like a ground stop, or flow measures applying to the whole of Europe for minor events should be avoided.
 
 ### Practical
 
@@ -40,7 +40,7 @@ The flow measure required should then be selected. With the exception of ‘proh
 
 Flow measures then require filters and applicability information set in the ‘FAO’ tab. These are documented below.
 
-Once complete, click ‘create’. Agreen box will confirm the flow measure is created - always check this box appears and handle any errors before closing the screen.
+Once complete, click ‘create’. A green box will confirm the flow measure is created - always check this box appears and handle any errors before closing the screen.
 
 
 # Filters
