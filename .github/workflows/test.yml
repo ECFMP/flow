@@ -226,8 +226,8 @@ jobs:
             cd $RELEASE_DIRECTORY
             $PHP_PATH artisan down
             $PHP_PATH artisan migrate --step --force -n
-            $PHP_PATH artisan optimize
             $PHP_PATH artisan storage:link
+            $PHP_PATH filament:upgrade
             mv storage/logs/laravel.log storage/logs/laravel.log.`date +%s`; true
             $PHP_PATH artisan up
           envs: RELEASE_DIRECTORY,PHP_PATH,GITHUB_REPOSITORY
