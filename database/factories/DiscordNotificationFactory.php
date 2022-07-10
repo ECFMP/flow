@@ -2,8 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\DiscordNotificationType;
-use App\Models\FlowMeasure;
+use App\Models\DivisionDiscordWebhook;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,9 +18,18 @@ class DiscordNotificationFactory extends Factory
     public function definition()
     {
         return [
-            'flow_measure_id' => FlowMeasure::factory()->create()->id,
-            'type' => DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+            'division_discord_webhook_id' => null,
             'content' => 'ohai',
+            'embeds' => [
+                'foo' => 'var',
+            ],
         ];
+    }
+
+    public function toDivisionWebhook(DivisionDiscordWebhook $divisionDiscordWebhook): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'division_discord_webhook_id' => $divisionDiscordWebhook->id,
+        ]);
     }
 }

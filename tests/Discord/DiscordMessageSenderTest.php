@@ -3,12 +3,15 @@
 namespace Tests\Discord;
 
 use App\Discord\DiscordMessageSender;
+use App\Discord\Message\Associator\AssociatorInterface;
 use App\Discord\Message\Embed\Embed;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Message\Embed\TitleInterface;
+use App\Discord\Message\Logger\LoggerInterface;
 use App\Discord\Message\MessageInterface;
-use Illuminate\Support\Facades\Config;
+use App\Discord\Webhook\WebhookInterface;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Mockery;
 use Tests\TestCase;
@@ -23,7 +26,6 @@ class DiscordMessageSenderTest extends TestCase
         $this->sender = $this->app->make(DiscordMessageSender::class);
 
         Config::set('discord.enabled', false);
-        Config::set('discord.webhook_url', 'https://vatsim.net');
         Config::set('discord.avatar_url', 'http://ecfmp.dev/images/avatar.png');
         Config::set('discord.token', 'abc');
         Config::set('discord.username', 'FlowBot');
@@ -43,6 +45,26 @@ class DiscordMessageSenderTest extends TestCase
                 $mockTitle->shouldReceive('title')->once()->andReturn('Hai');
 
                 return (new EmbedCollection())->add(Embed::make()->withTitle($mockTitle));
+            }
+
+            public function destination(): WebhookInterface
+            {
+                return tap(
+                    Mockery::mock(WebhookInterface::class),
+                    function (Mockery\MockInterface $webhook) {
+                        $webhook->shouldReceive('url')->andReturn('https://vatsim.net');
+                    }
+                );
+            }
+
+            public function associator(): AssociatorInterface
+            {
+                return Mockery::mock(AssociatorInterface::class);
+            }
+
+            public function logger(): LoggerInterface
+            {
+                return Mockery::mock(LoggerInterface::class);
             }
         };
     }

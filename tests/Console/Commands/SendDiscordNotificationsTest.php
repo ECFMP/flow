@@ -2,7 +2,7 @@
 
 namespace Tests\Console\Commands;
 
-use App\Service\FlowMeasureDiscordMessageService;
+use App\Discord\Message\Sender\Sender;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Mockery;
@@ -14,12 +14,9 @@ class SendDiscordNotificationsTest extends TestCase
     {
         Config::set('discord.enabled', true);
 
-        $serviceMock = Mockery::mock(FlowMeasureDiscordMessageService::class);
-        $serviceMock->shouldReceive('sendMeasureNotifiedDiscordNotifications')->once();
-        $serviceMock->shouldReceive('sendMeasureActivatedDiscordNotifications')->once();
-        $serviceMock->shouldReceive('sendMeasureWithdrawnDiscordNotifications')->once();
-        $serviceMock->shouldReceive('sendMeasureExpiredDiscordNotifications')->once();
-        $this->app->instance(FlowMeasureDiscordMessageService::class, $serviceMock);
+        $senderMock = Mockery::mock(Sender::class);
+        $senderMock->shouldReceive('sendDiscordMessages')->once();
+        $this->app->instance(Sender::class, $senderMock);
 
         Artisan::call('discord:send-notifications');
     }
@@ -28,12 +25,9 @@ class SendDiscordNotificationsTest extends TestCase
     {
         Config::set('discord.enabled', false);
 
-        $serviceMock = Mockery::mock(FlowMeasureDiscordMessageService::class);
-        $serviceMock->shouldNotReceive('sendMeasureNotifiedDiscordNotifications');
-        $serviceMock->shouldNotReceive('sendMeasureActivatedDiscordNotifications');
-        $serviceMock->shouldNotReceive('sendMeasureWithdrawnDiscordNotifications');
-        $serviceMock->shouldNotReceive('sendMeasureExpiredDiscordNotifications');
-        $this->app->instance(FlowMeasureDiscordMessageService::class, $serviceMock);
+        $senderMock = Mockery::mock(Sender::class);
+        $senderMock->shouldReceive('sendDiscordMessages')->never();
+        $this->app->instance(Sender::class, $senderMock);
 
         Artisan::call('discord:send-notifications');
     }

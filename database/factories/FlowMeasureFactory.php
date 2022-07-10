@@ -56,23 +56,47 @@ class FlowMeasureFactory extends Factory
 
     public function finished(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('-3 hour', 'now'),
             'end_time' => $this->faker->dateTimeBetween('-2 hour', 'now - 1 minute'),
         ]);
     }
 
+    public function finishedAWhileAgo(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'start_time' => $this->faker->dateTimeBetween('-5 hour', '-4 hour'),
+            'end_time' => $this->faker->dateTimeBetween('-3 hour', '-2 hour -1 minute'),
+        ]);
+    }
+
+    public function finishedRecently(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'start_time' => $this->faker->dateTimeBetween('-3 hour', '-2 hour'),
+            'end_time' => $this->faker->dateTimeBetween('-59 minute', 'now'),
+        ]);
+    }
+
     public function notStarted(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('now + 1 minute', 'now + 1 hour'),
             'end_time' => $this->faker->dateTimeBetween('now + 2 hour', 'now + 3 hour'),
         ]);
     }
 
+    public function notified(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'start_time' => $this->faker->dateTimeBetween('now', '+24 hours -1 minute'),
+            'end_time' => $this->faker->dateTimeBetween('+25 hours', '+27 hours'),
+        ]);
+    }
+
     public function notNotified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('+25 hours', '+26 hours'),
             'end_time' => $this->faker->dateTimeBetween('+26 hours', '+27 hours'),
         ]);

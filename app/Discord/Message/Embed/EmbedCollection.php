@@ -13,6 +13,11 @@ class EmbedCollection
         $this->embeds = collect();
     }
 
+    public static function make(): static
+    {
+        return new static();
+    }
+
     public function add(EmbedInterface $embed): static
     {
         $this->embeds->add($embed);
