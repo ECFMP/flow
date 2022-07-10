@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 use Illuminate\View\View;
 use Spatie\LaravelMarkdown\MarkdownRenderer;
 
-class Discord extends Page
+class FlowMeasuresBasics extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -14,9 +14,11 @@ class Discord extends Page
 
     protected static ?string $navigationGroup = 'User Guide';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationLabel = 'FM: Basics';
 
-    protected static ?string $slug = 'user-guide/discord';
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $slug = 'user-guide/fm-basics';
 
     protected function getHeader(): View
     {
@@ -26,7 +28,7 @@ class Discord extends Page
     protected function getViewData(): array
     {
         return [
-            'md' => app(MarkdownRenderer::class)->toHtml(file_get_contents(base_path('docs/Discord.md'))),
+            'md' => app(MarkdownRenderer::class)->toHtml(file_get_contents(base_path('docs/FM Basics.md'))),
         ];
     }
 }

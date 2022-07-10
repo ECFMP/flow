@@ -6,7 +6,7 @@ use Filament\Pages\Page;
 use Illuminate\View\View;
 use Spatie\LaravelMarkdown\MarkdownRenderer;
 
-class FlowMeasuresOne extends Page
+class FlowMeasuresTypes extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
@@ -14,9 +14,11 @@ class FlowMeasuresOne extends Page
 
     protected static ?string $navigationGroup = 'User Guide';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationLabel = 'FM: Types';
 
-    protected static ?string $slug = 'user-guide/flow-measures-1';
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $slug = 'user-guide/fm-types';
 
     protected function getHeader(): View
     {
@@ -26,7 +28,7 @@ class FlowMeasuresOne extends Page
     protected function getViewData(): array
     {
         return [
-            'md' => app(MarkdownRenderer::class)->toHtml(file_get_contents(base_path('docs/Flow Measures 1.md'))),
+            'md' => app(MarkdownRenderer::class)->toHtml(file_get_contents(base_path('docs/FM Types.md'))),
         ];
     }
 }
