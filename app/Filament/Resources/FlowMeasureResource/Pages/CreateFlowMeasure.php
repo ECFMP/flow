@@ -22,6 +22,11 @@ class CreateFlowMeasure extends CreateRecord
         $fir = FlightInformationRegion::find($data['flight_information_region_id']);
 
         $startTime = Carbon::parse($data['start_time']);
+
+        if ($startTime->isBefore(now())) {
+            $startTime = now();
+        }
+
         $data['identifier'] = FlowMeasureIdentifierGenerator::generateIdentifier($startTime, $fir);
         $data['user_id'] = auth()->id();
 

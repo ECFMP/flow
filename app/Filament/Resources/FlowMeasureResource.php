@@ -128,7 +128,7 @@ class FlowMeasureResource extends Resource
                     ->label(__('Start time [UTC]'))
                     ->default(now()->addMinutes(5))
                     ->withoutSeconds()
-                    ->minDate(fn (Page $livewire) => $livewire instanceof CreateRecord ? now() : now()->startOfDay())
+                    ->minDate(fn (Page $livewire) => $livewire instanceof CreateRecord ? now()->subMinutes(30) : now()->startOfDay())
                     ->maxDate(now()->addDays(10))
                     ->disabled(fn (Page $livewire, Closure $get) => !$livewire instanceof CreateRecord && !in_array($get('edit_mode'), [self::FULL_EDIT, self::PARTIAL_EDIT_WITH_START_TIME]))
                     ->dehydrated(function (Page $livewire, Closure $get) {
