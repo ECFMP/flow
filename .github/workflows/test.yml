@@ -104,7 +104,7 @@ jobs:
           environment: production
           ref: ${{ env.COMMIT }}
 
-      # Everything to do with Yarn
+      # Everything to do with NPM
       - name: Get npm cache directory
         id: npm-cache-dir
         run: |
