@@ -106,7 +106,6 @@ Where the Maximum Mach is above the minimum Mach for an aircraft to remain in cl
 
 The above introduction to ‘speed-based flow measures’ outlines additional important rules.
 
-
 ### IAS Reduction 
 An IAS reduction may be used in conjunction with a Mach reduction flow measure to slow traffic inbound to an area of congestion. A maximum IAS may be useful/sensible instead when only attempting to apply restriction to traffic descending to land.
 
@@ -122,10 +121,30 @@ Where the Maximum Mach is above the minimum Mach for an aircraft to remain in cl
 The above introduction to ‘speed-based flow measures’ outlines additional important rules.
 
 ## Route Restrictions
+Route restrictions are complex flow measures to be implemented. A poorly constructed or poorly communicated route restriction is likely to create significant confusion and workload. We suggest that route restrictions are discussed with adjacent flow managers before issued and as such it should be rare for such a measure to be active immediately after issue.
+
+These measures do not have a ‘value’ associated with them like the prior flow measures. These measures should be issued with a waypoint
+
+A route restriction when issued applies to traffic on the ground and in the air from the time of issue. Therefore it must be possible for both types of traffic to be re-routed by controllers as we do not have universal coverage. Providing suitable supplementary information (i.e. re-route strings) will significantly increase the likelihood of successful re-routing.
+
+Combinations of “prohibit”, “mandatory route” and “MIT” flow measures can be used to ‘Compound Restrictions’. This will be elaborated in Flow Measures 2.
 
 ### Prohibit
+The prohibit function is designed to allow you to selectively re-route traffic away from a busy route, or prevent a less favourable route option for the current online ATC. For any prohibit option, a suitable re-route suggestion should be provided even if it appears immediately obvious, as those implementing the restriction could be ground controllers at distant airfields.
 
+The prohibit rule should not be used for Ground Stops and must therefore should always have a suitable filter (e.g. waypoint or flight level).
 
 ### Mandatory Route
+Where planning of traffic via specific routes is convenient (e.g. to avoid unstaffed sectors during events), a mandatory route may be issued. A mandatory route accepts a comma-separated list of suitable options to which the route applies. Each string should be the entire section of mandatory route, and comma-separated options are alternatives. For example:
+
+> BCN
+Would require traffic to file/route via BCN. (Note that BCN does not have to be in the flightplan string as long as it is included on an airway)
+
+> BCN Q63 STU M17 VATRY, BCN Q63 STU M456 BAKUR
+Would allow traffic to route via BCN and then STU to VATRY and BAKUR only
+
+> BAKUR, VATRY
+Would allow traffic to route to BAKUR or VATRY. This could be via BCN or another valid route.
+
 
 # Filters
