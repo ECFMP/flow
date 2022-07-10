@@ -113,7 +113,6 @@ jobs:
           RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
           SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
           PHP_PATH: /usr/bin/php
-          VERSIONS_TO_KEEP: 5
 
       - name: GitHub Deployment
         uses: chrnorm/deployment-action@releases/v1
@@ -122,7 +121,7 @@ jobs:
           token: ${{ github.token }}
           target_url: https://ecfmp.vatsim.net
           environment: production
-          ref: ${{ COMMIT }}
+          ref: ${{ env.COMMIT }}
 
       # Everything to do with Yarn
       - name: Setup Yarn
