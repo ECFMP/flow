@@ -138,12 +138,15 @@ The prohibit rule should not be used for Ground Stops and must therefore should 
 Where planning of traffic via specific routes is convenient (e.g. to avoid unstaffed sectors during events), a mandatory route may be issued. A mandatory route accepts a comma-separated list of suitable options to which the route applies. Each string should be the entire section of mandatory route, and comma-separated options are alternatives. For example:
 
 > BCN
+
 Would require traffic to file/route via BCN. (Note that BCN does not have to be in the flightplan string as long as it is included on an airway)
 
 > BCN Q63 STU M17 VATRY, BCN Q63 STU M456 BAKUR
+
 Would allow traffic to route via BCN and then STU to VATRY and BAKUR only
 
 > BAKUR, VATRY
+
 Would allow traffic to route to BAKUR or VATRY. This could be via BCN or another valid route.
 
 
