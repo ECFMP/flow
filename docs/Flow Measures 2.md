@@ -1,7 +1,16 @@
-# Flow Measures - Overview
+# Specific Measures
 
-# Create a Flow Measure
+### Ground Stop
 
-# Rules
+A ground stop (i.e. stopping departures to an airport) shall preferably be issued as a ‘rate per hour’ flow measure with a value of 0. While a prohibit flow measure could be issued for the same reason, the interpretation of prohibit measures is more complex and may lead controllers to searching for other flow measures to find a suitable route. Rate per hour of 0 is not only ambiguous, but allows the measure to be edited and progressively lifted.
 
-# Best Practice
+# Prohibit measure - Compound Restrictions
+
+
+
+# FAO tagging
+
+
+
+
+# Editing Flow Measures
