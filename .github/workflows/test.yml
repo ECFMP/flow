@@ -44,25 +44,6 @@ jobs:
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest
 
-      # Setting up NPM dependencies
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: NPM Build
-        run: |
-          npm ci
-          npm run production --no-progress
-          cat public/mix-manifest.json # See asset versions in log
-
       - name: Copy Env
         run: cp .env.example .env
 
@@ -124,29 +105,24 @@ jobs:
           ref: ${{ env.COMMIT }}
 
       # Everything to do with Yarn
-      - name: Setup Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: '16'
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
 
-      - name: Get Yarn Cache Directory
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Restore Yarn Cache
-        uses: actions/cache@v1
-        id: yarn-cache
+      - uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-node-
 
-      - name: Yarn Install
-        run: yarn
-
-      - name: Yarn Run
-        run: yarn run prod
+      - name: NPM Build
+        run: |
+          npm ci
+          npm run production --no-progress
+          cat public/mix-manifest.json # See asset versions in log
 
       - name: Remove node_modules
         run: 'rm -rf node_modules'
