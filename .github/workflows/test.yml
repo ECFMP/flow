@@ -183,7 +183,7 @@ jobs:
           source: "."
           target: ${{ env.RELEASE_DIRECTORY }}
 
-      - name: Environment and Composer
+      - name: Environment
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -193,7 +193,6 @@ jobs:
           script: |
             cd $RELEASE_DIRECTORY
             ln -s $APPLICATION_ROOT/.env .env
-            $PHP_PATH /usr/local/bin/composer install --no-interaction --no-dev
           envs: RELEASE_DIRECTORY,APPLICATION_ROOT,TAG,PHP_PATH
 
       - name: Update Symlinks
