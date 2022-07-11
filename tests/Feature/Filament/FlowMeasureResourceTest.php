@@ -44,6 +44,8 @@ it('can create mdi flow measure', function () {
 
     $newData = FlowMeasure::factory()->notStarted()->make();
 
+    $fir = FlightInformationRegion::factory()->create();
+
     $livewire = livewire(FlowMeasureResource\Pages\CreateFlowMeasure::class)
         ->set('data.flight_information_region_id', $newData->flight_information_region_id)
         ->set('data.event_id', $newData->event_id)
@@ -53,7 +55,8 @@ it('can create mdi flow measure', function () {
         ->set('data.type', $newData->type->value)
         ->set('data.minutes', 1)
         ->set('data.seconds', 30)
-        ->set('data.mandatory_route', $newData->mandatory_route);
+        ->set('data.mandatory_route', $newData->mandatory_route)
+        ->set('data.notified_flight_information_regions', $fir->getKey());
 
     // I honestly have no idea if this can be done better. Feel free to improve
 
@@ -82,6 +85,10 @@ it('can create mdi flow measure', function () {
         'value' => 90,
         'mandatory_route' => $newData->mandatory_route,
     ]);
+
+    $this->assertDatabaseHas((new FlowMeasure())->notifiedFlightInformationRegions()->getTable(), [
+        'flight_information_region_id' => $fir->getKey(),
+    ]);
 });
 
 it('can create per hour measure', function () {
@@ -89,6 +96,8 @@ it('can create per hour measure', function () {
     $this->actingAs(User::factory()->system()->create());
 
     $newData = FlowMeasure::factory()->notStarted()->withMeasure(FlowMeasureType::PER_HOUR, 30)->make();
+
+    $fir = FlightInformationRegion::factory()->create();
 
     $livewire = livewire(FlowMeasureResource\Pages\CreateFlowMeasure::class)
         ->set('data.flight_information_region_id', $newData->flight_information_region_id)
@@ -98,7 +107,8 @@ it('can create per hour measure', function () {
         ->set('data.reason', $newData->reason)
         ->set('data.type', $newData->type->value)
         ->set('data.value', $newData->value)
-        ->set('data.mandatory_route', $newData->mandatory_route);
+        ->set('data.mandatory_route', $newData->mandatory_route)
+        ->set('data.notified_flight_information_regions', $fir->getKey());
 
     // I honestly have no idea if this can be done better. Feel free to improve
 

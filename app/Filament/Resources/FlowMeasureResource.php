@@ -215,6 +215,7 @@ class FlowMeasureResource extends Resource
                     ->schema([
                         Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
                             ->columnSpan('full')
+                            ->required()
                             ->helperText(__('The selected FIRs will receive a tag in discord and be visible in the API'))
                             ->label(__("FIR's"))
                             ->relationship('notifiedFlightInformationRegions', 'name')
