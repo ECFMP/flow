@@ -27,7 +27,7 @@ class AirportGroupImport implements ToCollection
 
             $group = AirportGroup::firstOrCreate(['name' => $row[0]]);
             $airports = array_map(
-                fn(string $airport) => trim($airport),
+                fn (string $airport) => trim($airport),
                 explode(',', $row[1])
             );
 

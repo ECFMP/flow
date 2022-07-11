@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\FlowMeasureResource;
-use App\Models\FlowMeasure;
 use App\Repository\FlowMeasureRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;

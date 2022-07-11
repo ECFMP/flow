@@ -24,7 +24,8 @@ class NotificationReissuerTest extends TestCase
         $this->assertEquals(
             DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
             ))->type()
         );
     }
@@ -34,7 +35,8 @@ class NotificationReissuerTest extends TestCase
         $this->assertEquals(
             $this->flowMeasure,
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
             ))->measure()
         );
     }
@@ -55,7 +57,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertTrue(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
             ))->isReissuedNotification()
         );
     }
@@ -76,7 +79,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertTrue(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
             ))->isReissuedNotification()
         );
     }
@@ -97,7 +101,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertTrue(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
             ))->isReissuedNotification()
         );
     }
@@ -118,7 +123,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertFalse(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
             ))->isReissuedNotification()
         );
     }
@@ -139,7 +145,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertFalse(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
             ))->isReissuedNotification()
         );
     }
@@ -160,7 +167,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertFalse(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED
             ))->isReissuedNotification()
         );
     }
@@ -181,7 +189,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertFalse(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN
             ))->isReissuedNotification()
         );
     }
@@ -202,7 +211,8 @@ class NotificationReissuerTest extends TestCase
 
         $this->assertFalse(
             (new NotificationReissuer(
-                $this->flowMeasure, DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED
+                $this->flowMeasure,
+                DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED
             ))->isReissuedNotification()
         );
     }

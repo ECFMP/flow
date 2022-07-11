@@ -14,7 +14,7 @@ class MemberEventTest extends TestCase
         return new MemberEvent(
             [
                 'type' => 'member_event',
-                'value' => $events->map(fn(Event $event) => $event->id)->toArray(),
+                'value' => $events->map(fn (Event $event) => $event->id)->toArray(),
             ]
         );
     }

@@ -24,7 +24,7 @@ abstract class AbstractFlowMeasureTitle implements TitleInterface
         return sprintf(
             '%s%s',
             $this->formatIdentifierAndStatus($status),
-            $reissued  ? ' (Reissued)' : ''
+            $reissued ? ' (Reissued)' : ''
         );
     }
 }

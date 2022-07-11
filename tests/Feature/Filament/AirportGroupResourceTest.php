@@ -2,8 +2,6 @@
 
 use App\Filament\Resources\AirportGroupResource;
 use App\Models\AirportGroup;
-use App\Models\Event;
-use App\Models\FlightInformationRegion;
 use App\Models\User;
 use Tests\FrontendTestCase;
 

@@ -22,6 +22,6 @@ class MessageGenerator implements MessageGeneratorInterface
     public function generate(): Collection
     {
         return $this->messageProvider->pendingMessages()
-            ->map(fn(PendingMessageInterface $message) => $this->flowMeasureMessageFactory->make($message));
+            ->map(fn (PendingMessageInterface $message) => $this->flowMeasureMessageFactory->make($message));
     }
 }

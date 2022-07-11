@@ -148,7 +148,7 @@ class WebhookMapperTest extends TestCase
         $this->assertCount(3, $this->mapper->mapToWebhooks($flowMeasure));
         $this->assertEquals(
             new Collection([null, $webhook1->id, $webhook2->id]),
-            $this->mapper->mapToWebhooks($flowMeasure)->map(fn(WebhookInterface $webhook) => $webhook->id())
+            $this->mapper->mapToWebhooks($flowMeasure)->map(fn (WebhookInterface $webhook) => $webhook->id())
         );
     }
 }

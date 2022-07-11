@@ -94,7 +94,8 @@ class EventTest extends TestCase
 
         $this->get('api/v1/event')
             ->assertOk()
-            ->assertExactJson([
+            ->assertExactJson(
+                [
                     [
                         'id' => $event1->id,
                         'name' => $event1->name,
@@ -125,7 +126,8 @@ class EventTest extends TestCase
 
         $this->get('api/v1/event?active=1')
             ->assertOk()
-            ->assertExactJson([
+            ->assertExactJson(
+                [
                     [
                         'id' => $event->id,
                         'name' => $event->name,

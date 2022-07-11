@@ -27,7 +27,7 @@ class DiscordTagFactory extends Factory
 
     public function withoutAtSymbol(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'tag' => ltrim($attributes['tag'], '@'),
         ]);
     }

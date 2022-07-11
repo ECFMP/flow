@@ -18,7 +18,6 @@ use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EventResource\Pages;
-use App\Filament\Resources\EventResource\RelationManagers;
 use Filament\Resources\Pages\ViewRecord;
 
 class EventResource extends Resource

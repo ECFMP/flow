@@ -13,7 +13,7 @@ class DiscordNotification extends Model
 {
     use HasFactory;
 
-    const UPDATED_AT = null;
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'division_discord_webhook_id',

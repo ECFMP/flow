@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tests\Discord\Message\Embed;
-
 
 use App\Discord\Message\Embed\AuthorInterface;
 use App\Discord\Message\Embed\Embed;

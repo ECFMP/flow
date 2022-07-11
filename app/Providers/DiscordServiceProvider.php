@@ -38,7 +38,7 @@ class DiscordServiceProvider extends ServiceProvider
             return new DiscordMessageSender();
         });
         $this->app->singleton(EcfmpWebhook::class);
-        $this->app->singleton(Sender::class, fn() => new Sender(
+        $this->app->singleton(Sender::class, fn () => new Sender(
             $this->flowMeasureMessageProviders(),
             $this->app->make(DiscordInterface::class)
         ));

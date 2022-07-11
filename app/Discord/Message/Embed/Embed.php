@@ -95,7 +95,7 @@ class Embed implements EmbedInterface
         }
 
         if ($this->fields->isNotEmpty()) {
-            $return['fields'] = $this->fields->map(fn(FieldInterface $field) => [
+            $return['fields'] = $this->fields->map(fn (FieldInterface $field) => [
                 'name' => $field->name(),
                 'value' => $field->value(),
                 'inline' => $field->inline(),

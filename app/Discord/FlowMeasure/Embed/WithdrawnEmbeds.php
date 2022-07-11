@@ -41,7 +41,7 @@ class WithdrawnEmbeds implements FlowMeasureEmbedInterface
                 ->withField(Field::makeInline(BlankField::make()))
                 ->withFields(
                     AdditionalFilterParser::parseAdditionalFilters($this->pendingMessage->flowMeasure())->map(
-                        fn(FieldProviderInterface $provider) => Field::make($provider)
+                        fn (FieldProviderInterface $provider) => Field::make($provider)
                     )
                 )
         );

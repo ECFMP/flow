@@ -27,6 +27,6 @@ class EmbedCollection
 
     public function toArray(): array
     {
-        return $this->embeds->map(fn(EmbedInterface $embed) => $embed->toArray())->toArray();
+        return $this->embeds->map(fn (EmbedInterface $embed) => $embed->toArray())->toArray();
     }
 }
