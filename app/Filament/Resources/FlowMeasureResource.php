@@ -27,6 +27,7 @@ use App\Filament\Resources\FlowMeasureResource\Traits\Filters;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Tables\Filters\MultiSelectFilter;
 
 class FlowMeasureResource extends Resource
 {
@@ -237,9 +238,11 @@ class FlowMeasureResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('identifier')->sortable(),
+                Tables\Columns\TextColumn::make('identifier')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('flightInformationRegion.name')
-                    ->label(__('Owner')),
+                    ->label(__('Owner'))
+                    ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->alignCenter()
                     ->colors([
@@ -274,6 +277,12 @@ class FlowMeasureResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('end_time', '<=', $date),
                             );
                     }),
+                MultiSelectFilter::make('flight_information_region_id')
+                    ->label(__('FIR'))
+                    ->relationship('flightInformationRegion')
+                    ->options(fn (): Collection => FlightInformationRegion::orderBy('identifier')
+                        ->get(['id', 'name', 'identifier'])
+                        ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifier_name])),
             ]);
     }
 
