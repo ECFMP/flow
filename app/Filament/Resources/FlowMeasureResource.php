@@ -237,9 +237,11 @@ class FlowMeasureResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('identifier')->sortable(),
+                Tables\Columns\TextColumn::make('identifier')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('flightInformationRegion.name')
-                    ->label(__('Owner')),
+                    ->label(__('Owner'))
+                    ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->alignCenter()
                     ->colors([
