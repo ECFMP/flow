@@ -28,7 +28,7 @@ class DiscordNotificationFactory extends Factory
 
     public function toDivisionWebhook(DivisionDiscordWebhook $divisionDiscordWebhook): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'division_discord_webhook_id' => $divisionDiscordWebhook->id,
         ]);
     }

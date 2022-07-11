@@ -7,7 +7,6 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class FrontendTestCase extends BaseTestCase
 {
-
     use CreatesApplication;
 
     protected function setUp(): void

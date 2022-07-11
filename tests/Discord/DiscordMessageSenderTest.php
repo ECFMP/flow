@@ -33,7 +33,7 @@ class DiscordMessageSenderTest extends TestCase
 
     public function getMessage(): MessageInterface
     {
-        return new class implements MessageInterface {
+        return new class () implements MessageInterface {
             public function content(): string
             {
                 return 'ohai';
@@ -89,7 +89,7 @@ class DiscordMessageSenderTest extends TestCase
 
         Http::assertSentCount(1);
         Http::assertSent(
-            fn(Request $request) => $request->url() === 'https://vatsim.net' &&
+            fn (Request $request) => $request->url() === 'https://vatsim.net' &&
                 $request->method() === 'POST' &&
                 $request->isJson() &&
                 json_decode($request->body(), true) === [
@@ -125,7 +125,7 @@ class DiscordMessageSenderTest extends TestCase
 
         Http::assertSentCount(1);
         Http::assertSent(
-            fn(Request $request) => $request->url() === 'https://vatsim.net' &&
+            fn (Request $request) => $request->url() === 'https://vatsim.net' &&
                 $request->method() === 'POST' &&
                 $request->isJson() &&
                 json_decode($request->body(), true) === [

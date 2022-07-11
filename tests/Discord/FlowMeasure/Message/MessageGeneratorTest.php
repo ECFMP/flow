@@ -20,7 +20,7 @@ class MessageGeneratorTest extends TestCase
         $message2 = Mockery::mock(PendingMessageInterface::class);
         $flowMeasureMessage1 = Mockery::mock(FlowMeasureMessage::class);
         $flowMeasureMessage2 = Mockery::mock(FlowMeasureMessage::class);
-        
+
         $provider->expects('pendingMessages')->andReturn(collect([$message1, $message2]));
         $measureFactory->expects('make')->with($message1)->once()->andReturn($flowMeasureMessage1);
         $measureFactory->expects('make')->with($message2)->once()->andReturn($flowMeasureMessage2);

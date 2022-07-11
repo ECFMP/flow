@@ -4,10 +4,11 @@ namespace App\Discord\Message\Embed;
 
 class BlankField implements FieldProviderInterface
 {
-    const PLACEHOLDER = "\u{200b}";
+    public const PLACEHOLDER = "\u{200b}";
 
     private function __construct()
-    {}
+    {
+    }
 
     public static function make(): static
     {

@@ -7,7 +7,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -35,7 +35,7 @@ return new class extends Migration {
                 ->references('id')
                 ->on('flow_measures')
                 ->cascadeOnDelete();
-            
+
             $table->foreign('discord_notification_type_id', 'discord_flow_measure_type')
                 ->references('id')
                 ->on('discord_notification_types')

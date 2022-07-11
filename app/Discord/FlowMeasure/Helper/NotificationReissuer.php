@@ -29,10 +29,12 @@ class NotificationReissuer implements NotificationReissuerInterface
         $notificationsOfType = $this->measure->activatedAndNotifiedNotifications()->get();
 
         return $notificationsOfType->filter(
-                fn(DiscordNotification $notification
+            fn (
+                    DiscordNotification $notification
                 ) => $notification->pivot->notified_as !== $this->measure->identifier
-            )->isNotEmpty() && $notificationsOfType->filter(
-                fn(DiscordNotification $notification
+        )->isNotEmpty() && $notificationsOfType->filter(
+                fn (
+                    DiscordNotification $notification
                 ) => $notification->pivot->notified_as === $this->measure->identifier
             )->isEmpty();
     }

@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\EventResource;
 use App\Imports\EventParticipantsImport;
 use Filament\Forms\Components\FileUpload;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Storage;
 
 class ImportParticipants extends Page implements HasForms
 {

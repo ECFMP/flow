@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Discord\Message\Embed;
-
 
 class Field implements FieldInterface
 {

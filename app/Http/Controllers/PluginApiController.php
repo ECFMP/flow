@@ -7,7 +7,6 @@ use App\Http\Resources\FlightInformationRegionResource;
 use App\Http\Resources\FlowMeasureResource;
 use App\Models\Event;
 use App\Models\FlightInformationRegion;
-use App\Models\FlowMeasure;
 use App\Repository\FlowMeasureRepository;
 use Illuminate\Http\JsonResponse;
 

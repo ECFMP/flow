@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DiscordNotificationType extends Model
 {
-    const UPDATED_AT = null;
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'type',

@@ -38,7 +38,6 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->pendingMessage
             ->shouldReceive('flowMeasure')
             ->andReturn($this->flowMeasure);
-
     }
 
     public function testItReturnsNoDivisionRecipients()

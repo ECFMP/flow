@@ -33,4 +33,4 @@ Route::controller(DocumentationController::class)
     ->group(function () {
         Route::get('v{number}', 'documentationView')
             ->where(['number' => '\d+']);
-        });
+    });

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\EventResource\Widgets;
 
 use App\Models\Event;
-use Closure;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;

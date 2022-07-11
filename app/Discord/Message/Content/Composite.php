@@ -2,8 +2,6 @@
 
 namespace App\Discord\Message\Content;
 
-use Illuminate\Support\Arr;
-
 class Composite implements ContentInterface
 {
     private array $components;
