@@ -24,15 +24,17 @@ class MessageProvider implements MessageProviderInterface
             new Collection(),
             function (Collection $messages) {
                 foreach ($this->repository->flowMeasuresForNotification() as $flowMeasure) {
-                    $reissuer = new NotificationReissuer($flowMeasure, $this->repository->notificationType());
-
                     foreach ($this->webhookMapper->mapToWebhooks($flowMeasure) as $webhook) {
                         $messages->push(
                             new PendingDiscordMessage(
                                 $flowMeasure,
                                 $this->repository->notificationType(),
                                 $webhook,
-                                $reissuer
+                                new NotificationReissuer(
+                                    $flowMeasure,
+                                    $this->repository->notificationType(),
+                                    $webhook
+                                )
                             )
                         );
                     }
