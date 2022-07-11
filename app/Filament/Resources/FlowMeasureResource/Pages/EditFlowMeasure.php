@@ -82,6 +82,8 @@ class EditFlowMeasure extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $data['user_id'] = auth()->id();
+
         switch ($data['type']) {
             case FlowMeasureType::MANDATORY_ROUTE->value:
                 Arr::pull($data, 'value');
