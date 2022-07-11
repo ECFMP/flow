@@ -52,6 +52,16 @@ class ExpiredEmbedsTest extends TestCase
                             'inline' => true,
                         ],
                         [
+                            'name' => 'Start Time',
+                            'value' => '22/05 1454Z',
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'End Time',
+                            'value' => '1637Z',
+                            'inline' => true,
+                        ],
+                        [
                             'name' => 'Departure Airports',
                             'value' => 'EG**',
                             'inline' => true,
@@ -60,6 +70,16 @@ class ExpiredEmbedsTest extends TestCase
                             'name' => 'Arrival Airports',
                             'value' => 'EHAM',
                             'inline' => true,
+                        ],
+                        [
+                            'name' => "\u{200b}",
+                            'value' => "\u{200b}",
+                            'inline' => true,
+                        ],
+                        [
+                            'name' => 'Level at or Below',
+                            'value' => '220',
+                            'inline' => false,
                         ],
                     ],
                 ],
