@@ -7,7 +7,6 @@ use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\FlowMeasureResource;
 use App\Helpers\FlowMeasureIdentifierGenerator;
 use App\Models\AirportGroup;
-use App\Models\Event;
 use App\Models\FlightInformationRegion;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;

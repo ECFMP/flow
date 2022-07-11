@@ -10,8 +10,7 @@ class CompositeTest extends TestCase
 {
     private function component1(): ContentInterface
     {
-        return new class implements ContentInterface
-        {
+        return new class () implements ContentInterface {
             public function toString(): string
             {
                 return "ohai1";
@@ -21,8 +20,7 @@ class CompositeTest extends TestCase
 
     private function component2(): ContentInterface
     {
-        return new class implements ContentInterface
-        {
+        return new class () implements ContentInterface {
             public function toString(): string
             {
                 return "ohai2";

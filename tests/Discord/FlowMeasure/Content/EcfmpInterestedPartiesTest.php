@@ -22,7 +22,6 @@ class EcfmpInterestedPartiesTest extends TestCase
         $expected = sprintf(
             "**FAO**: %s\nPlease acknowledge receipt with a :white_check_mark: reaction.",
             '<@1234> <@5678>'
-
         );
         $this->assertEquals(
             $expected,

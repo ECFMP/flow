@@ -10,7 +10,7 @@ class SnippetBlockTest extends TestCase
 {
     private function content(): ContentInterface
     {
-        return new class implements ContentInterface {
+        return new class () implements ContentInterface {
             public function toString(): string
             {
                 return 'abc';

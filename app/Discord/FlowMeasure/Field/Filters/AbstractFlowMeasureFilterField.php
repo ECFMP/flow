@@ -24,7 +24,7 @@ abstract class AbstractFlowMeasureFilterField implements FieldProviderInterface
     {
         return Arr::join(
             array_map(
-                fn(int $eventId) => Event::withTrashed()->findOrFail($eventId)->name,
+                fn (int $eventId) => Event::withTrashed()->findOrFail($eventId)->name,
                 $this->filter['value']
             ),
             ', '

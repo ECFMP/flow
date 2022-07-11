@@ -130,7 +130,7 @@ class AdditionalFilterParserTest extends TestCase
 
         $collection = AdditionalFilterParser::parseAdditionalFilters($measure);
         $this->assertCount(2, $collection);
-        $this->assertTrue($collection->contains(fn($item) => $item instanceof LevelAbove));
-        $this->assertTrue($collection->contains(fn($item) => $item instanceof MemberNotEvent));
+        $this->assertTrue($collection->contains(fn ($item) => $item instanceof LevelAbove));
+        $this->assertTrue($collection->contains(fn ($item) => $item instanceof MemberNotEvent));
     }
 }

@@ -29,7 +29,7 @@ class FlowMeasureRecipientsFactory
         $measure = $pendingMessage->flowMeasure();
         return $pendingMessage->type(
             ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDiscordNotifications->firstWhere(
-                fn(DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
+                fn (DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
                     $notification->pivot->notified_as === $measure->identifier
             ) !== null;
     }
@@ -38,9 +38,9 @@ class FlowMeasureRecipientsFactory
     {
         return new EcfmpInterestedParties(
             $pendingMessage->flowMeasure()->notifiedFlightInformationRegions
-                ->map(fn(FlightInformationRegion $flightInformationRegion) => $flightInformationRegion->discordTags)
+                ->map(fn (FlightInformationRegion $flightInformationRegion) => $flightInformationRegion->discordTags)
                 ->flatten()
-                ->map(fn(DiscordTag $discordTag) => new Tag($discordTag))
+                ->map(fn (DiscordTag $discordTag) => new Tag($discordTag))
         );
     }
 

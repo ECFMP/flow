@@ -14,7 +14,7 @@ class AdditionalFilterParser
     {
         return collect(
             array_map(
-                fn(array $filter) => self::getFilter($filter),
+                fn (array $filter) => self::getFilter($filter),
                 $flowMeasure->extraFilters()
             )
         );

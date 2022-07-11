@@ -1,4 +1,5 @@
 <?php
+
 return [
     'activity_resource' => \App\Filament\Resources\ActivityResource::class,
 

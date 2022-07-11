@@ -22,11 +22,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\FlowMeasureResource\Pages;
-use App\Filament\Resources\FlowMeasureResource\RelationManagers;
 use App\Filament\Resources\FlowMeasureResource\Traits\Filters;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Tables\Filters\MultiSelectFilter;
 
 class FlowMeasureResource extends Resource
 {
@@ -215,6 +215,7 @@ class FlowMeasureResource extends Resource
                     ->schema([
                         Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
                             ->columnSpan('full')
+                            ->required()
                             ->helperText(__('The selected FIRs will receive a tag in discord and be visible in the API'))
                             ->label(__("FIR's"))
                             ->relationship('notifiedFlightInformationRegions', 'name')
@@ -236,9 +237,11 @@ class FlowMeasureResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('identifier')->sortable(),
+                Tables\Columns\TextColumn::make('identifier')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('flightInformationRegion.name')
-                    ->label(__('Owner')),
+                    ->label(__('Owner'))
+                    ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->alignCenter()
                     ->colors([
@@ -273,6 +276,12 @@ class FlowMeasureResource extends Resource
                                 fn (Builder $query, $date): Builder => $query->whereDate('end_time', '<=', $date),
                             );
                     }),
+                MultiSelectFilter::make('flight_information_region_id')
+                    ->label(__('FIR'))
+                    ->relationship('flightInformationRegion')
+                    ->options(fn (): Collection => FlightInformationRegion::orderBy('identifier')
+                        ->get(['id', 'name', 'identifier'])
+                        ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifier_name])),
             ]);
     }
 

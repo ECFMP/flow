@@ -28,6 +28,6 @@ class DivisionDiscordWebhookFactory extends Factory
 
     public function withNoTag(): static
     {
-        return $this->state(fn(array $attributes) => ['tag' => '']);
+        return $this->state(fn (array $attributes) => ['tag' => '']);
     }
 }

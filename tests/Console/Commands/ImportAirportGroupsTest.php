@@ -39,7 +39,7 @@ class ImportAirportGroupsTest extends TestCase
     public function testItImportsAirportGroups()
     {
         Artisan::call('airports:import-groups test.csv');
-        
+
         $this->assertDatabaseCount('airport_groups', 1);
         $this->assertDatabaseHas(
             'airport_groups',

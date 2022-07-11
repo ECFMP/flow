@@ -304,7 +304,7 @@ class FlowMeasureRepositoryTest extends TestCase
         $deletedActive->delete();
 
         $expected = [$notified1->id, $notified2->id, $active->id, $deletedNotified->id, $deletedActive->id];
-        
+
         $actual = $this->flowMeasureRepository->getActiveAndNotifiedFlowMeasures(true)
             ->pluck('id')
             ->sort()

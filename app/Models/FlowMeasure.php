@@ -165,7 +165,7 @@ class FlowMeasure extends Model
         return array_values(
             array_filter(
                 $this->filters,
-                fn(array $filter) => FilterType::tryFrom($filter['type']) === $filterType
+                fn (array $filter) => FilterType::tryFrom($filter['type']) === $filterType
             )
         );
     }
@@ -179,7 +179,7 @@ class FlowMeasure extends Model
     {
         return array_filter(
             $this->filters,
-            fn(array $filter) => !in_array(
+            fn (array $filter) => !in_array(
                 FilterType::tryFrom($filter['type']),
                 [FilterType::DEPARTURE_AIRPORTS, FilterType::ARRIVAL_AIRPORTS]
             )
