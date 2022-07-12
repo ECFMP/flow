@@ -3,6 +3,7 @@
 namespace App\Discord\FlowMeasure\Field;
 
 use App\Models\AirportGroup;
+use Illuminate\Support\Str;
 
 trait FormatsAirports
 {
@@ -10,7 +11,7 @@ trait FormatsAirports
     {
         return collect($airports)->map(function (int|string $airport) {
             if (is_string($airport)) {
-                return $airport;
+                return Str::replace('*', '\\*', $airport);
             }
 
             $group = AirportGroup::with('airports')->find($airport);

@@ -63,6 +63,12 @@ class ArrivalAirportsTest extends TestCase
         $this->assertEquals('EHAM', $this->getField($measure)->value());
     }
 
+    public function testItReturnsAirportStringEscapedIfWildcard()
+    {
+        $measure = FlowMeasure::factory()->withArrivalAirports(['****'])->create();
+        $this->assertEquals('\\*\\*\\*\\*', $this->getField($measure)->value());
+    }
+
     public function testItReturnsAirportStringWithAGroup()
     {
         $group = AirportGroup::factory()->create(['name' => 'Severn Clutch']);
