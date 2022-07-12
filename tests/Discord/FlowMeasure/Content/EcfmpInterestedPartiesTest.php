@@ -30,4 +30,18 @@ class EcfmpInterestedPartiesTest extends TestCase
             ))->toString()
         );
     }
+
+    public function testItReturnsUniqueInterestedParties()
+    {
+        $expected = sprintf(
+            "**FAO**: %s\nPlease acknowledge receipt with a :white_check_mark: reaction.",
+            '<@1234> <@5678>'
+        );
+        $this->assertEquals(
+            $expected,
+            (new EcfmpInterestedParties(
+                collect([new Tag(new DiscordTag(['tag' => '1234'])), new Tag(new DiscordTag(['tag' => '5678'])), new Tag(new DiscordTag(['tag' => '1234']))])
+            ))->toString()
+        );
+    }
 }
