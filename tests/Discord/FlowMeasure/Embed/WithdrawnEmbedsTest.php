@@ -63,7 +63,7 @@ class WithdrawnEmbedsTest extends TestCase
                         ],
                         [
                             'name' => 'Departure Airports',
-                            'value' => 'EG**',
+                            'value' => 'EG\\*\\*',
                             'inline' => true,
                         ],
                         [

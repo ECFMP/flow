@@ -60,7 +60,13 @@ class DepartureAirportsTest extends TestCase
     public function testItReturnsAirportString()
     {
         $measure = FlowMeasure::factory()->create();
-        $this->assertEquals('EG**', $this->getField($measure)->value());
+        $this->assertEquals('EG\\*\\*', $this->getField($measure)->value());
+    }
+
+    public function testItReturnsAirportStringEscapedIfWildcard()
+    {
+        $measure = FlowMeasure::factory()->withDepartureAirports(['****'])->create();
+        $this->assertEquals('\\*\\*\\*\\*', $this->getField($measure)->value());
     }
 
     public function testItReturnsAirportStringWithAGroup()

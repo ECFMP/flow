@@ -66,7 +66,7 @@ class NotifiedEmbedsTest extends TestCase
                         ],
                         [
                             'name' => 'Departure Airports',
-                            'value' => 'EG**',
+                            'value' => 'EG\\*\\*',
                             'inline' => true,
                         ],
                         [
@@ -134,7 +134,7 @@ class NotifiedEmbedsTest extends TestCase
                         ],
                         [
                             'name' => 'Departure Airports',
-                            'value' => 'EG**',
+                            'value' => 'EG\\*\\*',
                             'inline' => true,
                         ],
                         [
