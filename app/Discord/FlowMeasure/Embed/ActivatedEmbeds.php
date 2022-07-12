@@ -3,6 +3,7 @@
 namespace App\Discord\FlowMeasure\Embed;
 
 use App\Discord\FlowMeasure\Description\EventName;
+use App\Discord\FlowMeasure\Field\ApplicableTo;
 use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
 use App\Discord\FlowMeasure\Field\EndTime;
@@ -12,7 +13,6 @@ use App\Discord\FlowMeasure\Field\Restriction;
 use App\Discord\FlowMeasure\Field\StartTime;
 use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
 use App\Discord\FlowMeasure\Title\IdentifierAndActiveStatus;
-use App\Discord\Message\Embed\BlankField;
 use App\Discord\Message\Embed\Colour;
 use App\Discord\Message\Embed\Embed;
 use App\Discord\Message\Embed\EmbedCollection;
@@ -43,7 +43,7 @@ class ActivatedEmbeds implements FlowMeasureEmbedInterface
                 ->withField(Field::makeInline(new EndTime($this->pendingMessage->flowMeasure())))
                 ->withField(Field::makeInline(new DepartureAirports($this->pendingMessage->flowMeasure())))
                 ->withField(Field::makeInline(new ArrivalAirports($this->pendingMessage->flowMeasure())))
-                ->withField(Field::makeInline(BlankField::make()))
+                ->withField(Field::makeInline(new ApplicableTo($this->pendingMessage->flowMeasure())))
                 ->withFields(
                     AdditionalFilterParser::parseAdditionalFilters($this->pendingMessage->flowMeasure())->map(
                         fn (FieldProviderInterface $provider) => Field::make($provider)

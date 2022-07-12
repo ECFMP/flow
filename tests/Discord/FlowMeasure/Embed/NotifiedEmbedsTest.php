@@ -75,8 +75,8 @@ class NotifiedEmbedsTest extends TestCase
                             'inline' => true,
                         ],
                         [
-                            'name' => "\u{200b}",
-                            'value' => "\u{200b}",
+                            'name' => "Applicable To FIR(s)",
+                            'value' => $fir->identifier,
                             'inline' => true,
                         ],
                         [
@@ -143,8 +143,8 @@ class NotifiedEmbedsTest extends TestCase
                             'inline' => true,
                         ],
                         [
-                            'name' => "\u{200b}",
-                            'value' => "\u{200b}",
+                            'name' => "Applicable To FIR(s)",
+                            'value' => $fir->identifier,
                             'inline' => true,
                         ],
                         [
