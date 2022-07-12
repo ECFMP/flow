@@ -4,7 +4,6 @@ namespace Tests\Discord\FlowMeasure\Embed;
 
 use App\Discord\FlowMeasure\Description\EventName;
 use App\Discord\FlowMeasure\Embed\ExpiredEmbeds;
-use App\Discord\FlowMeasure\Helper\NotificationReissuerInterface;
 use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
 use App\Discord\Message\Embed\Colour;
 use App\Models\DiscordTag;
@@ -17,7 +16,6 @@ use Tests\TestCase;
 class ExpiredEmbedsTest extends TestCase
 {
     private readonly PendingMessageInterface $pendingMessage;
-    private readonly NotificationReissuerInterface $reissuer;
     private readonly ExpiredEmbeds $embeds;
 
     public function setUp(): void
@@ -72,8 +70,8 @@ class ExpiredEmbedsTest extends TestCase
                             'inline' => true,
                         ],
                         [
-                            'name' => "\u{200b}",
-                            'value' => "\u{200b}",
+                            'name' => "Applicable To FIR(s)",
+                            'value' => $fir->identifier,
                             'inline' => true,
                         ],
                         [
