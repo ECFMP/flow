@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Enums\RoleKey;
-use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -70,5 +71,10 @@ class User extends Authenticatable implements FilamentUser
             default:
                 return [];
         }
+    }
+
+    public function nameAndCid(): Attribute
+    {
+        return Attribute::get(fn () => sprintf('%s (%d)', $this->name, $this->id));
     }
 }

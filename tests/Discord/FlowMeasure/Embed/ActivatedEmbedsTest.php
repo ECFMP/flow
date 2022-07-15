@@ -56,7 +56,7 @@ class ActivatedEmbedsTest extends TestCase
                     'fields' => [
                         [
                             'name' => 'Issued By',
-                            'value' => $measure->user->name,
+                            'value' => $measure->user->nameAndCid,
                             'inline' => false,
                         ],
                         [
@@ -131,7 +131,7 @@ class ActivatedEmbedsTest extends TestCase
                     'fields' => [
                         [
                             'name' => 'Issued By',
-                            'value' => $measure->user->name,
+                            'value' => $measure->user->nameAndCid,
                             'inline' => false,
                         ],
                         [

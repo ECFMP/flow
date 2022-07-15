@@ -11,6 +11,6 @@ class IssuingUser extends AbstractFlowMeasureField
 
     public function value(): string
     {
-        return $this->flowMeasure->user->name;
+        return $this->flowMeasure->user->nameAndCid;
     }
 }

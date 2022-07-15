@@ -25,6 +25,9 @@ class IssuingUserTest extends TestCase
 
     public function testItHasAValue()
     {
-        $this->assertEquals($this->flowMeasure->user->name, $this->issuingUser->value());
+        $this->assertEquals(
+            sprintf('%s (%d)', $this->flowMeasure->user->name, $this->flowMeasure->user->id),
+            $this->issuingUser->value()
+        );
     }
 }
