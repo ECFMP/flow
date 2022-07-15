@@ -51,9 +51,11 @@ class Embed implements EmbedInterface
         return $this;
     }
 
-    public function withField(FieldInterface $field): static
+    public function withField(FieldInterface $field, bool $condition = true): static
     {
-        $this->fields->add($field);
+        if ($condition) {
+            $this->fields->add($field);
+        }
 
         return $this;
     }
