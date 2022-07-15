@@ -86,6 +86,27 @@ class EmbedTest extends TestCase
         $this->assertEquals($expected, Embed::make()->withField($field1)->withField($field2)->toArray());
     }
 
+    public function testItSkipsFieldsByCondition()
+    {
+        $field1 = Mockery::mock(FieldInterface::class);
+        $field1->shouldReceive('name')->once()->andReturn('Field1');
+        $field1->shouldReceive('value')->once()->andReturn('Value1');
+        $field1->shouldReceive('inline')->once()->andReturn(true);
+        $field2 = Mockery::mock(FieldInterface::class);
+
+        $expected = [
+            'fields' => [
+                [
+                    'name' => 'Field1',
+                    'value' => 'Value1',
+                    'inline' => true,
+                ],
+            ],
+        ];
+
+        $this->assertEquals($expected, Embed::make()->withField($field1)->withField($field2, false)->toArray());
+    }
+
     public function testItHasFieldsByCollection()
     {
         $field1 = Mockery::mock(FieldInterface::class);

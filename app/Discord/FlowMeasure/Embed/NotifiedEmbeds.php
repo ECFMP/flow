@@ -8,6 +8,7 @@ use App\Discord\FlowMeasure\Field\ArrivalAirports;
 use App\Discord\FlowMeasure\Field\DepartureAirports;
 use App\Discord\FlowMeasure\Field\EndTime;
 use App\Discord\FlowMeasure\Field\Filters\AdditionalFilterParser;
+use App\Discord\FlowMeasure\Field\IssuingUser;
 use App\Discord\FlowMeasure\Field\Reason;
 use App\Discord\FlowMeasure\Field\Restriction;
 use App\Discord\FlowMeasure\Field\StartTime;
@@ -38,6 +39,7 @@ class NotifiedEmbeds implements FlowMeasureEmbedInterface
                         : IdentifierAndNotifiedStatus::create($this->pendingMessage->flowMeasure())
                 )
                 ->withDescription(new EventName($this->pendingMessage->flowMeasure()))
+                ->withField(Field::make(new IssuingUser($this->pendingMessage->flowMeasure())), is_null($this->pendingMessage->webhook()->id()))
                 ->withField(Field::makeInline(new Restriction($this->pendingMessage->flowMeasure())))
                 ->withField(Field::makeInline(new StartTime($this->pendingMessage->flowMeasure())))
                 ->withField(Field::makeInline(new EndTime($this->pendingMessage->flowMeasure())))
