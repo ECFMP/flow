@@ -1,7 +1,20 @@
 # Common Pitfalls
 
-### ADEP ‘OR’ Logic
-The AND/OR logic of our system is pretty fixed to allow simple interpretation
+### Filters: AND / OR Logic
+
+The AND/OR logic of flow measure filters is fixed and intended to be simple enough for people to utilise the API without a complex understanding of the flow measures. Therefore, where you want to make more complex logic, you typically need multiple flow measures.
+
+Consider each named filter a ‘type’ e.g. the ADEP type. You can have multiple filters of the type ADEP. Where filters are of the same type in a single flow measure, **OR** logic applies, meaning for the flight to match it must meet one of the criteria (e.g. ADEP is EGLL **OR** EGKK, then flights from either airport match the flow measure). Between each filter type, **AND** logic applies, meaning for the flight to match it must meet all criteria (e.g. if ADEP is “EGLL” and waypoint is “BPK”, it must be a EGLL departure **AND** fly via BPK).
+
+Example:
+> ADEP: EGLL, EGKK, EGSS
+> waypoint: BPK, CLN, FRANE, REDFA
+> Level below: FL300
+
+Refers to traffic departing:
+- any of EGLL or EGKK or EGSS
+- routing via one of BPK or CLN or FRANE or REDFA
+- cruising/transferred at FL300 or below
 
 # Prohibit measure - Compound Restrictions
 
