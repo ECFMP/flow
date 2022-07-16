@@ -43,9 +43,27 @@ For the example of an event with slot bookings between airport XXXX and YYYY whe
 > FAO: FIR Name
 
 
-# FAO tagging
+## FAO tagging
+
+Selecting the right FIRs to ‘tag’ determines where the flow measures will be sent to (see FM: Types). This provides the useful function that ‘far away’ facilities don’t have to understand specific routings, or issue flow measures for traffic unrelated.
+
+For example, when issuing a mandatory or prohibited routing, it would be sensible on VATSIM for the adjacent 1 or 2 FIRs to be rerouting traffic on the ground, however beyond this, the traffic is much less relevant (within the window of this flow measure). With forward planning, such measures could be issued earlier (and end earlier) for further fields and then later for closer facilities. By issuing the exact same flow measure, but with different FAOs, this would be possible.
 
 
+## Editing Flow Measures
 
+‘Notified’ flow measures (i.e. not yet active) up to 30 minutes before they are activated can have any/all details edited. However, the system will simply delete this flow measure and re-issue a new one, with a new identifier, regardless of how small the change is.
 
-# Editing Flow Measures
+For ‘Active’ flow measures and ‘Notified’ flow measures within 30 minutes of becoming activated, only certain values can be edited, specifically:
+
+- end time
+- reason box
+- value of flow measure (e.g. 10NM or 5 minutes)
+- existing filter types
+
+To add a new FIR, filter type or change the start time, you must add a new filter. 
+
+When you make the edit, the designator of the flow measure will change to include an appended number (e.g. EGTT06A will become EGTT06A-2) and notifications will be sent out via discord.
+
+In general if you are expanding a flow measure to more traffic, consider simply issuing a NEW flow measure. This is preferred generally because controllers to whom the change is irrelevant do not receive cancellation notifications or change notifications of work they are already doing correctly. Editing is only really suitable to adjust existing parameters.
+
