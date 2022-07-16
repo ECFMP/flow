@@ -43,14 +43,14 @@ For the example of an event with slot bookings between airport XXXX and YYYY whe
 > FAO: FIR Name
 
 
-## FAO tagging
+# FAO tagging
 
 Selecting the right FIRs to ‘tag’ determines where the flow measures will be sent to (see FM: Types). This provides the useful function that ‘far away’ facilities don’t have to understand specific routings, or issue flow measures for traffic unrelated.
 
 For example, when issuing a mandatory or prohibited routing, it would be sensible on VATSIM for the adjacent 1 or 2 FIRs to be rerouting traffic on the ground, however beyond this, the traffic is much less relevant (within the window of this flow measure). With forward planning, such measures could be issued earlier (and end earlier) for further fields and then later for closer facilities. By issuing the exact same flow measure, but with different FAOs, this would be possible.
 
 
-## Editing Flow Measures
+# Editing Flow Measures
 
 ‘Notified’ flow measures (i.e. not yet active) up to 30 minutes before they are activated can have any/all details edited. However, the system will simply delete this flow measure and re-issue a new one, with a new identifier, regardless of how small the change is.
 
