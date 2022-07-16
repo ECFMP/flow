@@ -20,7 +20,7 @@ Refers to traffic departing:
 
 ### Ground Stop
 
-A ground stop (i.e. stopping departures to an airport) shall preferably be issued as a ‘rate per hour’ flow measure with a value of 0. While a prohibit flow measure could be issued for the same reason, the interpretation of prohibit measures is more complex and may lead controllers to searching for other flow measures to find a suitable route. Rate per hour of 0 is not only ambiguous, but allows the measure to be edited and progressively lifted.
+A ground stop (i.e. stopping ground traffic departing to an airport) shall be issued by ‘rate per hour’ with a value of 0. A prohibited measure is not appropriate for this situation as it would imply the need to airborne hold traffic before entry into the receiving FIR, which must be coordinated.
 
 ### Re-route from point to point
 
