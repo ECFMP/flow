@@ -16,9 +16,6 @@ Refers to traffic departing:
 - routing via one of BPK or CLN or FRANE or REDFA
 - cruising/transferred at FL300 or below
 
-# Prohibit measure - Compound Restrictions
-
-
 # Example Specific Measures
 
 ### Ground Stop
@@ -55,6 +52,14 @@ For the example of an event with slot bookings between airport XXXX and YYYY whe
 > Member Not Event: ‘My Event Name’
 > FAO: FIR Name
 
+### Limit route options
+
+To limit route options (e.g. for non-event/event traffic), you can either prohibit undesirable options, or send a mandatory route instruction for the valid options. We would suggest the following good practice
+
+- if limiting routes from all directions, create multiple flow measures to make the routes seen by controllers relevant to them
+- providing explanation and re-route strings is helpful to less experienced controllers
+- use the fewest number of route strings to achieve the purpose (i.e. don’t submit 6 mandatory routes, where 1 prohibit would have achieved the same result
+- try to stick to either prohibit OR mandatory route measures due to the possibility of conflicting instructions being issued
 
 # FAO tagging
 
