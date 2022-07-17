@@ -178,6 +178,10 @@ class FlowMeasureResource extends Resource
                                 FlowMeasureType::MANDATORY_ROUTE->value,
                                 FlowMeasureType::PROHIBIT->value,
                             ]))
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(400)
+                            ->step(1)
                             ->hidden(fn (Closure $get) => in_array($get('type'), [
                                 FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
                                 FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
