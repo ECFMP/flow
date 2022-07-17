@@ -169,11 +169,10 @@ class FlowMeasureResource extends Resource
                             ->required(),
                         Forms\Components\TextInput::make('value')
                             ->columnSpan(2)
-                            ->disabled(fn (Closure $get) => $get('edit_mode') == FlowMeasureResource::PARTIAL_EDIT ||
-                                in_array($get('type'), [
-                                    FlowMeasureType::MANDATORY_ROUTE->value,
-                                    FlowMeasureType::PROHIBIT->value,
-                                ])
+                            ->disabled(fn (Closure $get) => in_array($get('type'), [
+                                FlowMeasureType::MANDATORY_ROUTE->value,
+                                FlowMeasureType::PROHIBIT->value,
+                            ])
                                 || $get('type') == null)
                             ->required(fn (Closure $get) => !in_array($get('type'), [
                                 FlowMeasureType::MANDATORY_ROUTE->value,
