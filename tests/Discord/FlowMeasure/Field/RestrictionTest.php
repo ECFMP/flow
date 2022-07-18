@@ -313,7 +313,26 @@ class RestrictionTest extends TestCase
         );
 
         $this->assertEquals(
-            'N/A',
+            '--',
+            $field->value()
+        );
+    }
+
+    public function testItCanBeGroundStop()
+    {
+        $measure = FlowMeasure::factory()
+            ->withMeasure(FlowMeasureType::GROUND_STOP, null)
+            ->make();
+
+        $field = $this->getField($measure);
+
+        $this->assertEquals(
+            'Ground Stop',
+            $field->name()
+        );
+
+        $this->assertEquals(
+            '--',
             $field->value()
         );
     }

@@ -14,6 +14,7 @@ enum FlowMeasureType: string
     case MACH_REDUCTION = 'mach_reduction';
     case PROHIBIT = 'prohibit';
     case MANDATORY_ROUTE = 'mandatory_route';
+    case GROUND_STOP = 'ground_stop';
 
     public function getFormattedName(): string
     {
@@ -28,6 +29,7 @@ enum FlowMeasureType: string
             self::MACH_REDUCTION => 'Mach reduction',
             self::PROHIBIT => 'Prohibit',
             self::MANDATORY_ROUTE => 'Mandatory route',
+            self::GROUND_STOP => 'Ground stop',
         };
     }
 
@@ -44,6 +46,7 @@ enum FlowMeasureType: string
             self::MACH_REDUCTION => 'Reduced mach by certain value 5 = 0.05 Mach',
             self::PROHIBIT => 'Prohibit a flight according to filters',
             self::MANDATORY_ROUTE => 'Mandate routing via a single waypoint/airway only',
+            self::GROUND_STOP => 'No departures are permitted',
             default => '',
         };
     }
