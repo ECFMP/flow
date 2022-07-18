@@ -15,6 +15,6 @@ class DivisionWebhookRecipients implements FlowMeasureRecipientsInterface
 
     public function toString(): string
     {
-        return $this->tag;
+        return (string)$this->tag;
     }
 }

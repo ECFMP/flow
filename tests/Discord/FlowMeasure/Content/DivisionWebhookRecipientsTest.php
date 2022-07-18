@@ -11,7 +11,7 @@ class DivisionWebhookRecipientsTest extends TestCase
 {
     public function testItReturnsRecipients()
     {
-        $this->assertEquals(
+        $this->assertSame(
             '<@1234>',
             (new DivisionWebhookRecipients(new Tag(new DiscordTag(['tag' => '1234']))))->toString()
         );
