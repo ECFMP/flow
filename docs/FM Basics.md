@@ -36,7 +36,7 @@ Start and End times are in UTC. They are when the flow measure will be in effect
 
 Reason should be provided for all flow measures, even if considered obvious. This message should specifically indicate the flow limitation (e.g. EDDH landing rate, Jever sector capacity). The presence of an event is not in itself a reason to require flow control.
 
-The flow measure required should then be selected. With the exception of ‘prohibit’ type flow measures, all measures require a value (e.g. a time, distance or waypoint) to be immediately specified.
+The flow measure required should then be selected. With the exception of ‘prohibit’ type flow measures, all measures require a value (e.g. a time, distance or waypoint) to be immediately specified. (see 'FM: Types' documentation for further details.
 
 Flow measures then require filters and applicability information set in the ‘FAO’ tab. These are documented below.
 
