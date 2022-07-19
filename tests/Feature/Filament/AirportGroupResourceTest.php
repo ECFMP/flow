@@ -11,6 +11,9 @@ it('can render index page', function () {
     /** @var FrontendTestCase $this */
     $this->get(AirportGroupResource::getUrl())->assertForbidden();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(AirportGroupResource::getUrl())->assertForbidden();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(AirportGroupResource::getUrl())->assertForbidden();
 
@@ -23,6 +26,9 @@ it('can render index page', function () {
 
 it('can render create page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(AirportGroupResource::getUrl('create'))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(AirportGroupResource::getUrl('create'))->assertForbidden();
 
     $this->actingAs(User::factory()->flowManager()->create());
@@ -62,6 +68,11 @@ it('can validate create input', function () {
 
 it('can render edit page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(AirportGroupResource::getUrl('edit', [
+        'record' => AirportGroup::factory()->create(),
+    ]))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(AirportGroupResource::getUrl('edit', [
         'record' => AirportGroup::factory()->create(),
     ]))->assertForbidden();
@@ -131,6 +142,11 @@ it('can render view page', function () {
         'record' => AirportGroup::factory()->create(),
     ]))->assertForbidden();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(AirportGroupResource::getUrl('view', [
+        'record' => AirportGroup::factory()->create(),
+    ]))->assertForbidden();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(AirportGroupResource::getUrl('view', [
         'record' => AirportGroup::factory()->create(),
@@ -151,6 +167,11 @@ it('can retrieve data for view page', function () {
     /** @var FrontendTestCase $this */
     $airportGroup = AirportGroup::factory()->create();
 
+    livewire(AirportGroupResource\Pages\ViewAirportGroup::class, [
+        'record' => $airportGroup->getKey(),
+    ])->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     livewire(AirportGroupResource\Pages\ViewAirportGroup::class, [
         'record' => $airportGroup->getKey(),
     ])->assertForbidden();

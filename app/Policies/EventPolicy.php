@@ -46,6 +46,7 @@ class EventPolicy
             RoleKey::SYSTEM,
             RoleKey::NMT,
             RoleKey::FLOW_MANAGER,
+            RoleKey::EVENT_MANAGER,
         ]);
     }
 
@@ -84,6 +85,7 @@ class EventPolicy
             RoleKey::SYSTEM,
             RoleKey::NMT,
             RoleKey::FLOW_MANAGER,
+            RoleKey::EVENT_MANAGER,
         ]);
     }
 
@@ -116,6 +118,7 @@ class EventPolicy
             RoleKey::SYSTEM,
             RoleKey::NMT,
             RoleKey::FLOW_MANAGER,
+            RoleKey::EVENT_MANAGER,
         ]);
     }
 

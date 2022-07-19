@@ -11,6 +11,9 @@ it('can render index page', function () {
     /** @var FrontendTestCase $this */
     $this->get(FlightInformationRegionResource::getUrl())->assertSuccessful();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(FlightInformationRegionResource::getUrl())->assertSuccessful();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(FlightInformationRegionResource::getUrl())->assertSuccessful();
 
@@ -23,6 +26,11 @@ it('can render index page', function () {
 
 it('can render edit page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(FlightInformationRegionResource::getUrl('edit', [
+        'record' => FlightInformationRegion::factory()->create(),
+    ]))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(FlightInformationRegionResource::getUrl('edit', [
         'record' => FlightInformationRegion::factory()->create(),
     ]))->assertForbidden();
@@ -85,6 +93,11 @@ it('can validate edit input', function () {
 
 it('can render view page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(FlightInformationRegionResource::getUrl('view', [
+        'record' => FlightInformationRegion::factory()->create(),
+    ]))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(FlightInformationRegionResource::getUrl('view', [
         'record' => FlightInformationRegion::factory()->create(),
     ]))->assertForbidden();

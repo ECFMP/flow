@@ -11,6 +11,9 @@ it('can render index page', function () {
     /** @var FrontendTestCase $this */
     $this->get(AirportResource::getUrl())->assertForbidden();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(AirportResource::getUrl())->assertForbidden();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(AirportResource::getUrl())->assertForbidden();
 
@@ -23,6 +26,11 @@ it('can render index page', function () {
 
 it('can render edit page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(AirportResource::getUrl('edit', [
+        'record' => Airport::factory()->create(),
+    ]))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(AirportResource::getUrl('edit', [
         'record' => Airport::factory()->create(),
     ]))->assertForbidden();
@@ -89,6 +97,11 @@ it('can render view page', function () {
         'record' => Airport::factory()->create(),
     ]))->assertForbidden();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(AirportResource::getUrl('view', [
+        'record' => Airport::factory()->create(),
+    ]))->assertForbidden();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(AirportResource::getUrl('view', [
         'record' => Airport::factory()->create(),
@@ -109,6 +122,11 @@ it('can retrieve data for view page', function () {
     /** @var FrontendTestCase $this */
     $airport = Airport::factory()->create();
 
+    livewire(AirportResource\Pages\ViewAirport::class, [
+        'record' => $airport->getKey(),
+    ])->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     livewire(AirportResource\Pages\ViewAirport::class, [
         'record' => $airport->getKey(),
     ])->assertForbidden();

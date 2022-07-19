@@ -62,7 +62,13 @@ class FlowMeasurePolicy
             return $flowMeasure->flightInformationRegion
                 ->users()
                 ->whereUserId($user->id)
-                ->exists() || in_array($user->role->key, [
+                ->exists()
+                && in_array($user->role->key, [
+                    // In case user got upgraded, but FIR not disconnected yet
+                    RoleKey::FLOW_MANAGER,
+                    RoleKey::SYSTEM,
+                    RoleKey::NMT,
+                ]) || in_array($user->role->key, [
                     RoleKey::SYSTEM,
                     RoleKey::NMT,
                 ]);
@@ -84,7 +90,12 @@ class FlowMeasurePolicy
             return $flowMeasure->flightInformationRegion
                 ->users()
                 ->whereUserId($user->id)
-                ->exists() || in_array($user->role->key, [
+                ->exists() && in_array($user->role->key, [
+                    // In case user got upgraded, but FIR not disconnected yet
+                    RoleKey::FLOW_MANAGER,
+                    RoleKey::SYSTEM,
+                    RoleKey::NMT,
+                ]) || in_array($user->role->key, [
                     RoleKey::SYSTEM,
                     RoleKey::NMT,
                 ]);

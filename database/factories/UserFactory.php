@@ -21,6 +21,15 @@ class UserFactory extends Factory
         ];
     }
 
+    public function eventManager()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'role_id' => Role::where('key', 'EVENT_MANAGER')->firstOrFail()->id,
+            ];
+        });
+    }
+
     public function flowManager()
     {
         return $this->state(function (array $attributes) {
