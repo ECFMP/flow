@@ -726,6 +726,21 @@
                   "type": {
                     "type": "string",
                     "enum": [
+                      "ground_stop"
+                    ],
+                    "description": "No departures are permitted"
+                  },
+                  "value": {
+                    "type": "null"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
                       "mandatory_route"
                     ]
                   },

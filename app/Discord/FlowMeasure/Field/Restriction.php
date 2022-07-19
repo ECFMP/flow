@@ -17,13 +17,12 @@ class Restriction extends AbstractFlowMeasureField
     {
         return match ($this->flowMeasure->type) {
             FlowMeasureType::MANDATORY_ROUTE => $this->mandatoryRouteValue(),
-            FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL => $this->timeValue(
-            ),
+            FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL, FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL => $this->timeValue(),
             FlowMeasureType::PER_HOUR => $this->perHourValue(),
             FlowMeasureType::MILES_IN_TRAIL => $this->nauticalMilesValue(),
             FlowMeasureType::MAX_IAS, FlowMeasureType::IAS_REDUCTION => $this->indicatedAirspeedValue(),
             FlowMeasureType::MAX_MACH, FlowMeasureType::MACH_REDUCTION => $this->machNumberValue(),
-            FlowMeasureType::PROHIBIT => 'N/A',
+            FlowMeasureType::PROHIBIT, FlowMeasureType::GROUND_STOP => '--',
             default => throw new InvalidArgumentException('Invalid measure type')
         };
     }

@@ -3,30 +3,30 @@
 namespace App\Filament\Resources;
 
 use App\Enums\FlowMeasureStatus;
-use Closure;
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Event;
-use App\Enums\RoleKey;
-use Filament\Pages\Page;
-use App\Models\FlowMeasure;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
 use App\Enums\FlowMeasureType;
-use Illuminate\Support\Carbon;
-use Filament\Resources\Resource;
-use Illuminate\Support\Collection;
-use Filament\Tables\Filters\Filter;
-use App\Models\FlightInformationRegion;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Resources\Pages\CreateRecord;
+use App\Enums\RoleKey;
 use App\Filament\Resources\FlowMeasureResource\Pages;
 use App\Filament\Resources\FlowMeasureResource\Traits\Filters;
 use App\Filament\Resources\FlowMeasureResource\Widgets\ActiveFlowMeasures;
+use App\Models\Event;
+use App\Models\FlightInformationRegion;
+use App\Models\FlowMeasure;
+use Closure;
+use Filament\Forms;
 use Filament\Forms\Components\TextInput;
+use Filament\Pages\Page;
+use Filament\Resources\Form;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
+use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\MultiSelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class FlowMeasureResource extends Resource
 {
@@ -170,13 +170,15 @@ class FlowMeasureResource extends Resource
                         Forms\Components\TextInput::make('value')
                             ->columnSpan(2)
                             ->disabled(fn (Closure $get) => in_array($get('type'), [
-                                FlowMeasureType::MANDATORY_ROUTE->value,
-                                FlowMeasureType::PROHIBIT->value,
-                            ])
+                                    FlowMeasureType::MANDATORY_ROUTE->value,
+                                    FlowMeasureType::PROHIBIT->value,
+                                    FlowMeasureType::GROUND_STOP->value,
+                                ])
                                 || $get('type') == null)
                             ->required(fn (Closure $get) => !in_array($get('type'), [
                                 FlowMeasureType::MANDATORY_ROUTE->value,
                                 FlowMeasureType::PROHIBIT->value,
+                                FlowMeasureType::GROUND_STOP->value
                             ]))
                             ->numeric()
                             ->minValue(1)
