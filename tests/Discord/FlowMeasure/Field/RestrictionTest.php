@@ -327,7 +327,7 @@ class RestrictionTest extends TestCase
         $field = $this->getField($measure);
 
         $this->assertEquals(
-            'Ground Stop',
+            'Ground stop',
             $field->name()
         );
 
