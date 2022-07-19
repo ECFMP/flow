@@ -10,6 +10,9 @@ it('can render index page', function () {
     /** @var FrontendTestCase $this */
     $this->get(UserResource::getUrl())->assertForbidden();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(UserResource::getUrl())->assertForbidden();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(UserResource::getUrl())->assertForbidden();
 
@@ -22,6 +25,11 @@ it('can render index page', function () {
 
 it('can render edit page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(UserResource::getUrl('edit', [
+        'record' => User::factory()->create(),
+    ]))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(UserResource::getUrl('edit', [
         'record' => User::factory()->create(),
     ]))->assertForbidden();

@@ -12,6 +12,9 @@ it('can render index page', function () {
     /** @var FrontendTestCase $this */
     $this->get(EventResource::getUrl())->assertSuccessful();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(EventResource::getUrl())->assertSuccessful();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(EventResource::getUrl())->assertSuccessful();
 
@@ -25,6 +28,9 @@ it('can render index page', function () {
 it('can render create page', function () {
     /** @var FrontendTestCase $this */
     $this->get(EventResource::getUrl('create'))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(EventResource::getUrl('create'))->assertSuccessful();
 
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(EventResource::getUrl('create'))->assertSuccessful();
@@ -99,6 +105,10 @@ it('can render edit page', function () {
     /** @var User $user */
     $user = User::factory()->create();
 
+    /** @var User $eventManager */
+    $eventManager = User::factory()->eventManager()->create();
+    $eventManager->flightInformationRegions()->sync($firstFir->getKey());
+
     /** @var User $flowManager */
     $flowManager = User::factory()->flowManager()->create();
     $flowManager->flightInformationRegions()->sync($firstFir->getKey());
@@ -116,6 +126,16 @@ it('can render edit page', function () {
     $this->get(EventResource::getUrl('edit', [
         'record' => $firstEvent,
     ]))->assertForbidden();
+
+    $this->get(EventResource::getUrl('edit', [
+        'record' => $secondEvent,
+    ]))->assertForbidden();
+
+    $this->actingAs($eventManager);
+
+    $this->get(EventResource::getUrl('edit', [
+        'record' => $firstEvent,
+    ]))->assertSuccessful();
 
     $this->get(EventResource::getUrl('edit', [
         'record' => $secondEvent,
@@ -210,6 +230,11 @@ it('can validate edit input', function () {
 
 it('can render view page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(EventResource::getUrl('view', [
+        'record' => Event::factory()->create(),
+    ]))->assertSuccessful();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(EventResource::getUrl('view', [
         'record' => Event::factory()->create(),
     ]))->assertSuccessful();

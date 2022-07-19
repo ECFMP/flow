@@ -23,6 +23,10 @@ it('can render page', function () {
     /** @var User $user */
     $user = User::factory()->create();
 
+    /** @var User $eventManager */
+    $eventManager = User::factory()->eventManager()->create();
+    $eventManager->flightInformationRegions()->sync($firstFir->getKey());
+
     /** @var User $flowManager */
     $flowManager = User::factory()->flowManager()->create();
     $flowManager->flightInformationRegions()->sync($firstFir->getKey());
@@ -44,6 +48,16 @@ it('can render page', function () {
     $this->get(EventResource::getUrl('import-participants', [
         'record' => $secondEvent,
     ]))->assertForbidden();
+
+    $this->actingAs($eventManager);
+
+    $this->get(EventResource::getUrl('import-participants', [
+        'record' => $firstEvent,
+    ]))->assertSuccessful();
+
+    $this->get(EventResource::getUrl('import-participants', [
+        'record' => $secondEvent,
+    ]))->assertSuccessful();
 
     $this->actingAs($flowManager);
 

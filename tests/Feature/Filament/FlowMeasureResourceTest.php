@@ -14,6 +14,9 @@ it('can render index page', function () {
     /** @var FrontendTestCase $this */
     $this->get(FlowMeasureResource::getUrl())->assertSuccessful();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(FlowMeasureResource::getUrl())->assertSuccessful();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(FlowMeasureResource::getUrl())->assertSuccessful();
 
@@ -26,6 +29,9 @@ it('can render index page', function () {
 
 it('can render create page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(FlowMeasureResource::getUrl('create'))->assertForbidden();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(FlowMeasureResource::getUrl('create'))->assertForbidden();
 
     $this->actingAs(User::factory()->flowManager()->create());
@@ -168,6 +174,10 @@ it('can render edit page', function () {
     /** @var User $user */
     $user = User::factory()->create();
 
+    /** @var User $eventManager */
+    $eventManager = User::factory()->eventManager()->create();
+    $eventManager->flightInformationRegions()->sync($firstFir->getKey());
+
     /** @var User $flowManager */
     $flowManager = User::factory()->flowManager()->create();
     $flowManager->flightInformationRegions()->sync($firstFir->getKey());
@@ -181,6 +191,16 @@ it('can render edit page', function () {
     $system->flightInformationRegions()->sync($firstFir->getKey());
 
     $this->actingAs($user);
+
+    $this->get(FlowMeasureResource::getUrl('edit', [
+        'record' => $firstFlowMeasure,
+    ]))->assertForbidden();
+
+    $this->get(FlowMeasureResource::getUrl('edit', [
+        'record' => $secondFlowMeasure,
+    ]))->assertForbidden();
+
+    $this->actingAs($eventManager);
 
     $this->get(FlowMeasureResource::getUrl('edit', [
         'record' => $firstFlowMeasure,
@@ -324,6 +344,11 @@ it('can validate edit input', function () {
 
 it('can render view page', function () {
     /** @var FrontendTestCase $this */
+    $this->get(FlowMeasureResource::getUrl('view', [
+        'record' => FlowMeasure::factory()->create(),
+    ]))->assertSuccessful();
+
+    $this->actingAs(User::factory()->eventManager()->create());
     $this->get(FlowMeasureResource::getUrl('view', [
         'record' => FlowMeasure::factory()->create(),
     ]))->assertSuccessful();

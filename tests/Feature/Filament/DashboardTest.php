@@ -17,6 +17,9 @@ it('can render page', function () {
     /** @var FrontendTestCase $this */
     $this->get(Dashboard::getUrl())->assertSuccessful();
 
+    $this->actingAs(User::factory()->eventManager()->create());
+    $this->get(Dashboard::getUrl())->assertSuccessful();
+
     $this->actingAs(User::factory()->flowManager()->create());
     $this->get(Dashboard::getUrl())->assertSuccessful();
 
@@ -32,6 +35,33 @@ test('MyPermissions: it renders for User', function () {
     livewire(MyPermissions::class)
         ->assertSee('Normal User - View Only')
         ->assertDontSee('Flight Information Regions');
+});
+
+test('MyPermissions: it renders for EventManager', function () {
+    /** @var FrontendTestCase $this */
+
+    /** @var FlightInformationRegion $firstFir */
+    $firstFir = FlightInformationRegion::factory()->create();
+
+    /** @var FlightInformationRegion $secondFir */
+    $secondFir = FlightInformationRegion::factory()->create();
+
+    /** @var User $user */
+    $user = User::factory()->eventManager()->create();
+
+    $this->actingAs($user);
+
+    livewire(MyPermissions::class)
+        ->assertSee('Event Manager')
+        ->assertSee('Flight Information Regions')
+        ->assertSee('None');
+
+    $user->flightInformationRegions()->sync($firstFir->id);
+    $user->refresh();
+
+    livewire(MyPermissions::class)
+        ->assertSee($firstFir->identifier_name)
+        ->assertDontSee($secondFir->identifier_name);
 });
 
 test('MyPermissions: it renders for FlowManager', function () {
