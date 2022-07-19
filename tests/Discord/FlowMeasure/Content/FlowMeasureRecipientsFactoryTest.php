@@ -51,6 +51,17 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->assertInstanceOf(NoRecipients::class, $this->factory->makeRecipients($this->pendingMessage));
     }
 
+    public function testItReturnsNoDivisionRecipientsIfTagNull()
+    {
+        $this->pendingMessage
+            ->shouldReceive('type')
+            ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
+        $divisionWebhook = DivisionDiscordWebhook::factory()->create(['tag' => null]);
+        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+
+        $this->assertInstanceOf(NoRecipients::class, $this->factory->makeRecipients($this->pendingMessage));
+    }
+
     public function testItReturnsDivisionRecipients()
     {
         $this->pendingMessage

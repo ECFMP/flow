@@ -48,7 +48,7 @@ class FlowMeasureRecipientsFactory
     {
         $divisionWebhook = DivisionDiscordWebhook::find($pendingMessage->webhook()->id());
 
-        return $divisionWebhook->tag === ''
+        return empty($divisionWebhook->tag)
             ? new NoRecipients()
             : new DivisionWebhookRecipients(new Tag($divisionWebhook));
     }
