@@ -32,5 +32,8 @@ public/js/**
 public/css/**
 public/mix-manifest.json
 
+# Vite
+/public/build
+
 # Imports
 storage/imports
