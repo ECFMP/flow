@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Filament\Facades\Filament;
+use Illuminate\Foundation\Vite;
 use Illuminate\Support\HtmlString;
 use App\Http\Resources\EventResource;
 use Illuminate\Support\ServiceProvider;
@@ -45,7 +46,9 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         Filament::serving(function () {
-            Filament::registerTheme(mix('css/filament.css'));
+            Filament::registerTheme(
+                app(Vite::class)('resources/css/filament.css'),
+            );
         });
     }
 }

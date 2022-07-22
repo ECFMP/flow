@@ -60,8 +60,8 @@ jobs:
       - name: NPM Build
         run: |
           npm ci
-          npm run production --no-progress
-          cat public/mix-manifest.json # See asset versions in log
+          npm run build
+          cat public/build/manifest.json # See asset versions in log
 
       - name: Copy Env
         run: cp .env.example .env
@@ -84,10 +84,10 @@ jobs:
         run: ./vendor/bin/sail artisan test
 
   deploy:
-    name: 'Deploy'
+    name: "Deploy"
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
-    needs: [ test ]
+    needs: [test]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -162,12 +162,11 @@ jobs:
       - name: NPM Build
         run: |
           npm ci
-          npm run production --no-progress
-          cat public/mix-manifest.json # See asset versions in log
+          npm run build
+          cat public/build/manifest.json # See asset versions in log
 
       - name: Remove node_modules
-        run: 'rm -rf node_modules'
-
+        run: "rm -rf node_modules"
 
       - name: Reduce composer to production only
         run: composer install --prefer-dist --no-interaction --optimize-autoloader --no-suggest --no-dev
@@ -208,7 +207,7 @@ jobs:
               mv $RELEASE_DIRECTORY/storage/* $SHARED_DIRECTORY/storage/
               chmod -R 775 $SHARED_DIRECTORY/storage
             fi
-            
+
             rm -rf $RELEASE_DIRECTORY/storage
             ln -s $SHARED_DIRECTORY/storage $RELEASE_DIRECTORY/storage
             chmod -R u+rwX,g+rwX,o-rwx $RELEASE_DIRECTORY
