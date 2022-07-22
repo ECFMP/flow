@@ -33,7 +33,7 @@ As a ground stop requires no departures, it may be submitted for multiple ADEPs 
 ## Miles in Trail (MIT)
 A number of NM that aircraft must be presented in trail according to a specific criteria. This method is ideal when adjacent area positions are well staffed, but only practical when the filters are simple. Traffic from different direction required to separately be X miles in trail requires multiple rules.
 
-A Miles In Trail requirement is applied by the FIRs that are tagged into the flow measure and expected to be implemented by the point of transfer to the issuing FIR. Ideally every MIT requirement should have some ‘via’ waypoints specified to avoid it accidentally applying to traffic the issuing FIR was not expecting. Where multiple waypoints are specified, the MIT requirement applies to all the traffic meeting the criteria (i.e. traffic via both waypoints). Where separate MIT requirements are required for each waypoint, multiple flow measures are required.
+A Miles In Trail requirement is applied by the FIRs that are tagged into the flow measure and expected to be implemented by the point of transfer to the issuing FIR. Ideally every MIT requirement should have some ‘via’ waypoints specified to avoid it accidentally applying to traffic the issuing FIR was not expecting. Where multiple waypoints are specified, the MIT requirement applies to all the traffic via any waypoint (i.e. OR logic - see FM: Advanced). Where separate MIT requirements are required for each waypoint, multiple flow measures are required.
 
 #### Example MIT 1
 >Issued by: EGTT
@@ -43,7 +43,7 @@ A Miles In Trail requirement is applied by the FIRs that are tagged into the flo
 >ADES: EGLL
 >Waypoints: NOGRO, ABNED
 
-This measure would limit transfer of traffic from Amsterdam to London to be 15NM in trail if it is going to Heathrow via NOGRO and ABNED (which should be all traffic). If 1 aircraft is going to NOGRO and the other to ABNED, they still must be 15NM behind each other at transfer.
+This measure would limit transfer of traffic from Amsterdam to London to be 15NM in trail if it is going to Heathrow via NOGRO and ABNED. If 1 aircraft is going to NOGRO and the other to ABNED, they still must be 15NM behind each other at transfer.
 
 #### Example MIT 2
 >Issued by: EGTT
