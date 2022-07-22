@@ -1,23 +1,34 @@
-Every flow measure has a specific meaning and accepts a specific value. You must understand the required/suggested values before applying a flow measure. If in doubt, ask.
+# Flow Measures - Type Reference
+
+Every flow measure has a specific meaning and accepts a specific value. You must understand the required/suggested values before applying a flow measure. Likewise, there are often multiple ways to limit traffic to achieve your aims and some tactics are preferable to others. 
+
+If in doubt, ask for guidance in discord.
 
 ## Departing Traffic
+
+On ECFMP, we allow the issuing of restrictions to neighbouring airspace's departures without their official approval (for practical reasons). If you are anticipating using these measures for your event, it is good practice to make the receiving FIR aware with an event notificiation in advance and limit measures to those that will make clear impact on your traffic. 
 
 ### Minimum Departure Interval (MDI)
 A minimum time between which aircraft are permitted to depart. Once an aircraft subject to this restriction departs, another is not permitted until the end of the specified time. 
 
-This is a very specific and restrictive measure and should be targeted to areas where high volumes of traffic will produce congestion in a specific airspace. If attempting to more ‘generally’ restrict excessive departures, consider a rate per hour, or average departure interval.
+This is a very specific and restrictive measure and should be targeted to areas where high volumes of traffic will produce congestion in a specific airspace. If attempting to more ‘generally’ restrict excessive departures and/or applying to non-adjacent FIRs, consider a rate per hour, or average departure interval.
 
 ### Average Departure Interval (ADI)
 The average time between which aircraft are permitted to depart, averaged over 3 departures. 
 
-For the example of an ADI of 10 minutes: departures 1 and 2 could be departed 3 minutes apart, however the next departure would then have to wait 17 minutes until it was allowed airborne. 
+For the example of an ADI of 10 minutes: departures 1 and 2 could be departed 3 minutes apart, however to achieve an average of 10 minutes each over 3 departures (i.e. 10 + 10 = 20 minutes) the next departure would then have to wait 17 minutes until it was allowed airborne. 
 
-Likewise for an ADI of 10 minutes, departure 2 could be airborne 18 minutes after departure 1, meaning departure 3 could be airborne after only 2 minutes. The 4th departure however would then have to wait a further 16 minutes.
+Likewise for an ADI of 10 minutes, departure 2 could be airborne 18 minutes after departure 1, meaning departure 3 could be airborne after only 2 minutes. However, if another aircraft (departure 4) is ready to depart, it needs to meet the ADI with departures 2 and 3, which departed in the last 2 minutes, meaning it needs to wait for 18 minutes (10 + 10 = 20; 20 - 2 = 18).
 
 ### Rate Per Hour
 The number of flights permitted fitting a condition per hour. This can be applied to departures, or traffic via a certain route. 
 
 This method is highly effective at restricting traffic volume. It is much more practical to issue to traffic on the ground. Activating for airborne traffic may lead to prolonged enroute holding and sudden traffic ‘dumps’ when the hour is expired. Consider a MIT restriction for airborne traffic.
+
+### Ground Stop
+A ground stop is a restriction to prevent any departure that meets a criteria. This should be used to prevent further departures to an overloaded airport and would ideally be issued for 30 minutes (max 1 hour) with a plan to review and extend only if needed. 
+
+As a ground stop requires no departures, it may be submitted for multiple ADEPs without the need for coordination between those airports.
 
 ## Miles in Trail (MIT)
 A number of NM that aircraft must be presented in trail according to a specific criteria. This method is ideal when adjacent area positions are well staffed, but only practical when the filters are simple. Traffic from different direction required to separately be X miles in trail requires multiple rules.
