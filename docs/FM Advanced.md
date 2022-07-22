@@ -1,14 +1,16 @@
-# Common Pitfalls
+# Common Issues
 
 ### Filters: AND / OR Logic
 
-The AND/OR logic of flow measure filters is fixed and intended to be simple enough for people to utilise the API without a complex understanding of the flow measures. Therefore, where you want to make more complex logic, you typically need multiple flow measures.
+The AND/OR logic of flow measure filters is fixed and intended to be simple enough for both Flow Managers and API developers to work with. Complex and conditional logic is avoided.
 
 Consider each named filter a ‘type’ e.g. the ADEP type. You can have multiple filters of the type ADEP. Where filters are of the same type in a single flow measure, **OR** logic applies, meaning for the flight to match it must meet one of the criteria (e.g. ADEP is EGLL **OR** EGKK, then flights from either airport match the flow measure). Between each filter type, **AND** logic applies, meaning for the flight to match it must meet all criteria (e.g. if ADEP is “EGLL” and waypoint is “BPK”, it must be a EGLL departure **AND** fly via BPK).
 
 Example:
 > ADEP: EGLL, EGKK, EGSS
+> 
 > waypoint: BPK, CLN, FRANE, REDFA
+> 
 > Level below: FL300
 
 Refers to traffic departing:
@@ -16,11 +18,21 @@ Refers to traffic departing:
 - routing via one of BPK or CLN or FRANE or REDFA
 - cruising/transferred at FL300 or below
 
+### Departure Flow Measures - multiple airports
+
+Please read the AND/OR logic (above) first.
+
+When attempting to apply departure flow measures (i.e. MDI, ADI, RpH), issuing multiple airports in ADEP results in 'OR' logic - in other words that your flow measure has to be coordinated across those airports to achieve the number created. This is possible when planning in advance, such that a flow coordinator can coordinate and manage the traffic requesting to departure. Without prior coordination with the local flow managers however, this is impossible to achieve. 
+
+Tower controllers are **never** expected to coordinate MDIs with other airports unless agreed well in advance by local flow teams.
+
+Where a departure flow measure is intended to apply **separately** to multiple airports, a flow measure is required for each. Use the copy function to create mutliple flow measures if required.
+
 # Example Specific Measures
 
 ### Ground Stop
 
-A ground stop (i.e. stopping ground traffic departing to an airport) shall be issued by ‘rate per hour’ with a value of 0. A prohibited measure is not appropriate for this situation as it would imply the need to airborne hold traffic before entry into the receiving FIR, which must be coordinated.
+A ground stop (i.e. stopping ground traffic departing to an airport) is considered an emergency measure. When issuing an unplanned ground stop, we suggest a time period of 30 minutes (1 hour maximum) with a review each hour. These measures are highly restrictive and should not be applied without careful thought.
 
 ### Re-route from point to point
 
@@ -31,11 +43,17 @@ When deciding who should be issuing this re-route, consider distance from your a
 For the example of re-routing traffic to Dublin (EIDW) away from “ABLIN” and instead to “VATRY”.
 
 > Type: Mandatory Route
+> 
 > Value: 
+> 
 > Mandatory Route: VATRY
+> 
 > ADEP: \*\*\*\*
+> 
 > ADES: EIDW
+> 
 > Waypoint: ABLIN
+> 
 > FAO: London, Brest, Paris, Brussels
 
 ### Re-route without preference
@@ -45,11 +63,17 @@ Where a particular route needs to be avoided, however there are either multiple 
 For the example of an event with slot bookings between airport XXXX and YYYY whereby all traffic will be routing via ‘ABCDE’, it may be preferable for traffic without a slot to take an alternate route.
 
 > Type: Prohibit
+> 
 > Value: 
+> 
 > ADEP: XXXX
+> 
 > ADES: YYYY
+> 
 > Waypoint: ABCDE
+> 
 > Member Not Event: ‘My Event Name’
+> 
 > FAO: FIR Name
 
 ### Limit route options
