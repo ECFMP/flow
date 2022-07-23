@@ -8,7 +8,7 @@
             'dark:bg-gray-900/50 dark:border-gray-700' => config('filament.dark_mode'),
         ])>
             <div class="flex justify-center w-full">
-                <x-filament::brand/>
+                <x-filament::brand />
             </div>
 
             <h2 class="text-2xl font-bold tracking-tight text-center">
@@ -20,4 +20,6 @@
             </x-filament::button>
         </form>
     </div>
+
+    <x-filament::notification-manager />
 </div>
