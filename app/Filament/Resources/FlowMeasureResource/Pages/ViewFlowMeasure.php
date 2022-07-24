@@ -2,16 +2,24 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
-use App\Enums\FlowMeasureType;
+use Carbon\CarbonInterval;
+use Filament\Pages\Actions;
 use Illuminate\Support\Arr;
+use App\Models\AirportGroup;
+use App\Enums\FlowMeasureType;
 use Filament\Resources\Pages\ViewRecord;
 use App\Filament\Resources\FlowMeasureResource;
-use App\Models\AirportGroup;
-use Carbon\CarbonInterval;
 
 class ViewFlowMeasure extends ViewRecord
 {
     protected static string $resource = FlowMeasureResource::class;
+
+    protected function getActions(): array
+    {
+        return [
+            Actions\EditAction::make(),
+        ];
+    }
 
     protected function fillForm(): void
     {
