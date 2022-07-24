@@ -170,10 +170,10 @@ class FlowMeasureResource extends Resource
                         Forms\Components\TextInput::make('value')
                             ->columnSpan(2)
                             ->disabled(fn (Closure $get) => in_array($get('type'), [
-                                    FlowMeasureType::MANDATORY_ROUTE->value,
-                                    FlowMeasureType::PROHIBIT->value,
-                                    FlowMeasureType::GROUND_STOP->value,
-                                ])
+                                FlowMeasureType::MANDATORY_ROUTE->value,
+                                FlowMeasureType::PROHIBIT->value,
+                                FlowMeasureType::GROUND_STOP->value,
+                            ])
                                 || $get('type') == null)
                             ->required(fn (Closure $get) => !in_array($get('type'), [
                                 FlowMeasureType::MANDATORY_ROUTE->value,
@@ -287,6 +287,13 @@ class FlowMeasureResource extends Resource
                     ->options(fn (): Collection => FlightInformationRegion::orderBy('identifier')
                         ->get(['id', 'name', 'identifier'])
                         ->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifier_name])),
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                //
             ]);
     }
 
@@ -302,7 +309,7 @@ class FlowMeasureResource extends Resource
         return [
             'index' => Pages\ListFlowMeasures::route('/'),
             'create' => Pages\CreateFlowMeasure::route('/create'),
-            'view' => Pages\ViewFlowMeasure::route('{record}'),
+            'view' => Pages\ViewFlowMeasure::route('/{record}'),
             'edit' => Pages\EditFlowMeasure::route('/{record}/edit'),
         ];
     }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
 use Carbon\CarbonInterval;
+use Filament\Pages\Actions;
 use Illuminate\Support\Arr;
 use App\Models\AirportGroup;
 use App\Enums\FlowMeasureType;
@@ -16,6 +17,14 @@ use App\Helpers\FlowMeasureIdentifierGenerator;
 class EditFlowMeasure extends EditRecord
 {
     protected static string $resource = FlowMeasureResource::class;
+
+    protected function getActions(): array
+    {
+        return [
+            Actions\ViewAction::make(),
+            Actions\DeleteAction::make(),
+        ];
+    }
 
     protected function mutateFormDataBeforeFill(array $data): array
     {
