@@ -15,7 +15,7 @@
   },
   "servers": [
     {
-      "url": "https://ecfmp.vatsim.dev/api/v1"
+      "url": "https://ecfmp.vatsim.net/api/v1"
     }
   ],
   "tags": [
