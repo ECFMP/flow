@@ -54,7 +54,12 @@ class Event extends Model
     protected function nameDate(): Attribute
     {
         return new Attribute(
-            fn () => "{$this->name} [{$this->date_start->format('M j, Y')}]",
+            fn() => "{$this->name} [{$this->date_start->format('M j, Y')}]",
         );
+    }
+
+    public function eventParticipants(): HasMany
+    {
+        return $this->hasMany(EventParticipant::class);
     }
 }
