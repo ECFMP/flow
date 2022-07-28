@@ -90,7 +90,11 @@ class EventResource extends Resource
                 Forms\Components\TagsInput::make('participants.cid')
                     ->label(__('Participant CIDs'))
                     ->columnSpan('full')
-                    ->afterStateHydrated(function (Event $record, Forms\Components\TagsInput $component) {
+                    ->afterStateHydrated(function (?Event $record, Forms\Components\TagsInput $component) {
+                        if (is_null($record)) {
+                            return;
+                        }
+
                         $component->state($record->participants->pluck('cid'));
                     })
                     ->disabled()
