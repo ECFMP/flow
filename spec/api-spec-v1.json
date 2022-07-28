@@ -1,957 +1,979 @@
 {
-  "openapi": "3.0.2",
-  "info": {
-    "title": "Flow API",
-    "description": "API for European Collaboration and Flow Management Project (ECFMP) flow measures.",
-    "termsOfService": "https://vatsim.net",
-    "contact": {
-      "email": "k.hardern@vatsim.net"
-    },
-    "license": {
-      "name": "GPL-3.0-only",
-      "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
-    },
-    "version": "v1"
-  },
-  "servers": [
-    {
-      "url": "https://ecfmp.vatsim.net/api/v1"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Airport Groups",
-      "description": "Relates to groups of airports, such as TMAs."
-    },
-    {
-      "name": "Documentation",
-      "description": "Produces an OpenAPI JSON specification for a given version of the API."
-    },
-    {
-      "name": "Events",
-      "description": "Relates to organised network events that may incur higher-than-normal traffic loads."
-    },
-    {
-      "name": "Flow Measures",
-      "description": "Relates to flow measures put in place to control traffic flow on the VATSIM network."
-    },
-    {
-      "name": "Flight Information Regions",
-      "description": "Relates to flight information regions"
-    },
-    {
-      "name": "Plugins",
-      "description": "Non-RESTful APIs that plugins can use for easy access to data"
-    }
-  ],
-  "paths": {
-    "/docs/v{number}": {
-      "get": {
-        "tags": [
-          "Documentation"
-        ],
-        "summary": "Get a specification of the version documentation",
-        "description": "GET /docs/v{number}/",
-        "operationId": "getDocs",
-        "parameters": [
-          {
-            "name": "number",
-            "in": "path",
-            "description": "Version of the documentation to request",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-              }
-            }
-          },
-          "404": {
-            "description": "Documentation version not found"
-          }
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Flow API",
+        "description": "API for European Collaboration and Flow Management Project (ECFMP) flow measures.",
+        "termsOfService": "https://vatsim.net",
+        "contact": {
+            "email": "k.hardern@vatsim.net"
         },
-        "security": [
-        ]
-      }
-    },
-    "/airport-group": {
-      "get": {
-        "tags": [
-          "Airport Groups"
-        ],
-        "summary": "Get all airport groups",
-        "description": "GET /airport-group",
-        "operationId": "getAirportGroups",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AirportGroups"
-                }
-              }
-            }
-          }
+        "license": {
+            "name": "GPL-3.0-only",
+            "url": "https://www.gnu.org/licenses/gpl-3.0.en.html"
         },
-        "security": [
-        ]
-      }
+        "version": "v1"
     },
-    "/airport-group/{id}": {
-      "get": {
-        "tags": [
-          "Airport Groups"
-        ],
-        "summary": "Get an airport group by id",
-        "description": "GET /airport-group/{id}",
-        "operationId": "getAirportGroup",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Unique ID of the airport group",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AirportGroup"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Airport group not found"
-          }
-        },
-        "security": [
-        ]
-      }
-    },
-    "/event": {
-      "get": {
-        "tags": [
-          "Events"
-        ],
-        "summary": "Get all events",
-        "description": "GET /event",
-        "operationId": "getEvents",
-        "parameters": [
-          {
-            "name": "active",
-            "in": "query",
-            "description": "Only return active events",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "example": 1
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Events"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-        ]
-      }
-    },
-    "/event/{id}": {
-      "get": {
-        "tags": [
-          "Events"
-        ],
-        "summary": "Get a single event by id",
-        "description": "GET /event/{id}",
-        "operationId": "getEvent",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Unique ID of the event",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Event"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Event not found"
-          }
-        },
-        "security": [
-        ]
-      }
-    },
-    "/flight-information-region": {
-      "get": {
-        "tags": [
-          "Flight Information Regions"
-        ],
-        "summary": "Get all flight information regions",
-        "description": "GET /flight-information-region",
-        "operationId": "getFlightInformationRegions",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FlightInformationRegions"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-        ]
-      }
-    },
-    "/flight-information-region/{id}": {
-      "get": {
-        "tags": [
-          "Flight Information Regions"
-        ],
-        "summary": "Get a single flight information region by id",
-        "description": "GET /flight-information-region/{id}",
-        "operationId": "getFlightInformationRegion",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Unique ID of the flight information region",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FlightInformationRegion"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Flight information region not found"
-          }
-        },
-        "security": [
-        ]
-      }
-    },
-    "/flow-measure": {
-      "get": {
-        "tags": [
-          "Flow Measures"
-        ],
-        "summary": "Get all flow measures",
-        "description": "GET /flow-measure",
-        "operationId": "getFlowMeasures",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "deleted",
-            "schema": {
-              "type": "integer",
-              "example": 1
-            },
-            "required": false,
-            "description": "Include deleted flow measures"
-          },
-          {
-            "in": "query",
-            "name": "active",
-            "schema": {
-              "type": "integer",
-              "example": 1
-            },
-            "required": false,
-            "description": "Only include flow measures that are currently active, can be used in combination with notified"
-          },
-          {
-            "in": "query",
-            "name": "notified",
-            "schema": {
-              "type": "integer",
-              "example": 1
-            },
-            "required": false,
-            "description": "Only include flow measures that are currently notified, can be used in combination with active"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FlowMeasures"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-        ]
-      }
-    },
-    "/flow-measure/{id}": {
-      "get": {
-        "tags": [
-          "Flow Measures"
-        ],
-        "summary": "Get a single flow measure by id",
-        "description": "GET /flow-measure/{id}",
-        "operationId": "getFlowMeasure",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "Unique ID of the flow measure",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FlowMeasure"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Flow measure not found"
-          }
-        },
-        "security": [
-        ]
-      }
-    },
-    "/plugin": {
-      "get": {
-        "tags": [
-          "Plugins"
-        ],
-        "summary": "A combined set of data for easy access by controller client plugins. Flow measures include only notified, active and recently finished.",
-        "description": "GET /plugin",
-        "operationId": "getPluginData",
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plugin"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-        ]
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "AirportGroup": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10,
-            "description": "System id"
-          },
-          "name": {
-            "type": "string",
-            "description": "Name of the airport group",
-            "example": "London TMA Group"
-          },
-          "airports": {
-            "type": "array",
-            "description": "List of airport ICAO codes",
-            "items": {
-              "type": "string",
-              "format": "Airport ICAO code",
-              "example": "EGLL"
-            },
-            "example": [
-              "EGLL",
-              "EGKK",
-              "EGLC"
-            ]
-          }
+    "servers": [
+        {
+            "url": "https://ecfmp.vatsim.net/api/v1"
         }
-      },
-      "AirportGroups": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/AirportGroup"
+    ],
+    "tags": [
+        {
+            "name": "Airport Groups",
+            "description": "Relates to groups of airports, such as TMAs."
+        },
+        {
+            "name": "Documentation",
+            "description": "Produces an OpenAPI JSON specification for a given version of the API."
+        },
+        {
+            "name": "Events",
+            "description": "Relates to organised network events that may incur higher-than-normal traffic loads."
+        },
+        {
+            "name": "Flow Measures",
+            "description": "Relates to flow measures put in place to control traffic flow on the VATSIM network."
+        },
+        {
+            "name": "Flight Information Regions",
+            "description": "Relates to flight information regions"
+        },
+        {
+            "name": "Plugins",
+            "description": "Non-RESTful APIs that plugins can use for easy access to data"
         }
-      },
-      "Event": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10,
-            "description": "System id"
-          },
-          "name": {
-            "type": "string",
-            "example": "Heathrow Overload",
-            "description": "Name of the event"
-          },
-          "date_start": {
-            "type": "string",
-            "format": "datetime",
-            "example": "2022-04-18T13:15:30Z",
-            "description": "The start time of the event, will always be Z"
-          },
-          "date_end": {
-            "type": "string",
-            "format": "datetime",
-            "example": "2022-04-18T13:15:30Z",
-            "description": "The end time of the event, will always be Z"
-          },
-          "flight_information_region_id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 1,
-            "description": "The flight information region where this event is taking place"
-          },
-          "vatcan_code": {
-            "type": "string",
-            "format": "VATCAN event code",
-            "nullable": true,
-            "example": "abcd",
-            "description": "The VATCAN booking code associated with this event, if present"
-          },
-          "participants": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "description": "A VATSIM CID",
-              "example": 1203533
-            },
-            "nullable": true,
-            "example": [
-              1203533,
-              1521312
-            ],
-            "description": "Array of VATSIM CIDs participating in the event"
-          }
-        }
-      },
-      "Events": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/Event"
-        }
-      },
-      "FlightInformationRegion": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10,
-            "description": "System id"
-          },
-          "identifier": {
-            "type": "string",
-            "format": "ICAO code",
-            "example": "EGTT",
-            "minLength": 4,
-            "maxLength": 4,
-            "description": "The ICAO identifier for the FIR"
-          },
-          "name": {
-            "type": "string",
-            "example": "London",
-            "description": "Other name for the FIR"
-          }
-        }
-      },
-      "FlightInformationRegions": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/FlightInformationRegion"
-        }
-      },
-      "FlowMeasures": {
-        "type": "array",
-        "items": {
-          "$ref": "#/components/schemas/FlowMeasure"
-        }
-      },
-      "FlowMeasure": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64",
-            "example": 10,
-            "description": "System id."
-          },
-          "ident": {
-            "type": "string",
-            "description": "Automatically assigned identifier for this flow measure - FIR, day of month, designator.",
-            "example": "EGTT25B"
-          },
-          "event_id": {
-            "type": "integer",
-            "format": "int64",
-            "description": "The identifier of the event for this flow measure",
-            "example": 44
-          },
-          "reason": {
-            "type": "string",
-            "description": "Why this flow measure is being enforced",
-            "example": "Due runway capacity"
-          },
-          "starttime": {
-            "type": "string",
-            "format": "datetime",
-            "example": "2022-04-18T13:15:30Z"
-          },
-          "endtime": {
-            "type": "string",
-            "format": "datetime",
-            "example": "2022-04-18T13:15:30Z"
-          },
-          "notified_flight_information_regions": {
-            "type": "array",
-            "description": "An array of flight information ids that are to be notified of this flow measure",
-            "example": [1, 2, 42],
-            "items": {
-              "type": "integer",
-              "example": 5,
-              "description": "The system id of a flight information region"
-            }
-          },
-          "measure": {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "minimum_departure_interval",
-                      "average_departure_interval"
-                    ]
-                  },
-                  "value": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "The number of seconds applicable to this measure",
-                    "example": 120
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "per_hour"
-                    ]
-                  },
-                  "value": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "The number of flights per hour permitted",
-                    "example": 5
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "miles_in_trail"
-                    ]
-                  },
-                  "value": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "The distance in nm of aircraft in trail",
-                    "example": 5
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "max_ias"
-                    ]
-                  },
-                  "value": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "The maximum allowable indicated airspeed",
-                    "example": 275
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "max_mach"
-                    ]
-                  },
-                  "value": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "The maximum allowable mach number",
-                    "example": "82 = 0.82 Mach"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "ias_reduction"
-                    ]
-                  },
-                  "value": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "How much to reduce indicated airspeed by",
-                    "example": "50"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "mach_reduction"
-                    ]
-                  },
-                  "value": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "How much to reduce mach number by",
-                    "example": "5 = 0.05 Mach"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "prohibit"
-                    ],
-                    "description": "Prohibit a flight according to given filters"
-                  },
-                  "value": {
-                    "type": "null"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "ground_stop"
-                    ],
-                    "description": "No departures are permitted"
-                  },
-                  "value": {
-                    "type": "null"
-                  }
-                }
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "mandatory_route"
-                    ]
-                  },
-                  "value": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "JSON",
-                      "description": "The specified mandatory route string",
-                      "example": "UL612 LAKEY DCT NUGRA"
-                    },
-                    "format": "JSON",
-                    "description": "Ar array of mandatory route strings, items are related via logical OR",
-                    "example": ["LOGAN", "UL612 LAKEY DCT NUGRA"]
-                  }
-                }
-              }
-            ]
-          },
-          "filters": {
-            "type": "array",
-            "format": "JSON",
-            "description": "The applicable filters for this flow measure. Multiple filters are joined by logical AND.",
-            "minItems": 2,
-            "items": {
-              "anyOf": [
-                {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "ADEP"
-                      ]
-                    },
-                    "value": {
-                      "type": "array",
-                      "minItems": 1,
-                      "description": "The departure airfields. Can be wildcarded with *. This filter is mandatory.",
-                      "items": {
-                        "type": "string"
-                      },
-                      "example": [
-                        "EGKK",
-                        "EGLL"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "ADES"
-                      ]
-                    },
-                    "value": {
-                      "description": "The departure airfields. Can be wildcarded with *. This filter is mandatory.",
-                      "type": "array",
-                      "minItems": 1,
-                      "items": {
-                        "type": "string"
-                      },
-                      "example": [
-                        "EH**"
-                      ]
-                    }
-                  }
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "level_above",
-                        "level_below"
-                      ]
-                    },
-                    "value": {
-                      "description": "Three digit flight level. Values are inclusive.",
-                      "type": "integer",
-                      "example": 350
-                    }
-                  }
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "level"
-                      ]
-                    },
-                    "value": {
-                      "description": "List of three digit flight levels.",
-                      "type": "array",
-                      "minItems": 1,
-                      "items": {
-                        "type": "integer"
-                      },
-                      "example": [
-                        360,
-                        370,
-                        380
-                      ]
-                    }
-                  }
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "member_event",
-                        "member_not_event"
-                      ]
-                    },
-                    "value": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "event_id": {
+    ],
+    "paths": {
+        "/docs/v{number}": {
+            "get": {
+                "tags": [
+                    "Documentation"
+                ],
+                "summary": "Get a specification of the version documentation",
+                "description": "GET /docs/v{number}/",
+                "operationId": "getDocs",
+                "parameters": [
+                    {
+                        "name": "number",
+                        "in": "path",
+                        "description": "Version of the documentation to request",
+                        "required": true,
+                        "schema": {
                             "type": "integer",
-                            "example": 1,
-                            "description": "The id of the event in the API"
-                          },
-                          "event_vatcan": {
-                            "type": "string",
-                            "nullable": true,
-                            "description": "The events VATCAN code",
-                            "example": "ABCD01"
-                          },
-                          "event_api": {
-                            "type": "null",
-                            "description": "The events API code",
-                            "example": null
-                          }
+                            "format": "int64"
                         }
-                      }
                     }
-                  }
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "type": "string",
-                      "enum": [
-                        "waypoint"
-                      ]
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                            }
+                        }
                     },
-                    "value": {
-                      "type": "array",
-                      "items": {
-                        "description": "String of waypoints",
-                        "type": "string",
-                        "format": "JSON",
-                        "example": "BIG UL9 CPT"
-                      },
-                      "description": "List of waypoint / route strings, joined via logical OR"
+                    "404": {
+                        "description": "Documentation version not found"
                     }
-                  }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/airport-group": {
+            "get": {
+                "tags": [
+                    "Airport Groups"
+                ],
+                "summary": "Get all airport groups",
+                "description": "GET /airport-group",
+                "operationId": "getAirportGroups",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AirportGroups"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/airport-group/{id}": {
+            "get": {
+                "tags": [
+                    "Airport Groups"
+                ],
+                "summary": "Get an airport group by id",
+                "description": "GET /airport-group/{id}",
+                "operationId": "getAirportGroup",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique ID of the airport group",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AirportGroup"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Airport group not found"
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/event": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Get all events",
+                "description": "GET /event",
+                "operationId": "getEvents",
+                "parameters": [
+                    {
+                        "name": "active",
+                        "in": "query",
+                        "description": "Only return active events",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Events"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/event/{id}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Get a single event by id",
+                "description": "GET /event/{id}",
+                "operationId": "getEvent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique ID of the event",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Event"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Event not found"
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/flight-information-region": {
+            "get": {
+                "tags": [
+                    "Flight Information Regions"
+                ],
+                "summary": "Get all flight information regions",
+                "description": "GET /flight-information-region",
+                "operationId": "getFlightInformationRegions",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlightInformationRegions"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/flight-information-region/{id}": {
+            "get": {
+                "tags": [
+                    "Flight Information Regions"
+                ],
+                "summary": "Get a single flight information region by id",
+                "description": "GET /flight-information-region/{id}",
+                "operationId": "getFlightInformationRegion",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique ID of the flight information region",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlightInformationRegion"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Flight information region not found"
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/flow-measure": {
+            "get": {
+                "tags": [
+                    "Flow Measures"
+                ],
+                "summary": "Get all flow measures",
+                "description": "GET /flow-measure",
+                "operationId": "getFlowMeasures",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "deleted",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "required": false,
+                        "description": "Include deleted flow measures"
+                    },
+                    {
+                        "in": "query",
+                        "name": "active",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "required": false,
+                        "description": "Only include flow measures that are currently active, can be used in combination with notified"
+                    },
+                    {
+                        "in": "query",
+                        "name": "notified",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "required": false,
+                        "description": "Only include flow measures that are currently notified, can be used in combination with active"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlowMeasures"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/flow-measure/{id}": {
+            "get": {
+                "tags": [
+                    "Flow Measures"
+                ],
+                "summary": "Get a single flow measure by id",
+                "description": "GET /flow-measure/{id}",
+                "operationId": "getFlowMeasure",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Unique ID of the flow measure",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FlowMeasure"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Flow measure not found"
+                    }
+                },
+                "security": [
+                ]
+            }
+        },
+        "/plugin": {
+            "get": {
+                "tags": [
+                    "Plugins"
+                ],
+                "summary": "A combined set of data for easy access by controller client plugins. Flow measures include only notified, active and recently finished.",
+                "description": "GET /plugin",
+                "operationId": "getPluginData",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Plugin"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AirportGroup": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 10,
+                        "description": "System id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of the airport group",
+                        "example": "London TMA Group"
+                    },
+                    "airports": {
+                        "type": "array",
+                        "description": "List of airport ICAO codes",
+                        "items": {
+                            "type": "string",
+                            "format": "Airport ICAO code",
+                            "example": "EGLL"
+                        },
+                        "example": [
+                            "EGLL",
+                            "EGKK",
+                            "EGLC"
+                        ]
+                    }
                 }
-              ]
             },
-            "example": [
-              {
-                "type": "ADEP",
-                "value": [
-                  "EGKK",
-                  "EGLL",
-                  "EGSS"
-                ]
-              },
-              {
-                "type": "ADES",
-                "value": [
-                  "EH**"
-                ]
-              },
-              {
-                "type": "level",
-                "value": [
-                  230,
-                  240
-                ]
-              }
-            ]
-          }
+            "AirportGroups": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/AirportGroup"
+                }
+            },
+            "Event": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 10,
+                        "description": "System id"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Heathrow Overload",
+                        "description": "Name of the event"
+                    },
+                    "date_start": {
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-04-18T13:15:30Z",
+                        "description": "The start time of the event, will always be Z"
+                    },
+                    "date_end": {
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-04-18T13:15:30Z",
+                        "description": "The end time of the event, will always be Z"
+                    },
+                    "flight_information_region_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1,
+                        "description": "The flight information region where this event is taking place"
+                    },
+                    "vatcan_code": {
+                        "type": "string",
+                        "format": "VATCAN event code",
+                        "nullable": true,
+                        "example": "abcd",
+                        "description": "The VATCAN booking code associated with this event, if present"
+                    },
+                    "participants": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "cid": {
+                                    "type": "integer",
+                                    "description": "A VATSIM CID",
+                                    "example": 1203533,
+                                    "nullable": false
+                                },
+                                "origin": {
+                                    "type": "string",
+                                    "format": "Airfield ICAO",
+                                    "description": "The origin airfield for the flight, may be NULL.",
+                                    "example": "EGKK",
+                                    "nullable": true
+                                },
+                                "destination": {
+                                    "type": "string",
+                                    "format": "Airfield ICAO",
+                                    "description": "The destination airfield for the flight, may be NULL.",
+                                    "example": "EHAM",
+                                    "nullable": true
+                                }
+                            }
+                        },
+                        "description": "Array of VATSIM Members participating in the event"
+                    }
+                }
+            },
+            "Events": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Event"
+                }
+            },
+            "FlightInformationRegion": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 10,
+                        "description": "System id"
+                    },
+                    "identifier": {
+                        "type": "string",
+                        "format": "ICAO code",
+                        "example": "EGTT",
+                        "minLength": 4,
+                        "maxLength": 4,
+                        "description": "The ICAO identifier for the FIR"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "London",
+                        "description": "Other name for the FIR"
+                    }
+                }
+            },
+            "FlightInformationRegions": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/FlightInformationRegion"
+                }
+            },
+            "FlowMeasures": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/FlowMeasure"
+                }
+            },
+            "FlowMeasure": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 10,
+                        "description": "System id."
+                    },
+                    "ident": {
+                        "type": "string",
+                        "description": "Automatically assigned identifier for this flow measure - FIR, day of month, designator.",
+                        "example": "EGTT25B"
+                    },
+                    "event_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "The identifier of the event for this flow measure",
+                        "example": 44
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Why this flow measure is being enforced",
+                        "example": "Due runway capacity"
+                    },
+                    "starttime": {
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-04-18T13:15:30Z"
+                    },
+                    "endtime": {
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-04-18T13:15:30Z"
+                    },
+                    "notified_flight_information_regions": {
+                        "type": "array",
+                        "description": "An array of flight information ids that are to be notified of this flow measure",
+                        "example": [
+                            1,
+                            2,
+                            42
+                        ],
+                        "items": {
+                            "type": "integer",
+                            "example": 5,
+                            "description": "The system id of a flight information region"
+                        }
+                    },
+                    "measure": {
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "minimum_departure_interval",
+                                            "average_departure_interval"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "The number of seconds applicable to this measure",
+                                        "example": 120
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "per_hour"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "The number of flights per hour permitted",
+                                        "example": 5
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "miles_in_trail"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "The distance in nm of aircraft in trail",
+                                        "example": 5
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "max_ias"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "The maximum allowable indicated airspeed",
+                                        "example": 275
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "max_mach"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "The maximum allowable mach number",
+                                        "example": "82 = 0.82 Mach"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "ias_reduction"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "How much to reduce indicated airspeed by",
+                                        "example": "50"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "mach_reduction"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "description": "How much to reduce mach number by",
+                                        "example": "5 = 0.05 Mach"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "prohibit"
+                                        ],
+                                        "description": "Prohibit a flight according to given filters"
+                                    },
+                                    "value": {
+                                        "type": "null"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "ground_stop"
+                                        ],
+                                        "description": "No departures are permitted"
+                                    },
+                                    "value": {
+                                        "type": "null"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "mandatory_route"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "JSON",
+                                            "description": "The specified mandatory route string",
+                                            "example": "UL612 LAKEY DCT NUGRA"
+                                        },
+                                        "format": "JSON",
+                                        "description": "Ar array of mandatory route strings, items are related via logical OR",
+                                        "example": [
+                                            "LOGAN",
+                                            "UL612 LAKEY DCT NUGRA"
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "filters": {
+                        "type": "array",
+                        "format": "JSON",
+                        "description": "The applicable filters for this flow measure. Multiple filters are joined by logical AND.",
+                        "minItems": 2,
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "ADEP"
+                                            ]
+                                        },
+                                        "value": {
+                                            "type": "array",
+                                            "minItems": 1,
+                                            "description": "The departure airfields. Can be wildcarded with *. This filter is mandatory.",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": [
+                                                "EGKK",
+                                                "EGLL"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "ADES"
+                                            ]
+                                        },
+                                        "value": {
+                                            "description": "The departure airfields. Can be wildcarded with *. This filter is mandatory.",
+                                            "type": "array",
+                                            "minItems": 1,
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": [
+                                                "EH**"
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "level_above",
+                                                "level_below"
+                                            ]
+                                        },
+                                        "value": {
+                                            "description": "Three digit flight level. Values are inclusive.",
+                                            "type": "integer",
+                                            "example": 350
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "level"
+                                            ]
+                                        },
+                                        "value": {
+                                            "description": "List of three digit flight levels.",
+                                            "type": "array",
+                                            "minItems": 1,
+                                            "items": {
+                                                "type": "integer"
+                                            },
+                                            "example": [
+                                                360,
+                                                370,
+                                                380
+                                            ]
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "member_event",
+                                                "member_not_event"
+                                            ]
+                                        },
+                                        "value": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "event_id": {
+                                                        "type": "integer",
+                                                        "example": 1,
+                                                        "description": "The id of the event in the API"
+                                                    },
+                                                    "event_vatcan": {
+                                                        "type": "string",
+                                                        "nullable": true,
+                                                        "description": "The events VATCAN code",
+                                                        "example": "ABCD01"
+                                                    },
+                                                    "event_api": {
+                                                        "type": "null",
+                                                        "description": "The events API code",
+                                                        "example": null
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "waypoint"
+                                            ]
+                                        },
+                                        "value": {
+                                            "type": "array",
+                                            "items": {
+                                                "description": "String of waypoints",
+                                                "type": "string",
+                                                "format": "JSON",
+                                                "example": "BIG UL9 CPT"
+                                            },
+                                            "description": "List of waypoint / route strings, joined via logical OR"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "example": [
+                            {
+                                "type": "ADEP",
+                                "value": [
+                                    "EGKK",
+                                    "EGLL",
+                                    "EGSS"
+                                ]
+                            },
+                            {
+                                "type": "ADES",
+                                "value": [
+                                    "EH**"
+                                ]
+                            },
+                            {
+                                "type": "level",
+                                "value": [
+                                    230,
+                                    240
+                                ]
+                            }
+                        ]
+                    }
+                }
+            },
+            "Plugin": {
+                "type": "object",
+                "properties": {
+                    "events": {
+                        "$ref": "#/components/schemas/Events"
+                    },
+                    "flight_information_regions": {
+                        "$ref": "#/components/schemas/FlightInformationRegions"
+                    },
+                    "flow_measures": {
+                        "$ref": "#/components/schemas/FlowMeasures"
+                    }
+                }
+            }
         }
-      },
-      "Plugin": {
-        "type": "object",
-        "properties": {
-          "events": {
-            "$ref": "#/components/schemas/Events"
-          },
-          "flight_information_regions": {
-            "$ref": "#/components/schemas/FlightInformationRegions"
-          },
-          "flow_measures": {
-            "$ref": "#/components/schemas/FlowMeasures"
-          }
-        }
-      }
     }
-  }
 }

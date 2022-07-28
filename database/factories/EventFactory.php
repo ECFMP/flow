@@ -16,7 +16,6 @@ class EventFactory extends Factory
             'date_end' => $this->faker->dateTimeBetween('+1 hour', '+2 hour'),
             'flight_information_region_id' => FlightInformationRegion::factory()->create()->id,
             'vatcan_code' => null,
-            'participants' => null,
         ];
     }
 
