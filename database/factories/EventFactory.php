@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\EventParticipant;
 use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -44,13 +45,6 @@ class EventFactory extends Factory
 
     public function withParticipants(): static
     {
-        return $this->state(function () {
-            $participants = [];
-            for ($i = 0; $i < $this->faker->numberBetween(1, 8); $i++) {
-                $participants[] = $this->faker->unique()->numberBetween(900000, 1600000);
-            }
-
-            return ['participants' => $participants];
-        });
+        return $this->has(EventParticipant::factory()->count($this->faker->numberBetween(1, 8)), 'participants');
     }
 }

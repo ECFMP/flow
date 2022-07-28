@@ -28,6 +28,11 @@ class EventResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getEloquentQuery(): Builder
+    {
+        return Event::with('participants');
+    }
+
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         /** @var Event $record */
@@ -82,13 +87,19 @@ class EventResource extends Resource
                     ->label(__('VATCAN code'))
                     ->helperText(__('Leave empty if no there\'s no code available'))
                     ->maxLength(6),
-                Forms\Components\TagsInput::make('participants')
+                Forms\Components\TagsInput::make('participants.cid')
+                    ->label(__('Participant CIDs'))
                     ->columnSpan('full')
-                    ->visible(fn (Page $livewire, $state) => $livewire instanceof ViewRecord && in_array(auth()->user()->role->key, [
-                        RoleKey::SYSTEM,
-                        RoleKey::NMT,
-                        RoleKey::FLOW_MANAGER
-                    ]) && !empty($state)),
+                    ->afterStateHydrated(function (Event $record, Forms\Components\TagsInput $component) {
+                        $component->state($record->participants->pluck('cid'));
+                    })
+                    ->disabled()
+                    ->visible(fn(Page $livewire, $state) => $livewire instanceof ViewRecord && in_array(auth()->user()->role->key, [
+                            RoleKey::SYSTEM,
+                            RoleKey::NMT,
+                            RoleKey::FLOW_MANAGER,
+                            RoleKey::EVENT_MANAGER
+                        ])),
             ]);
     }
 

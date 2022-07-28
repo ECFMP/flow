@@ -21,17 +21,12 @@ class Event extends Model
         'date_start',
         'date_end',
         'flight_information_region_id',
-        'vatcan_code',
-        'participants',
+        'vatcan_code'
     ];
 
     protected $dates = [
         'date_start',
         'date_end',
-    ];
-
-    protected $casts = [
-        'participants' => 'array',
     ];
 
     public function flightInformationRegion(): BelongsTo
@@ -58,7 +53,7 @@ class Event extends Model
         );
     }
 
-    public function eventParticipants(): HasMany
+    public function participants(): HasMany
     {
         return $this->hasMany(EventParticipant::class);
     }

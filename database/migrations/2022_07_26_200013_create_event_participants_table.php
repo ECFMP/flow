@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('origin', 4)->nullable();
             $table->string('destination', 4)->nullable();
 
-            $table->unique(['event_id', 'cid']);
             $table->foreign('event_id')
                 ->references('id')
                 ->on('events')
