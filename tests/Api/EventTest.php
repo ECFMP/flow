@@ -76,7 +76,7 @@ class EventTest extends TestCase
                     'date_end' => ApiDateTimeFormatter::formatDateTime($event->date_end),
                     'flight_information_region_id' => $event->flight_information_region_id,
                     'vatcan_code' => $event->vatcan_code,
-                    'participants' => $event->participants->map(fn(EventParticipant $eventParticipant) => [
+                    'participants' => $event->participants->map(fn (EventParticipant $eventParticipant) => [
                         'cid' => $eventParticipant->cid,
                         'destination' => $eventParticipant->destination,
                         'origin' => $eventParticipant->origin,

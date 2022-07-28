@@ -40,8 +40,8 @@ class EventParticipantsImport implements ToCollection, WithEvents
         $this->event->participants()->delete();
         $this->event->participants()->createMany(
             $rows
-                ->filter(fn($row) => $this->rowValid($row))
-                ->map(fn(Collection $row): array => [
+                ->filter(fn ($row) => $this->rowValid($row))
+                ->map(fn (Collection $row): array => [
                     'cid' => $row[0],
                     'origin' => empty($row[1]) ? null : Str::upper($row[1]),
                     'destination' => empty($row[2]) ? null : Str::upper($row[2]),

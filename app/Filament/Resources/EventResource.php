@@ -98,7 +98,7 @@ class EventResource extends Resource
                         $component->state($record->participants->pluck('cid'));
                     })
                     ->disabled()
-                    ->visible(fn(Page $livewire, $state) => $livewire instanceof ViewRecord && in_array(auth()->user()->role->key, [
+                    ->visible(fn (Page $livewire, $state) => $livewire instanceof ViewRecord && in_array(auth()->user()->role->key, [
                             RoleKey::SYSTEM,
                             RoleKey::NMT,
                             RoleKey::FLOW_MANAGER,

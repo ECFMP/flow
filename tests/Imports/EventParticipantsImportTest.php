@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Tests\Imports;
 
 use App\Imports\EventParticipantsImport;
