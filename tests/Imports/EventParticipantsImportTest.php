@@ -157,6 +157,33 @@ class EventParticipantsImportTest extends TestCase
         );
     }
 
+    public function testItAddsEventParticipantsWithNoOriginAndDestination()
+    {
+        $rows = collect([collect([1203533]), collect([1203534])]);
+        $this->import->collection($rows);
+
+        $this->assertDatabaseCount(
+            'event_participants',
+            2
+        );
+        $this->assertDatabaseHas(
+            'event_participants',
+            [
+                'cid' => 1203533,
+                'origin' => null,
+                'destination' => null,
+            ]
+        );
+        $this->assertDatabaseHas(
+            'event_participants',
+            [
+                'cid' => 1203534,
+                'origin' => null,
+                'destination' => null,
+            ]
+        );
+    }
+
     public function testItRemovesPreviousEventParticipantsForEvent()
     {
         $otherEvent = Event::factory()->withParticipants()->create();

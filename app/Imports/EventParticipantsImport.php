@@ -40,11 +40,11 @@ class EventParticipantsImport implements ToCollection, WithEvents
         $this->event->participants()->delete();
         $this->event->participants()->createMany(
             $rows
-                ->filter(fn ($row) => $this->rowValid($row))
-                ->map(fn (Collection $row): array => [
+                ->filter(fn($row) => $this->rowValid($row))
+                ->map(fn(Collection $row): array => [
                     'cid' => $row[0],
-                    'origin' => empty($row[1]) ? null : Str::upper($row[1]),
-                    'destination' => empty($row[2]) ? null : Str::upper($row[2]),
+                    'origin' => !isset($row[1]) || empty($row[1]) ? null : Str::upper($row[1]),
+                    'destination' => !isset($row[2]) || empty($row[2]) ? null : Str::upper($row[2]),
                 ])
                 ->values()
         );
@@ -53,8 +53,8 @@ class EventParticipantsImport implements ToCollection, WithEvents
     private function rowValid(Collection $row): bool
     {
         return $this->hasValidCid($row[0]) &&
-            $this->hasValidAirfield($row[1]) &&
-            $this->hasValidAirfield($row[2]);
+            $this->hasValidAirfield($row[1] ?? null) &&
+            $this->hasValidAirfield($row[2] ?? null);
     }
 
     private function hasValidCid($cid): bool
