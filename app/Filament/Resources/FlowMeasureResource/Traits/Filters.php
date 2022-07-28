@@ -15,6 +15,7 @@ trait Filters
 {
     public static function filters(Collection $events): Fieldset
     {
+        $airportGroups = AirportGroup::with('airports')->get()->pluck('name_codes', 'id');
         return Forms\Components\Fieldset::make(__('Filters'))->schema([
             Forms\Components\Repeater::make('adep')
                 ->label('ADEP')
@@ -37,7 +38,7 @@ trait Filters
                         ->hintIcon('heroicon-o-collection')
                         ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
                         ->searchable()
-                        ->options(AirportGroup::all()->pluck('name_codes', 'id'))
+                        ->options($airportGroups)
                         ->required(),
                     Forms\Components\TextInput::make('custom_value')
                         ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
@@ -66,7 +67,7 @@ trait Filters
                         ->hintIcon('heroicon-o-collection')
                         ->visible(fn (Closure $get) => $get('value_type') == 'airport_group')
                         ->searchable()
-                        ->options(AirportGroup::all()->pluck('name_codes', 'id'))
+                        ->options($airportGroups)
                         ->required(),
                     Forms\Components\TextInput::make('custom_value')
                         ->visible(fn (Closure $get) => $get('value_type') == 'custom_value')
