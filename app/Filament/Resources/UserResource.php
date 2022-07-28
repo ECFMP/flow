@@ -47,9 +47,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label(__('ID')),
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('id')->label(__('ID'))->searchable(),
+                Tables\Columns\TextColumn::make('name')->searchable(),
                 BadgeColumn::make('role.description')
                     ->enum(RoleKey::cases()),
                 Tables\Columns\TagsColumn::make('flightInformationRegions.identifierName'),

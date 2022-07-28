@@ -66,6 +66,7 @@ class User extends Authenticatable implements FilamentUser
                 return [
                     RoleKey::NMT,
                     RoleKey::FLOW_MANAGER,
+                    RoleKey::EVENT_MANAGER,
                     RoleKey::USER,
                 ];
             default:
