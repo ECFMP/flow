@@ -2,19 +2,101 @@
 
 namespace App\Filament\Resources\FlowMeasureResource\Pages;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Models\AirportGroup;
 use App\Enums\FlowMeasureType;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Filament\Pages\Actions\Action;
+use App\Models\FlightInformationRegion;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\FlowMeasureResource;
 use App\Helpers\FlowMeasureIdentifierGenerator;
-use App\Models\AirportGroup;
-use App\Models\FlightInformationRegion;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 class CreateFlowMeasure extends CreateRecord
 {
     protected static string $resource = FlowMeasureResource::class;
+
+    private function hasMultipleAdeps(): bool
+    {
+        $adeps = Arr::get($this->data, 'adep');
+
+        if (count($adeps) > 1) {
+            return true;
+        }
+
+        foreach ($adeps as $adep) {
+            if (Arr::get($adep, 'value_type') === 'airport_group') {
+                return true;
+            }
+
+            if (Str::contains(Arr::get($adep, 'custom_value'), '*')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function getFormActions(): array
+    {
+        // TODO: Add tests for this
+        if ($this->hasMultipleAdeps()) {
+            return array_merge(
+                [$this->getCreateWithAdepWarningAction()],
+                static::canCreateAnother() ? [$this->getCreateAnotherWithAdepWarningFormAction()] : [],
+                [$this->getCancelFormAction()],
+            );
+        }
+
+        return array_merge(
+            [$this->getCreateFormAction()],
+            static::canCreateAnother() ? [$this->getCreateAnotherFormAction()] : [],
+            [$this->getCancelFormAction()],
+        );
+    }
+
+    protected function getCreateWithAdepWarningAction(): Action
+    {
+        return Action::make('create')
+            ->label(__('filament::resources/pages/create-record.form.actions.create.label'))
+            ->action('create')
+            ->keyBindings(['mod+s'])
+            ->requiresConfirmation()
+            ->modalHeading('WARNING')
+            ->modalSubheading(fn () => false)
+            ->modalContent(view('filament.resources.flow-measure.modals.multiple-adeps'))
+            ->modalCancelAction(fn () => Action::makeModalAction('cancel')
+                ->label(__('Return and Edit'))
+                ->cancel()
+                ->color('primary'))
+            ->modalSubmitAction(fn () => Action::makeModalAction('submit')
+                ->label(__('Ignore warning, issue flow measure'))
+                ->submit('submit')
+                ->color('secondary'));
+    }
+
+    protected function getCreateAnotherWithAdepWarningFormAction(): Action
+    {
+        return Action::make('createAnother')
+            ->label(__('filament::resources/pages/create-record.form.actions.create_another.label'))
+            ->action('createAnother')
+            ->keyBindings(['mod+shift+s'])
+            ->color('secondary')
+            ->requiresConfirmation()
+            ->modalHeading('WARNING')
+            ->modalSubheading(fn () => false)
+            ->modalContent(view('filament.resources.flow-measure.modals.multiple-adeps'))
+            ->modalCancelAction(fn () => Action::makeModalAction('cancel')
+                ->label(__('Return and Edit'))
+                ->cancel()
+                ->color('primary'))
+            ->modalSubmitAction(fn () => Action::makeModalAction('submit')
+                ->label(__('Ignore warning, issue flow measure'))
+                ->submit('submit')
+                ->color('secondary'));
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
