@@ -182,8 +182,7 @@ Right of erasure requests must be sent to [ecfmp@vateud.net](mailto:ecfmp@vateud
         
 #### 8.3 Provision for Verifying Data
 
-Where the the person managing the erasure request is unable to confirm the identity of the requester![image](https://user-images.githubusercontent.com/6871785/182003452-2873c9bc-abb5-4610-be4d-24a2c94530d0.png)
- there should be a provision for checking their identity before releasing any data.
+Where the the person managing the erasure request is unable to confirm the identity of the requester  there should be a provision for checking their identity before releasing any data.
 
 #### 8.4 Charging
 
