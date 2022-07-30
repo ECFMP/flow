@@ -37,20 +37,30 @@ A Miles In Trail requirement is applied by the FIRs that are tagged into the flo
 
 #### Example MIT 1
 >Issued by: EGTT
+>
 >Tagged: EHAA
+>
 >Value: 15NM
+>
 >ADEP: ****
+>
 >ADES: EGLL
+>
 >Waypoints: NOGRO, ABNED
 
 This measure would limit transfer of traffic from Amsterdam to London to be 15NM in trail if it is going to Heathrow via NOGRO and ABNED. If 1 aircraft is going to NOGRO and the other to ABNED, they still must be 15NM behind each other at transfer.
 
 #### Example MIT 2
 >Issued by: EGTT
+>
 >Tagged: EHAA
+>
 >Value: 15NM
+>
 >ADEP: ****
+>
 >ADES: ****
+>
 >Waypoints:
 
 This is less well written. If issued, it would require 15NM for all traffic on any route from EHAA to London. This measure should include either specific waypoints, a more specific destination list or some other optional filters.
