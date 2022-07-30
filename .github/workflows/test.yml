@@ -94,14 +94,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install Semantic Release
-        run: npx semantic-release
-
-      - name: Create Release
+      - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm semantic-release
-
+        run: npx semantic-release
 
   deploy:
     name: "Deploy"
