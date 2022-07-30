@@ -41,6 +41,7 @@ class CreateFlowMeasure extends CreateRecord
 
     protected function getFormActions(): array
     {
+        // TODO: Add tests for this
         if ($this->hasMultipleAdeps()) {
             return array_merge(
                 [$this->getCreateWithAdepWarningAction()],
@@ -65,7 +66,15 @@ class CreateFlowMeasure extends CreateRecord
             ->requiresConfirmation()
             ->modalHeading('WARNING')
             ->modalSubheading(fn () => false)
-            ->modalContent(view('filament.resources.flow-measure.modals.multiple-adeps'));
+            ->modalContent(view('filament.resources.flow-measure.modals.multiple-adeps'))
+            ->modalCancelAction(fn () => Action::makeModalAction('cancel')
+                ->label(__('Return and Edit'))
+                ->cancel()
+                ->color('primary'))
+            ->modalSubmitAction(fn () => Action::makeModalAction('submit')
+                ->label(__('Ignore warning, issue flow measure'))
+                ->submit('submit')
+                ->color('secondary'));
     }
 
     protected function getCreateAnotherWithAdepWarningFormAction(): Action
@@ -78,7 +87,15 @@ class CreateFlowMeasure extends CreateRecord
             ->requiresConfirmation()
             ->modalHeading('WARNING')
             ->modalSubheading(fn () => false)
-            ->modalContent(view('filament.resources.flow-measure.modals.multiple-adeps'));
+            ->modalContent(view('filament.resources.flow-measure.modals.multiple-adeps'))
+            ->modalCancelAction(fn () => Action::makeModalAction('cancel')
+                ->label(__('Return and Edit'))
+                ->cancel()
+                ->color('primary'))
+            ->modalSubmitAction(fn () => Action::makeModalAction('submit')
+                ->label(__('Ignore warning, issue flow measure'))
+                ->submit('submit')
+                ->color('secondary'));
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array
