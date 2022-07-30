@@ -61,7 +61,7 @@ Airport groups are defined by the system team and/or the NMT. They are created a
 Multiple values for ADEP and ADES are permitted. Please use this facility in preference to wildcards.
 
 ### Waypoint
-This is a comma-separated list of waypoints (or short route strings) for which the flow measure applies to. For example:
+This is a single waypoint or short route string for which the flow measure applies to. Multiple waypoint filters can be added if there are alternate waypoints/strings. For example:
 
 > LOGAN
 
@@ -71,7 +71,9 @@ Would apply to all traffic routing via LOGAN.
 
 Applies to traffic routing to LOGAN via SASKI. Where a pilot files the wrong airway, or some equivalent of SASKI DCT LOGAN, we would reasonably expect this to apply.
 
-> SASKI L608 LOGAN, BARMI
+> SASKI L608 LOGAN
+> 
+> BARMI
 
 As above, applies to traffic routing to LOGAN via SASKI **OR** traffic routing via BARMI.
 
