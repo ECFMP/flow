@@ -5,6 +5,7 @@ namespace Tests\Api;
 use App\Helpers\ApiDateTimeFormatter;
 use App\Models\Event;
 use App\Models\EventParticipant;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -76,7 +77,7 @@ class EventTest extends TestCase
                     'date_end' => ApiDateTimeFormatter::formatDateTime($event->date_end),
                     'flight_information_region_id' => $event->flight_information_region_id,
                     'vatcan_code' => $event->vatcan_code,
-                    'participants' => $event->participants->map(fn (EventParticipant $eventParticipant) => [
+                    'participants' => $event->participants->map(fn(EventParticipant $eventParticipant) => [
                         'cid' => $eventParticipant->cid,
                         'destination' => $eventParticipant->destination,
                         'origin' => $eventParticipant->origin,
@@ -85,64 +86,384 @@ class EventTest extends TestCase
             );
     }
 
-    public function testItReturnsEmptyIfNoEvents()
+    public function testItReturnsEmptyNoEvents()
     {
         $this->get('api/v1/event')
             ->assertOk()
             ->assertExactJson([]);
     }
 
+    public function testItIgnoresDeletedEvents()
+    {
+        Event::factory()
+            ->create()
+            ->delete();
+
+        Event::factory()
+            ->create()
+            ->delete();
+
+        $this->get('api/v1/flow-measure')
+            ->assertOk()
+            ->assertExactJson([]);
+    }
+
     public function testItReturnsAllEvents()
     {
-        $event1 = Event::factory()->create();
-        $event2 = Event::factory()->create();
+        $event1 = Event::factory()
+            ->create();
+
+        $event2 = Event::factory()
+            ->create();
+
+        // Shouldn't show, too far in the future
+        Event::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->create();
+
+        // Shouldn't show, too far in the past
+        Event::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->create();
 
         $this->get('api/v1/event')
             ->assertOk()
-            ->assertExactJson(
+            ->assertExactJson([
                 [
-                    [
-                        'id' => $event1->id,
-                        'name' => $event1->name,
-                        'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
-                        'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
-                        'flight_information_region_id' => $event1->flight_information_region_id,
-                        'vatcan_code' => null,
-                        'participants' => [],
-                    ],
-                    [
-                        'id' => $event2->id,
-                        'name' => $event2->name,
-                        'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
-                        'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
-                        'flight_information_region_id' => $event2->flight_information_region_id,
-                        'vatcan_code' => null,
-                        'participants' => [],
-                    ],
-                ]
-            );
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
     }
 
-    public function testItReturnsOnlyActiveEvents()
+    public function testItReturnsUpcomingEvents()
     {
-        $event = Event::factory()->create();
-        Event::factory()->notStarted()->create();
-        Event::factory()->finished()->create();
+        $event1 = Event::factory()
+            ->notStarted()
+            ->create();
+
+        $event2 = Event::factory()
+            ->notStarted()
+            ->create();
+
+        $deleted = Event::factory()
+            ->notStarted()
+            ->create();
+
+        $deleted->delete();
+
+        // Shouldn't show, too far in the future
+        Event::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->create();
+
+        // Shouldn't show, too far in the past
+        Event::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->create();
+
+        $this->get('api/v1/event')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsUpcomingEventsWithDeleted()
+    {
+        $event1 = Event::factory()
+            ->notStarted()
+            ->create();
+
+        $event2 = Event::factory()
+            ->notStarted()
+            ->create();
+        $event2->delete();
+
+        // Shouldn't show, too far in the future
+        Event::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->create();
+
+        // Shouldn't show, too far in the past
+        Event::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->create();
+
+        $this->get('api/v1/event?upcoming=1&deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsRecentlyFinishedEvents()
+    {
+        $event1 = Event::factory()
+            ->notStarted()
+            ->create();
+
+        $event2 = Event::factory()
+            ->notStarted()
+            ->create();
+
+        // Shouldn't show, too far in the future
+        Event::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->create();
+
+        // Shouldn't show, too far in the past
+        Event::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->create();
+
+        $this->get('api/v1/event')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItIncludesDeletedEventsIfSpecified()
+    {
+        $event1 = Event::factory()
+            ->create();
+        $event1->delete();
+
+        $event2 = Event::factory()
+            ->create();
+
+        // Shouldn't show, too far in the future
+        Event::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->create();
+
+        // Shouldn't show, too far in the past
+        Event::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->create();
+
+
+        $this->get('api/v1/event?deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItFiltersForActiveEventsIfSpecified()
+    {
+        $event1 = Event::factory()
+            ->create();
+
+        Event::factory()
+            ->notStarted()
+            ->create();
+
+        Event::factory()
+            ->finished()
+            ->create();
+
 
         $this->get('api/v1/event?active=1')
             ->assertOk()
-            ->assertExactJson(
+            ->assertExactJson([
                 [
-                    [
-                        'id' => $event->id,
-                        'name' => $event->name,
-                        'date_start' => ApiDateTimeFormatter::formatDateTime($event->date_start),
-                        'date_end' => ApiDateTimeFormatter::formatDateTime($event->date_end),
-                        'flight_information_region_id' => $event->flight_information_region_id,
-                        'vatcan_code' => null,
-                        'participants' => [],
-                    ],
-                ]
-            );
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItFiltersForActiveEventsIncludingDeleted()
+    {
+        $event1 = Event::factory()
+            ->create();
+        $event1->delete();
+
+        Event::factory()
+            ->notStarted()
+            ->create();
+
+        Event::factory()
+            ->finished()
+            ->create();
+
+
+        $this->get('api/v1/event?active=1&deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsActiveAndUpcomingEvents()
+    {
+        $event1 = Event::factory()
+            ->notStarted()
+            ->create();
+
+        $event2 = Event::factory()
+            ->create();
+
+        Event::factory()
+            ->finished()
+            ->create();
+
+        $deleted = Event::factory()
+            ->create();
+        $deleted->delete();
+
+        $this->get('api/v1/event?active=1&upcoming=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsActiveAndUpcomingEventsWithDeleted()
+    {
+        $event1 = Event::factory()
+            ->notStarted()
+            ->create();
+
+        $event2 = Event::factory()
+            ->create();
+        $event2->delete();
+
+        $this->get('api/v1/event?active=1&upcoming=1&deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
     }
 }
