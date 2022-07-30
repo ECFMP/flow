@@ -83,11 +83,31 @@ jobs:
       - name: Run Tests
         run: ./vendor/bin/sail artisan test
 
+  release:
+    name: "Release"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
+    needs: [ test ]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Install Semantic Release
+        run: npx semantic-release
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm semantic-release
+
+
   deploy:
     name: "Deploy"
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
-    needs: [test]
+    needs: [test, release]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
