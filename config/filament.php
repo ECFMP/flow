@@ -1,7 +1,6 @@
 <?php
 
 use Filament\Pages;
-use Filament\Widgets;
 use App\Filament\Widgets\MyPermissions;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
@@ -36,13 +35,12 @@ return [
     | Filament Core Path
     |--------------------------------------------------------------------------
     |
-    | This is the path which Filament will use to load it's core routes and assets.
+    | This is the path which Filament will use to load its core routes and assets.
     | You may change it if it conflicts with your other routes.
     |
     */
 
     'core_path' => env('FILAMENT_CORE_PATH', 'filament'),
-
 
     /*
     |--------------------------------------------------------------------------
@@ -190,6 +188,13 @@ return [
     */
 
     'layout' => [
+        'actions' => [
+            'modal' => [
+                'actions' => [
+                    'alignment' => 'left',
+                ],
+            ],
+        ],
         'forms' => [
             'actions' => [
                 'alignment' => 'left',
