@@ -466,4 +466,113 @@ class EventTest extends TestCase
                 ],
             ]);
     }
+
+    public function testItReturnsFinishedEventsWithoutDeleted()
+    {
+        // Should show
+        $event1 = Event::factory()
+            ->finished()
+            ->create();
+
+        $event2 = Event::factory()
+            ->finished()
+            ->create();
+
+        // Should not show - active
+        Event::factory()
+            ->create();
+
+        // Should not show - upcoming
+        Event::factory()
+            ->notStarted()
+            ->create();
+
+        // Shouldn't show - deleted
+        $deleted = Event::factory()
+            ->finished()
+            ->create();
+        $deleted->delete();
+
+        $this->get('api/v1/event?finished=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
+
+    public function testItReturnsFinishedEventsWithDeleted()
+    {
+        // Should show
+        $event1 = Event::factory()
+            ->finished()
+            ->create();
+
+        $event2 = Event::factory()
+            ->finished()
+            ->create();
+
+        // Should not show - active
+        Event::factory()
+            ->create();
+
+        // Should not show - upcoming
+        Event::factory()
+            ->notStarted()
+            ->create();
+
+        // Shouldn't show - deleted
+        $deleted = Event::factory()
+            ->finished()
+            ->create();
+        $deleted->delete();
+
+        $this->get('api/v1/event?finished=1&deleted=1')
+            ->assertOk()
+            ->assertExactJson([
+                [
+                    'id' => $event1->id,
+                    'name' => $event1->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event1->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event1->date_end),
+                    'flight_information_region_id' => $event1->flight_information_region_id,
+                    'vatcan_code' => $event1->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $event2->id,
+                    'name' => $event2->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($event2->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($event2->date_end),
+                    'flight_information_region_id' => $event2->flight_information_region_id,
+                    'vatcan_code' => $event2->vatcan_code,
+                    'participants' => [],
+                ],
+                [
+                    'id' => $deleted->id,
+                    'name' => $deleted->name,
+                    'date_start' => ApiDateTimeFormatter::formatDateTime($deleted->date_start),
+                    'date_end' => ApiDateTimeFormatter::formatDateTime($deleted->date_end),
+                    'flight_information_region_id' => $deleted->flight_information_region_id,
+                    'vatcan_code' => $deleted->vatcan_code,
+                    'participants' => [],
+                ],
+            ]);
+    }
 }

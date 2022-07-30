@@ -39,6 +39,14 @@ class EventRepository
             ->get();
     }
 
+    public function getFinishedEvents(bool $includeDeleted): Collection
+    {
+        return $this->baseQuery($includeDeleted)
+            ->where('date_end', '<', Carbon::now())
+            ->orderBy('id')
+            ->get();
+    }
+
     private function activeQuery(bool $includeDeleted): Builder
     {
         $now = Carbon::now();

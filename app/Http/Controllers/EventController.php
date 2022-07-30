@@ -25,6 +25,8 @@ class EventController
         } else {
             if ($this->onlyActive($request)) {
                 $flowMeasures = $this->repository->getActiveEvents($this->includeTrashed($request));
+            } else if ($this->onlyFinished($request)) {
+                $flowMeasures = $this->repository->getFinishedEvents($this->includeTrashed($request));
             } else {
                 if ($this->onlyUpcoming($request)) {
                     $flowMeasures = $this->repository->getUpcomingEvents(
@@ -54,6 +56,11 @@ class EventController
     private function onlyUpcoming(Request $request): bool
     {
         return (int)$request->input('upcoming') === 1;
+    }
+
+    private function onlyFinished(Request $request): bool
+    {
+        return (int)$request->input('finished') === 1;
     }
 
     private function activeAndUpcoming(Request $request): bool

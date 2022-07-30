@@ -305,4 +305,76 @@ class EventRepositoryTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testItReturnsFinishedEventsWithoutDeleted()
+    {
+        // Should show
+        $finished1 = Event::factory()
+            ->finished()
+            ->create();
+
+        $finished2 = Event::factory()
+            ->finished()
+            ->create();
+
+        // Should not show - active
+        Event::factory()
+            ->create();
+
+        // Should not show - upcoming
+        Event::factory()
+            ->notStarted()
+            ->create();
+
+        // Should not show - deleted
+        $deleted = Event::factory()
+            ->finished()
+            ->create();
+        $deleted->delete();
+
+        $expected = [$finished1->id, $finished2->id];
+
+        $actual = $this->eventRepository->getFinishedEvents(false)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testItReturnsFinishedEventsWithDeleted()
+    {
+        // Should show
+        $finished1 = Event::factory()
+            ->finished()
+            ->create();
+
+        $finished2 = Event::factory()
+            ->finished()
+            ->create();
+
+        // Should not show - active
+        Event::factory()
+            ->create();
+
+        // Should not show - upcoming
+        Event::factory()
+            ->notStarted()
+            ->create();
+
+        // Should show - deleted
+        $deleted = Event::factory()
+            ->finished()
+            ->create();
+        $deleted->delete();
+
+        $expected = [$finished1->id, $finished2->id, $deleted->id];
+
+        $actual = $this->eventRepository->getFinishedEvents(true)
+            ->pluck('id')
+            ->sort()
+            ->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
 }
