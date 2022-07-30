@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Helpers\ApiDateTimeFormatter;
+use App\Models\EventParticipant;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EventResource extends JsonResource
@@ -22,7 +23,11 @@ class EventResource extends JsonResource
             'date_end' => ApiDateTimeFormatter::formatDateTime($this->date_end),
             'flight_information_region_id' => $this->flight_information_region_id,
             'vatcan_code' => $this->vatcan_code,
-            'participants' => $this->participants,
+            'participants' => $this->participants->map(fn (EventParticipant $eventParticipant) => [
+                'cid' => $eventParticipant->cid,
+                'destination' => $eventParticipant->destination,
+                'origin' => $eventParticipant->origin,
+            ]),
         ];
     }
 }

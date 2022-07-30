@@ -185,7 +185,7 @@ it('can retrieve data for edit page', function () {
         ->assertSet('data.date_start', $event->date_start->toDateTimeString())
         ->assertSet('data.date_end', $event->date_end->toDateTimeString())
         ->assertSet('data.vatcan_code', $event->vatcan_code)
-        ->assertSet('data.participants', $event->participants);
+        ->assertSet('data.participants.cid', $event->participants->pluck('cid'));
 });
 
 it('can edit', function () {
@@ -266,5 +266,5 @@ it('can retrieve data for view page', function () {
         ->assertSet('data.date_start', $event->date_start->toDateTimeString())
         ->assertSet('data.date_end', $event->date_end->toDateTimeString())
         ->assertSet('data.vatcan_code', $event->vatcan_code)
-        ->assertSet('data.participants', $event->participants);
+        ->assertSet('data.participants.cid', $event->participants->pluck('cid'));
 });
