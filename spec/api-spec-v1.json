@@ -150,19 +150,48 @@
                     "Events"
                 ],
                 "summary": "Get all events",
-                "description": "GET /event",
+                "description": "Get all events. By default, will return events starting in the next 24 hours, up until 24 hours after they finish.",
                 "operationId": "getEvents",
                 "parameters": [
                     {
-                        "name": "active",
                         "in": "query",
-                        "description": "Only return active events",
-                        "required": false,
+                        "name": "deleted",
                         "schema": {
                             "type": "integer",
-                            "format": "int64",
                             "example": 1
-                        }
+                        },
+                        "required": false,
+                        "description": "Include deleted events"
+                    },
+                    {
+                        "in": "query",
+                        "name": "active",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "required": false,
+                        "description": "Only include events that are currently active, can be used in combination with upcoming"
+                    },
+                    {
+                        "in": "query",
+                        "name": "upcoming",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "required": false,
+                        "description": "Only include events that are upcoming in the next 24 hours, can be used in combination with active"
+                    },
+                    {
+                        "in": "query",
+                        "name": "finished",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "required": false,
+                        "description": "Only include events that are finished"
                     }
                 ],
                 "responses": {
@@ -289,7 +318,7 @@
                     "Flow Measures"
                 ],
                 "summary": "Get all flow measures",
-                "description": "GET /flow-measure",
+                "description": "Get all flow measures. By default, will return measures starting in the next 24 hours, up until 24 hours after they finish.",
                 "operationId": "getFlowMeasures",
                 "parameters": [
                     {

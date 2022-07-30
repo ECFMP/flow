@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\EventParticipant;
 use App\Models\FlightInformationRegion;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EventFactory extends Factory
@@ -29,15 +30,23 @@ class EventFactory extends Factory
 
     public function notStarted(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'date_start' => $this->faker->dateTimeBetween('now + 1 minute', 'now + 1 hour'),
             'date_end' => $this->faker->dateTimeBetween('now + 2 hour', 'now + 3 hour'),
         ]);
     }
 
+    public function withTimes(Carbon $startTime, Carbon $endTime): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'date_start' => $startTime,
+            'date_end' => $endTime,
+        ]);
+    }
+
     public function withVatcanCode(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'vatcan_code' => $this->faker->word(),
         ]);
     }
