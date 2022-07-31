@@ -6,7 +6,7 @@ We are interested to know what the community develops, so please do inform us wh
 
 ### Version 1.0 - Active
 
-Please see our [API specification for version 1.0](https://ecfmp.vatsim.net/docs/v1])
+Please see our [API specification for version 1.0](https://ecfmp.vatsim.net/docs/v1)
 
 ### Acceptable Use
 
