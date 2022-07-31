@@ -19,7 +19,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command(SendDiscordNotifications::class)->everyMinute();
-        $schedule->command(DeleteOldData::class)->daily();
         $schedule->command(OptimiseTables::class)->daily();
     }
 
