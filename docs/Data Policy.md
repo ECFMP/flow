@@ -1,8 +1,6 @@
 # ECFMP Data Usage Policy
 
-> Version: 0.2
-> 
-> Last updated: 2022-07-30
+> Version: 1.0 -  Last updated: 2022-07-31
 
 ### (1) Introduction
 #### 1.1 Purpose of this policy
