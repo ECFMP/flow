@@ -24,7 +24,7 @@ Members of the Network Management Team (NMT) are able to create ‘regional’ e
 
 At the time of writing, this system is very new. We therefore expect there to be a few errors and plenty of questions as to how it works; however we would kindly request you familiarise with our documentation to see if your question can be answered there.
 
-Questions can be directed into the #system-questions channel.
+Questions can be directed into the #web-platform-questions channel in discord.
 
 # Flight Information Regions
 
