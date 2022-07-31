@@ -1,6 +1,6 @@
 # API
 
-We allow you to call our API to get all our flow measures, FIR deatils and event data. Quetsions about the API can be posted in the #web-platform-questions channel in discord.
+We allow you to call our API to get all our flow measures, FIR deatils and event data. Questions about the API can be posted in the #web-platform-questions channel in discord.
 
 We are interested to know what the community develops, so please do inform us what you have created using our API.
 
