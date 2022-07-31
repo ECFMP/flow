@@ -38,7 +38,7 @@ class FlightInformationRegionResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('identifier')
                     ->required()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->length(4),
                 Forms\Components\TextInput::make('name')
                     ->required()
