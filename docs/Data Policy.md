@@ -60,7 +60,7 @@ Other members of ECFMP may at times temporarily be tasked with responsibilities 
 
 #### 2.4 Network Management Team and Volunteers
     
-Members of ECFMMFP who hold any elevated access to data are required to read, understand and abide by this policy plus any established procedures set by ECFMP.
+Members of ECFMFP who hold any elevated access to data are required to read, understand and abide by this policy plus any established procedures set by ECFMP.
 
 ECFMP has a zero tolerance policy regarding inappropriate access and/or use of personal data collected by ECFMP. Any individual to be found in breach of this policy will have their access removed.
 
