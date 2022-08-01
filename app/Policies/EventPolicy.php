@@ -63,7 +63,10 @@ class EventPolicy
             return $event->flightInformationRegion
                 ->users()
                 ->whereUserId($user->id)
-                ->exists() || in_array($user->role->key, [
+                ->exists() && in_array($user->role->key, [
+                    RoleKey::EVENT_MANAGER,
+                    RoleKey::FLOW_MANAGER,
+                ]) || in_array($user->role->key, [
                     RoleKey::SYSTEM,
                     RoleKey::NMT,
                 ]);
@@ -81,12 +84,16 @@ class EventPolicy
      */
     public function delete(User $user, Event $event)
     {
-        return in_array($user->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
-            RoleKey::EVENT_MANAGER,
-        ]);
+        return $event->flightInformationRegion
+            ->users()
+            ->whereUserId($user->id)
+            ->exists() && in_array($user->role->key, [
+                RoleKey::EVENT_MANAGER,
+                RoleKey::FLOW_MANAGER,
+            ]) || in_array($user->role->key, [
+                RoleKey::SYSTEM,
+                RoleKey::NMT,
+            ]);
     }
 
     /**
@@ -98,11 +105,16 @@ class EventPolicy
      */
     public function restore(User $user, Event $event)
     {
-        return in_array($user->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
-        ]);
+        return $event->flightInformationRegion
+            ->users()
+            ->whereUserId($user->id)
+            ->exists() && in_array($user->role->key, [
+                RoleKey::EVENT_MANAGER,
+                RoleKey::FLOW_MANAGER,
+            ]) || in_array($user->role->key, [
+                RoleKey::SYSTEM,
+                RoleKey::NMT,
+            ]);
     }
 
     /**
@@ -114,12 +126,16 @@ class EventPolicy
      */
     public function forceDelete(User $user, Event $event)
     {
-        return in_array($user->role->key, [
-            RoleKey::SYSTEM,
-            RoleKey::NMT,
-            RoleKey::FLOW_MANAGER,
-            RoleKey::EVENT_MANAGER,
-        ]);
+        return $event->flightInformationRegion
+            ->users()
+            ->whereUserId($user->id)
+            ->exists() && in_array($user->role->key, [
+                RoleKey::EVENT_MANAGER,
+                RoleKey::FLOW_MANAGER,
+            ]) || in_array($user->role->key, [
+                RoleKey::SYSTEM,
+                RoleKey::NMT,
+            ]);
     }
 
     public function deleteAny()
