@@ -25,7 +25,7 @@ class EventController
         } else {
             if ($this->onlyActive($request)) {
                 $flowMeasures = $this->repository->getActiveEvents($this->includeTrashed($request));
-            } else if ($this->onlyFinished($request)) {
+            } elseif ($this->onlyFinished($request)) {
                 $flowMeasures = $this->repository->getFinishedEvents($this->includeTrashed($request));
             } else {
                 if ($this->onlyUpcoming($request)) {

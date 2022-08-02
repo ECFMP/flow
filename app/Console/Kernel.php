@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Console\Commands\DeleteOldData;
 use App\Console\Commands\OptimiseTables;
 use App\Console\Commands\SendDiscordNotifications;
 use Illuminate\Console\Scheduling\Schedule;
