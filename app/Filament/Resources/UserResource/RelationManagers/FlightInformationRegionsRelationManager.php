@@ -53,7 +53,6 @@ class FlightInformationRegionsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make()
-                    ->label("Add User to FIR")
                     ->form(fn (Form $form): array => [
                         Forms\Components\Select::make('flight_information_region_id')
                             ->label("Flight Information Region")
