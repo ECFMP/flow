@@ -12,7 +12,7 @@ class FlightInformationRegionsRelationManager extends RelationManager
 {
     protected static string $relationship = 'flightInformationRegions';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'identifier';
 
     public static function form(Form $form): Form
     {
