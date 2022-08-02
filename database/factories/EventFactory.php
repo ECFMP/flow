@@ -30,7 +30,7 @@ class EventFactory extends Factory
 
     public function notStarted(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'date_start' => $this->faker->dateTimeBetween('now + 1 minute', 'now + 1 hour'),
             'date_end' => $this->faker->dateTimeBetween('now + 2 hour', 'now + 3 hour'),
         ]);
@@ -38,7 +38,7 @@ class EventFactory extends Factory
 
     public function withTimes(Carbon $startTime, Carbon $endTime): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'date_start' => $startTime,
             'date_end' => $endTime,
         ]);
@@ -46,7 +46,7 @@ class EventFactory extends Factory
 
     public function withVatcanCode(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'vatcan_code' => $this->faker->word(),
         ]);
     }

@@ -20,7 +20,7 @@ class FlightInformationRegionsRelationManager extends RelationManager
     {
         return $firs->mapWithKeys(fn (FlightInformationRegion $fir) => [$fir->id => $fir->identifierName]);
     }
-    
+
     public static function form(Form $form): Form
     {
         return $form

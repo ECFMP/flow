@@ -28,10 +28,10 @@ class FlowMeasureRecipientsFactory
     {
         $measure = $pendingMessage->flowMeasure();
         return $pendingMessage->type(
-            ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDiscordNotifications->firstWhere(
-                fn (DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
-                    $notification->pivot->notified_as === $measure->identifier
-            ) !== null;
+        ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDiscordNotifications->firstWhere(
+            fn (DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
+                $notification->pivot->notified_as === $measure->identifier
+        ) !== null;
     }
 
     private function ecfmpRecipients(PendingMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
