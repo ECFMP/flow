@@ -1,9 +1,7 @@
 name: PHP Linting (Pint)
 on:
   workflow_dispatch:
-  push:
-    branches-ignore:
-      - "dependabot/npm_and_yarn/*"
+  pull_request:
 jobs:
   phplint:
     runs-on: ubuntu-latest
@@ -13,3 +11,5 @@ jobs:
           fetch-depth: 2
       - name: "laravel-pint"
         uses: aglipanci/laravel-pint-action@0.1.0
+        with:
+          testMode: true
