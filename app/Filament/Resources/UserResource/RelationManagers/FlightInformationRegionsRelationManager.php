@@ -8,6 +8,7 @@ use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\AttachAction;
 use Illuminate\Support\Collection;
 
 class FlightInformationRegionsRelationManager extends RelationManager
@@ -53,8 +54,8 @@ class FlightInformationRegionsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make()
-                    ->form(fn (Form $form): array => [
-                        Forms\Components\Select::make('flight_information_region_id')
+                    ->form(fn (AttachAction $action): array => [
+                        Forms\Components\Select::make('recordId')
                             ->label("Flight Information Region")
                             ->searchable()
                             ->options(
