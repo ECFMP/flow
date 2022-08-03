@@ -22,7 +22,9 @@ class DivisionDiscordWebhook extends Model implements WebhookInterface, TagProvi
 
     public function flightInformationRegions(): BelongsToMany
     {
-        return $this->belongsToMany(FlightInformationRegion::class);
+        return $this->belongsToMany(FlightInformationRegion::class)
+            ->withTimestamps()
+            ->using(DivisionDiscordWebhookFlightInformationRegion::class);
     }
 
     public function id(): ?int

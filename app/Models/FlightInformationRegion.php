@@ -59,6 +59,8 @@ class FlightInformationRegion extends Model
 
     public function divisionDiscordWebhooks(): BelongsToMany
     {
-        return $this->belongsToMany(DivisionDiscordWebhook::class);
+        return $this->belongsToMany(DivisionDiscordWebhook::class)
+            ->withTimestamps()
+            ->using(DivisionDiscordWebhookFlightInformationRegion::class);
     }
 }
