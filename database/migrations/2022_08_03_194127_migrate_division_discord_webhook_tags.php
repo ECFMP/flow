@@ -5,7 +5,7 @@ use App\Models\FlightInformationRegion;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration {
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -28,7 +28,7 @@ return new class extends Migration {
         // Deduplicate them by URL
         DivisionDiscordWebhook::all()
             ->groupBy('url')
-            ->reject(fn(Collection $webhooks) => $webhooks->count() === 1)
+            ->reject(fn (Collection $webhooks) => $webhooks->count() === 1)
             ->each(function (Collection $webhooks) {
                 // Get the one we're going to keep
                 $webhookToKeep = $webhooks->shift();

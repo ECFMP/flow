@@ -49,12 +49,13 @@ class FlowMeasureRecipientsFactory
         $recipients = DivisionDiscordWebhook::find($pendingMessage->webhook()->id())
             ->flightInformationRegions
             ->filter(
-                fn(FlightInformationRegion $flightInformationRegion) => $pendingMessage
+                fn (FlightInformationRegion $flightInformationRegion) => $pendingMessage
                     ->flowMeasure()
                     ->notifiedFlightInformationRegions
-                    ->firstWhere(fn(FlightInformationRegion $notifiedFir) => $notifiedFir->id === $flightInformationRegion->id))
-            ->filter(fn(FlightInformationRegion $flightInformationRegion) => !empty($flightInformationRegion->pivot->tag))
-            ->map(fn(FlightInformationRegion $flightInformationRegion) => new Tag($flightInformationRegion->pivot));
+                    ->firstWhere(fn (FlightInformationRegion $notifiedFir) => $notifiedFir->id === $flightInformationRegion->id)
+            )
+            ->filter(fn (FlightInformationRegion $flightInformationRegion) => !empty($flightInformationRegion->pivot->tag))
+            ->map(fn (FlightInformationRegion $flightInformationRegion) => new Tag($flightInformationRegion->pivot));
 
         return $recipients->isEmpty()
             ? new NoRecipients()

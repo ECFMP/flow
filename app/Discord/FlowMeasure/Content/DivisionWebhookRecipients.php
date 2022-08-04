@@ -17,7 +17,7 @@ class DivisionWebhookRecipients implements FlowMeasureRecipientsInterface
     public function toString(): string
     {
         return $this->tags
-            ->map(fn(TagInterface $tag) => (string)$tag)
+            ->map(fn (TagInterface $tag) => (string)$tag)
             ->join(' ');
     }
 }

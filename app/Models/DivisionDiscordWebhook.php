@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Discord\Message\Tag\TagProviderInterface;
 use App\Discord\Webhook\WebhookInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
