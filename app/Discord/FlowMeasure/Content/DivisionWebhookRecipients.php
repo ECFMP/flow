@@ -3,18 +3,21 @@
 namespace App\Discord\FlowMeasure\Content;
 
 use App\Discord\Message\Tag\TagInterface;
+use Illuminate\Support\Collection;
 
 class DivisionWebhookRecipients implements FlowMeasureRecipientsInterface
 {
-    private readonly TagInterface $tag;
+    private readonly Collection $tags;
 
-    public function __construct(TagInterface $tag)
+    public function __construct(Collection $tags)
     {
-        $this->tag = $tag;
+        $this->tags = $tags;
     }
 
     public function toString(): string
     {
-        return (string)$this->tag;
+        return $this->tags
+            ->map(fn(TagInterface $tag) => (string)$tag)
+            ->join(' ');
     }
 }

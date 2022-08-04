@@ -21,13 +21,7 @@ class DivisionDiscordWebhookFactory extends Factory
     {
         return [
             'url' => $this->faker->url(),
-            'description' => $this->faker->sentence(3),
-            'tag' => sprintf('@%s', $this->faker->unique()->numberBetween(0, PHP_INT_MAX)),
+            'description' => $this->faker->sentence(3)
         ];
-    }
-
-    public function withNoTag(): static
-    {
-        return $this->state(fn (array $attributes) => ['tag' => '']);
     }
 }
