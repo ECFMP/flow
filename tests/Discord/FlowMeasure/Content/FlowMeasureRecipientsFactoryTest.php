@@ -45,7 +45,7 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->pendingMessage
             ->shouldReceive('type')
             ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-        $divisionWebhook = DivisionDiscordWebhook::factory()->create(['tag' => '']);
+        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
         $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
 
         $this->assertInstanceOf(NoRecipients::class, $this->factory->makeRecipients($this->pendingMessage));
@@ -56,7 +56,26 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->pendingMessage
             ->shouldReceive('type')
             ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-        $divisionWebhook = DivisionDiscordWebhook::factory()->create(['tag' => null]);
+        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
+        $fir = FlightInformationRegion::factory()->create();
+        $divisionWebhook->flightInformationRegions()->sync([$fir->id => ['tag' => null]]);
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
+
+        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+
+        $this->assertInstanceOf(NoRecipients::class, $this->factory->makeRecipients($this->pendingMessage));
+    }
+
+    public function testItReturnsNoDivisionRecipientsIfTagEmptyString()
+    {
+        $this->pendingMessage
+            ->shouldReceive('type')
+            ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
+        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
+        $fir = FlightInformationRegion::factory()->create();
+        $divisionWebhook->flightInformationRegions()->sync([$fir->id => ['tag' => '']]);
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
+
         $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
 
         $this->assertInstanceOf(NoRecipients::class, $this->factory->makeRecipients($this->pendingMessage));
@@ -68,11 +87,50 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
             ->shouldReceive('type')
             ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
         $divisionWebhook = DivisionDiscordWebhook::factory()->create();
+        $fir = FlightInformationRegion::factory()->create();
+        $divisionWebhook->flightInformationRegions()->sync([$fir->id => ['tag' => '1234']]);
         $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
 
         $recipients = $this->factory->makeRecipients($this->pendingMessage);
         $this->assertInstanceOf(DivisionWebhookRecipients::class, $recipients);
-        $this->assertEquals(sprintf('<%s>', $divisionWebhook->tag), $recipients->toString());
+        $this->assertEquals('<@1234>', $recipients->toString());
+    }
+
+    public function testItReturnsMultipleDivisionRecipients()
+    {
+        $this->pendingMessage
+            ->shouldReceive('type')
+            ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
+        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
+        $fir = FlightInformationRegion::factory()->create();
+        $divisionWebhook->flightInformationRegions()->attach([$fir->id => ['tag' => '1234']]);
+        $fir2 = FlightInformationRegion::factory()->create();
+        $divisionWebhook->flightInformationRegions()->attach([$fir2->id => ['tag' => '5678']]);
+        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id, $fir2->id]);
+
+        $recipients = $this->factory->makeRecipients($this->pendingMessage);
+        $this->assertInstanceOf(DivisionWebhookRecipients::class, $recipients);
+        $this->assertEquals('<@1234> <@5678>', $recipients->toString());
+    }
+
+    public function testItIgnoresRecipientsThatAreNotForFlowMeasure()
+    {
+        $this->pendingMessage
+            ->shouldReceive('type')
+            ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
+        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
+        $fir = FlightInformationRegion::factory()->create();
+        $divisionWebhook->flightInformationRegions()->attach([$fir->id => ['tag' => '1234']]);
+        $fir2 = FlightInformationRegion::factory()->create();
+        $divisionWebhook->flightInformationRegions()->attach([$fir2->id => ['tag' => '5678']]);
+        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir2->id]);
+
+        $recipients = $this->factory->makeRecipients($this->pendingMessage);
+        $this->assertInstanceOf(DivisionWebhookRecipients::class, $recipients);
+        $this->assertEquals('<@5678>', $recipients->toString());
     }
 
     public function testItReturnsEcfmpRecipients()
@@ -95,8 +153,10 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->pendingMessage
             ->shouldReceive('type')
             ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-        $divisionWebhook = DivisionDiscordWebhook::factory()->withNoTag()->create();
-        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->withoutAtSymbol()->count(1))->create();
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
+        $this->webhook->shouldReceive('id')->andReturn(null);
+
         $notification = $this->flowMeasure->discordNotifications()->create(
             [
                 'content' => '',
@@ -121,8 +181,11 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->pendingMessage
             ->shouldReceive('type')
             ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->withoutAtSymbol()->count(1))->create();
+        $tag = $fir->discordTags->first();
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
+        $this->webhook->shouldReceive('id')->andReturn(null);
+
         $notification = $this->flowMeasure->discordNotifications()->create(
             [
                 'content' => '',
@@ -139,8 +202,8 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $notification->save();
 
         $recipients = $this->factory->makeRecipients($this->pendingMessage);
-        $this->assertInstanceOf(DivisionWebhookRecipients::class, $recipients);
-        $this->assertEquals(sprintf('<%s>', $divisionWebhook->tag), $recipients->toString());
+        $this->assertInstanceOf(EcfmpInterestedParties::class, $recipients);
+        $this->assertStringContainsString($tag->tag, $recipients->toString());
     }
 
     public function testItReturnsRecipientsIfNotifiedAsReissue()
@@ -148,8 +211,11 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->pendingMessage
             ->shouldReceive('type')
             ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
-        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->withoutAtSymbol()->count(1))->create();
+        $tag = $fir->discordTags->first();
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
+        $this->webhook->shouldReceive('id')->andReturn(null);
+
         $notification = $this->flowMeasure->discordNotifications()->create(
             [
                 'content' => '',
@@ -166,8 +232,8 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $notification->save();
 
         $recipients = $this->factory->makeRecipients($this->pendingMessage);
-        $this->assertInstanceOf(DivisionWebhookRecipients::class, $recipients);
-        $this->assertEquals(sprintf('<%s>', $divisionWebhook->tag), $recipients->toString());
+        $this->assertInstanceOf(EcfmpInterestedParties::class, $recipients);
+        $this->assertStringContainsString($tag->tag, $recipients->toString());
     }
 
     public function testItReturnsRecipientsIfNotActivating()
@@ -175,8 +241,11 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->pendingMessage
             ->shouldReceive('type')
             ->andReturn(DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN);
-        $divisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $this->webhook->shouldReceive('id')->andReturn($divisionWebhook->id);
+        $fir = FlightInformationRegion::factory()->has(DiscordTag::factory()->withoutAtSymbol()->count(1))->create();
+        $tag = $fir->discordTags->first();
+        $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
+        $this->webhook->shouldReceive('id')->andReturn(null);
+
         $notification = $this->flowMeasure->discordNotifications()->create(
             [
                 'content' => '',
@@ -193,7 +262,7 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $notification->save();
 
         $recipients = $this->factory->makeRecipients($this->pendingMessage);
-        $this->assertInstanceOf(DivisionWebhookRecipients::class, $recipients);
-        $this->assertEquals(sprintf('<%s>', $divisionWebhook->tag), $recipients->toString());
+        $this->assertInstanceOf(EcfmpInterestedParties::class, $recipients);
+        $this->assertStringContainsString($tag->tag, $recipients->toString());
     }
 }

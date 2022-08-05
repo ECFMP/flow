@@ -2,27 +2,28 @@
 
 namespace App\Models;
 
-use App\Discord\Message\Tag\TagProviderInterface;
 use App\Discord\Webhook\WebhookInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class DivisionDiscordWebhook extends Model implements WebhookInterface, TagProviderInterface
+class DivisionDiscordWebhook extends Model implements WebhookInterface
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $fillable = [
         'url',
-        'description',
-        'tag',
+        'description'
     ];
 
     public function flightInformationRegions(): BelongsToMany
     {
-        return $this->belongsToMany(FlightInformationRegion::class);
+        return $this->belongsToMany(FlightInformationRegion::class)
+            ->withTimestamps()
+            ->withPivot('tag')
+            ->using(DivisionDiscordWebhookFlightInformationRegion::class);
     }
 
     public function id(): ?int
@@ -38,10 +39,5 @@ class DivisionDiscordWebhook extends Model implements WebhookInterface, TagProvi
     public function description(): string
     {
         return $this->description;
-    }
-
-    public function rawTagString(): string
-    {
-        return $this->tag;
     }
 }

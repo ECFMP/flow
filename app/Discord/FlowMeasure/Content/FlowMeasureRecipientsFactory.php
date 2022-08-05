@@ -46,10 +46,19 @@ class FlowMeasureRecipientsFactory
 
     private function divisionRecipients(PendingMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
     {
-        $divisionWebhook = DivisionDiscordWebhook::find($pendingMessage->webhook()->id());
+        $recipients = DivisionDiscordWebhook::find($pendingMessage->webhook()->id())
+            ->flightInformationRegions
+            ->filter(
+                fn (FlightInformationRegion $flightInformationRegion) => $pendingMessage
+                    ->flowMeasure()
+                    ->notifiedFlightInformationRegions
+                    ->firstWhere(fn (FlightInformationRegion $notifiedFir) => $notifiedFir->id === $flightInformationRegion->id)
+            )
+            ->filter(fn (FlightInformationRegion $flightInformationRegion) => !empty($flightInformationRegion->pivot->tag))
+            ->map(fn (FlightInformationRegion $flightInformationRegion) => new Tag($flightInformationRegion->pivot));
 
-        return empty($divisionWebhook->tag)
+        return $recipients->isEmpty()
             ? new NoRecipients()
-            : new DivisionWebhookRecipients(new Tag($divisionWebhook));
+            : new DivisionWebhookRecipients($recipients);
     }
 }
