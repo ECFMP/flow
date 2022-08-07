@@ -212,7 +212,7 @@ class FlowMeasureResource extends Resource
                             ->required()
                             ->visible(fn (Closure $get) => $get('type') == FlowMeasureType::MANDATORY_ROUTE->value)
                             ->schema([
-                                Forms\Components\Textarea::make('')->required()
+                                Forms\Components\Textarea::make('mandatory_route')->required()
                             ]),
                     ]),
                 self::filters($events),
