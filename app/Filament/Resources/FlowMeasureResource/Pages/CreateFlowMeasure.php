@@ -20,6 +20,20 @@ class CreateFlowMeasure extends CreateRecord
 
     private function hasMultipleAdeps(): bool
     {
+        if (
+            !in_array(
+                Arr::get($this->data, 'type'),
+                [
+                    FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value,
+                    FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value,
+                    FlowMeasureType::PER_HOUR->value,
+                    null, // Needed do modal gets initialized
+                ]
+            )
+        ) {
+            return false;
+        }
+
         $adeps = Arr::get($this->data, 'adep');
 
         if (count($adeps) > 1) {
@@ -41,7 +55,6 @@ class CreateFlowMeasure extends CreateRecord
 
     protected function getFormActions(): array
     {
-        // TODO: Add tests for this
         if ($this->hasMultipleAdeps()) {
             return array_merge(
                 [$this->getCreateWithAdepWarningAction()],
@@ -50,11 +63,7 @@ class CreateFlowMeasure extends CreateRecord
             );
         }
 
-        return array_merge(
-            [$this->getCreateFormAction()],
-            static::canCreateAnother() ? [$this->getCreateAnotherFormAction()] : [],
-            [$this->getCancelFormAction()],
-        );
+        return parent::getFormActions();
     }
 
     protected function getCreateWithAdepWarningAction(): Action
