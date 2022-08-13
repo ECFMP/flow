@@ -86,6 +86,14 @@ class EditFlowMeasure extends EditRecord
 
         $data['filters'] = $newFilters->toArray();
 
+        if (Arr::has($data, 'mandatory_route')) {
+            Arr::set($data, 'mandatory_route', collect($data['mandatory_route'])
+                ->map(function (string $value) {
+                    return ['mandatory_route' => $value];
+                })
+                ->toArray());
+        }
+
         return $data;
     }
 
@@ -96,6 +104,7 @@ class EditFlowMeasure extends EditRecord
         switch ($data['type']) {
             case FlowMeasureType::MANDATORY_ROUTE->value:
                 Arr::pull($data, 'value');
+                $data['mandatory_route'] = Arr::flatten($data['mandatory_route']);
                 break;
             case FlowMeasureType::MINIMUM_DEPARTURE_INTERVAL->value:
             case FlowMeasureType::AVERAGE_DEPARTURE_INTERVAL->value:

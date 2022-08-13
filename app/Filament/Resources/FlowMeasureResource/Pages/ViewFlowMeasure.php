@@ -93,6 +93,14 @@ class ViewFlowMeasure extends ViewRecord
 
         $data['filters'] = $newFilters->toArray();
 
+        if (Arr::has($data, 'mandatory_route')) {
+            Arr::set($data, 'mandatory_route', collect($data['mandatory_route'])
+                ->map(function (string $value) {
+                    return ['mandatory_route' => $value];
+                })
+                ->toArray());
+        }
+
         return $data;
     }
 
