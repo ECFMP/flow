@@ -66,7 +66,7 @@ class FlowMeasureResource extends Resource
                     )
                     ->afterStateUpdated(function (Closure $set, Closure $get, $state) use ($events) {
                         if ($state) {
-                            if (!$get('flight_information_region_id')) {
+                            if (!$get('flight_information_region_id') && auth()->user()->flightInformationRegions->contains('id', $events[$state]->flight_information_region_id)) {
                                 $set('flight_information_region_id', $events[$state]->flight_information_region_id);
                             }
                             $set('start_time', $events[$state]->date_start);
@@ -94,7 +94,6 @@ class FlowMeasureResource extends Resource
                     })),
                 Forms\Components\Select::make('flight_information_region_id')
                     ->label('FIR issuing')
-                    ->helperText(__('Required if event is left empty'))
                     ->hintIcon('heroicon-o-folder')
                     ->searchable()
                     ->options(
