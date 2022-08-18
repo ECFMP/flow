@@ -74,7 +74,7 @@ class FlowMeasureFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'start_time' => $this->faker->dateTimeBetween('-3 hour', '-2 hour'),
-            'end_time' => $this->faker->dateTimeBetween('-59 minute', 'now'),
+            'end_time' => $this->faker->dateTimeBetween('-14 minute', 'now'),
         ]);
     }
 

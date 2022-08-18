@@ -81,7 +81,7 @@ class FlowMeasure extends Model
     public function scopeExpiredRecently(Builder $query): Builder
     {
         return $query->where('end_time', '<', Carbon::now())
-            ->where('end_time', '>', Carbon::now()->subHours(2));
+            ->where('end_time', '>', Carbon::now()->subMinutes(15));
     }
 
     public function isActive(): bool
