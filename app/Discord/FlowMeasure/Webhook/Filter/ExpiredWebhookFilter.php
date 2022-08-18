@@ -11,9 +11,10 @@ class ExpiredWebhookFilter implements FilterInterface
 
     public function shouldUseWebhook(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
-        return $this->existingNotificationDoesntExist(
-            $flowMeasure->withdrawnAndExpiredDiscordNotifications(),
-            $webhook
-        );
+        return is_null($webhook->id()) &&
+            $this->existingNotificationDoesntExist(
+                $flowMeasure->withdrawnAndExpiredDiscordNotifications(),
+                $webhook
+            );
     }
 }

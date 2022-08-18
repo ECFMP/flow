@@ -128,10 +128,10 @@ class ExpiredWebhookFilterTest extends TestCase
         );
     }
 
-    public function testItShouldUseWebhookIfFlowMeasureHasNeverBeenExpiredToDivisionWebhook()
+    public function testItShouldNotUseWebhookIfFlowMeasureHasNeverBeenExpiredToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $this->assertTrue(
+        $this->assertFalse(
             $this->filter->shouldUseWebhook(
                 $measure,
                 $this->divisionDiscordWebhook
@@ -139,7 +139,7 @@ class ExpiredWebhookFilterTest extends TestCase
         );
     }
 
-    public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToDivisionWebhook()
+    public function testItShouldNotUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DiscordNotification::factory()
@@ -156,7 +156,7 @@ class ExpiredWebhookFilterTest extends TestCase
             ]
         );
 
-        $this->assertTrue(
+        $this->assertFalse(
             $this->filter->shouldUseWebhook(
                 $measure,
                 $this->divisionDiscordWebhook
@@ -164,7 +164,7 @@ class ExpiredWebhookFilterTest extends TestCase
         );
     }
 
-    public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenActivatedToDivisionWebhook()
+    public function testItShouldNotUseWebhookIfFlowMeasureHasOnlyBeenActivatedToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DiscordNotification::factory()
@@ -181,7 +181,7 @@ class ExpiredWebhookFilterTest extends TestCase
             ]
         );
 
-        $this->assertTrue(
+        $this->assertFalse(
             $this->filter->shouldUseWebhook(
                 $measure,
                 $this->divisionDiscordWebhook
