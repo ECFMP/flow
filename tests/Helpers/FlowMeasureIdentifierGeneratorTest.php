@@ -33,8 +33,7 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
         string $expectedDayNumber,
         string $expectedDesignator,
         bool   $isDeleted = false
-    )
-    {
+    ) {
         $fir = FlightInformationRegion::factory()->create(['identifier' => 'EGTT']);
         $otherFir = FlightInformationRegion::factory()->create(['identifier' => 'EGPX']);
 
@@ -106,8 +105,7 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
     public function testItGeneratesRevisedFlowMeasures(
         string $existingIdentifier,
         string $expected
-    )
-    {
+    ) {
         $fir = FlightInformationRegion::factory()->create(['identifier' => 'EGTT']);
 
         $measure = FlowMeasure::factory()->state(
@@ -140,8 +138,7 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
     public function testItCountsRevisions(
         string $identifier,
         int    $expected
-    )
-    {
+    ) {
         $this->assertEquals(
             $expected,
             FlowMeasureIdentifierGenerator::timesRevised(

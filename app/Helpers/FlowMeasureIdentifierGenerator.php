@@ -28,8 +28,7 @@ class FlowMeasureIdentifierGenerator
     public static function generateIdentifier(
         Carbon                  $startTime,
         FlightInformationRegion $flightInformationRegion
-    ): string
-    {
+    ): string {
         return sprintf(
             '%s%s%s',
             $flightInformationRegion->identifier,
