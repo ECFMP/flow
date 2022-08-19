@@ -312,4 +312,65 @@ class FlowMeasureRepositoryTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function testItReturnsMeasuresActiveDuringATimePeriod()
+    {
+        $start = Carbon::parse('2022-08-19 20:00:00');
+        $end = Carbon::parse('2022-08-19 21:00:00');
+
+        $startsDuring = FlowMeasure::factory()
+            ->withTimes($start->clone()->addMinute(), $end->clone()->addHour())
+            ->create();
+
+        $endsDuring = FlowMeasure::factory()
+            ->withTimes($start->clone()->subMinutes(30), $end->clone()->subMinutes(15))
+            ->create();
+
+        $throughout = FlowMeasure::factory()
+            ->withTimes($start->clone()->subMinutes(30), $end->clone()->addMinutes(15))
+            ->create();
+
+        // Skip these
+
+        // Starts during - deleted
+        FlowMeasure::factory()
+            ->withTimes($start->clone()->addMinute(), $end->clone()->addHour())
+            ->afterCreating(function (FlowMeasure $flowMeasure) {
+                $flowMeasure->delete();
+            })
+            ->create();
+
+        // Ends during - deleted
+        FlowMeasure::factory()
+            ->withTimes($start->clone()->subMinutes(30), $end->clone()->subMinutes(15))
+            ->afterCreating(function (FlowMeasure $flowMeasure) {
+                $flowMeasure->delete();
+            })
+            ->create();
+
+        // Throughout - deleted
+        FlowMeasure::factory()
+            ->withTimes($start->clone()->subMinutes(30), $end->clone()->addMinutes(15))
+            ->afterCreating(function (FlowMeasure $flowMeasure) {
+                $flowMeasure->delete();
+            })
+            ->create();
+
+        // Ends before
+        FlowMeasure::factory()
+            ->withTimes($start->clone()->subMinutes(30), $start->clone()->subMinute())
+            ->create();
+
+        // Starts after
+        FlowMeasure::factory()
+            ->withTimes($end->clone()->addMinute(), $end->clone()->addMinutes(30))
+            ->create();
+
+        $this->assertEquals(
+            [$startsDuring->id, $endsDuring->id, $throughout->id],
+            $this->flowMeasureRepository->getFlowMeasuresActiveDuringPeriod($start, $end)
+                ->pluck('id')
+                ->toArray()
+        );
+    }
 }

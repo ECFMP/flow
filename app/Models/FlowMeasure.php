@@ -66,6 +66,24 @@ class FlowMeasure extends Model
         return $this->belongsTo(Event::class);
     }
 
+    public function scopeStartsBetween(Builder $query, Carbon $periodStart, Carbon $periodEnd): Builder
+    {
+        return $query->where('start_time', '>=', $periodStart)
+            ->where('start_time', '<=', $periodEnd);
+    }
+
+    public function scopeEndsBetween(Builder $query, Carbon $periodStart, Carbon $periodEnd): Builder
+    {
+        return $query->where('end_time', '>=', $periodStart)
+            ->where('end_time', '<=', $periodEnd);
+    }
+
+    public function scopeActiveThroughout(Builder $query, Carbon $periodStart, Carbon $periodEnd): Builder
+    {
+        return $query->where('start_time', '<=', $periodStart)
+            ->where('end_time', '>=', $periodEnd);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         $now = Carbon::now();

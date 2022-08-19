@@ -3,11 +3,22 @@
 namespace App\Repository;
 
 use App\Models\FlowMeasure;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class FlowMeasureRepository
 {
+    public function getFlowMeasuresActiveDuringPeriod(Carbon $start, Carbon $end): Collection
+    {
+        return $this->baseQuery(false)
+            ->startsBetween($start, $end)
+            ->union($this->baseQuery(false)->endsBetween($start, $end))
+            ->union($this->baseQuery(false)->activeThroughout($start, $end))
+            ->orderBy('id')
+            ->get();
+    }
+
     public function getApiRelevantFlowMeasures(bool $includeDeleted): Collection
     {
         return $this->baseQuery($includeDeleted)
