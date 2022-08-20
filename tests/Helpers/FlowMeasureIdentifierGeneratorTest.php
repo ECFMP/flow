@@ -28,11 +28,11 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
      * @dataProvider dataProvider
      */
     public function testItGeneratesFlowMeasures(
-        int $numberExisting,
+        int    $numberExisting,
         string $date,
         string $expectedDayNumber,
         string $expectedDesignator,
-        bool $isDeleted = false
+        bool   $isDeleted = false
     ) {
         $fir = FlightInformationRegion::factory()->create(['identifier' => 'EGTT']);
         $otherFir = FlightInformationRegion::factory()->create(['identifier' => 'EGPX']);
@@ -84,7 +84,7 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
         );
     }
 
-    public function dataProvider()
+    public function dataProvider(): array
     {
         return [
             'First of the day' => [0, '2022-04-30 12:00:00', '30', 'A'],
@@ -120,7 +120,7 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
         $this->assertEquals($expected, FlowMeasureIdentifierGenerator::generateRevisedIdentifier($measure));
     }
 
-    public function revisionProvider()
+    public function revisionProvider(): array
     {
         return [
             'First revision' => ['EGTT01A', 'EGTT01A-2'],
@@ -129,6 +129,31 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
             'End of the month first revision' => ['EGTT25A', 'EGTT25A-2'],
             'End of the month second revision' => ['EGTT25A-2', 'EGTT25A-3'],
             'Someone really messed up revision' => ['EGTT25A-9999', 'EGTT25A-10000'],
+        ];
+    }
+
+    /**
+     * @dataProvider revisionIdentifierProvider
+     */
+    public function testItCountsRevisions(
+        string $identifier,
+        int    $expected
+    ) {
+        $this->assertEquals(
+            $expected,
+            FlowMeasureIdentifierGenerator::timesRevised(
+                FlowMeasure::factory()->make(['identifier' => $identifier])
+            )
+        );
+    }
+
+    public function revisionIdentifierProvider(): array
+    {
+        return [
+            'First revision' => ['EGTT01A', 0],
+            'Second revision' => ['EGTT01A-2', 1],
+            'Ninth revision' => ['EGTT01A-10', 9],
+            'Tenth revision' => ['EGTT01A-11', 10],
         ];
     }
 }

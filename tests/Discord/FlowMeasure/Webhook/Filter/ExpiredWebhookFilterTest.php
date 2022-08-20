@@ -9,6 +9,7 @@ use App\Models\DiscordNotification;
 use App\Models\DiscordNotificationType;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlowMeasure;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class ExpiredWebhookFilterTest extends TestCase
@@ -25,9 +26,40 @@ class ExpiredWebhookFilterTest extends TestCase
         $this->divisionDiscordWebhook = DivisionDiscordWebhook::factory()->create();
     }
 
-    public function testItShouldUseWebhookIfFlowMeasureHasNeverBeenExpiredOrWithdrawnToEcfmpWebhook()
+    public function testItShouldUseEcfmpWebhookIfLotsOfNotificationsHaveBeenSentRecently()
     {
         $measure = FlowMeasure::factory()->create();
+        DiscordNotification::factory()->count(6)->create(['division_discord_webhook_id' => null]);
+
+        $this->assertTrue(
+            $this->filter->shouldUseWebhook(
+                $measure,
+                $this->ecfmpWebhook
+            )
+        );
+    }
+
+    public function testItShouldUseEcfmpWebhookIfTheFlowMeasureHasBeenModifiedTwice()
+    {
+        $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
+
+        $this->assertTrue(
+            $this->filter->shouldUseWebhook(
+                $measure,
+                $this->ecfmpWebhook
+            )
+        );
+    }
+
+    public function testItShouldUseEcfmpWebhookIfThereAreOtherMeasuresActiveAroundTheTime()
+    {
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->subMinutes(30), Carbon::now()->addMinutes(45))
+            ->count(3)
+            ->create();
+
+        $measure = FlowMeasure::factory()->create();
+
         $this->assertTrue(
             $this->filter->shouldUseWebhook(
                 $measure,
@@ -38,7 +70,7 @@ class ExpiredWebhookFilterTest extends TestCase
 
     public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToEcfmpWebhook()
     {
-        $measure = FlowMeasure::factory()->create();
+        $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
         $discordNotification = DiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
@@ -61,7 +93,7 @@ class ExpiredWebhookFilterTest extends TestCase
 
     public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenActivatedToEcfmpWebhook()
     {
-        $measure = FlowMeasure::factory()->create();
+        $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
         $discordNotification = DiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
@@ -84,7 +116,7 @@ class ExpiredWebhookFilterTest extends TestCase
 
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenWithdrawnToEcfmpWebhook()
     {
-        $measure = FlowMeasure::factory()->create();
+        $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
         $discordNotification = DiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
@@ -107,7 +139,7 @@ class ExpiredWebhookFilterTest extends TestCase
 
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenExpiredToEcfmpWebhook()
     {
-        $measure = FlowMeasure::factory()->create();
+        $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
         $discordNotification = DiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
@@ -128,18 +160,32 @@ class ExpiredWebhookFilterTest extends TestCase
         );
     }
 
-    public function testItShouldUseWebhookIfFlowMeasureHasNeverBeenExpiredToDivisionWebhook()
+    public function testItShouldNotUseWebhookIfDoesntMeetConditionsForEcfmpWebhook()
     {
-        $measure = FlowMeasure::factory()->create();
-        $this->assertTrue(
+        // Once revised
+        $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-2']);
+
+        // Two other measures
+        FlowMeasure::factory()
+            ->withTimes($measure->start_time->clone()->subMinutes(2), $measure->start_time->clone()->addMinutes(2))
+            ->count(2)
+            ->create();
+
+        // Not too many recently sent
+        DiscordNotification::factory()->count(5)->create(['division_discord_webhook_id' => null]);
+        DiscordNotification::factory()->count(5)
+            ->toDivisionWebhook(DivisionDiscordWebhook::factory()->create())
+            ->create();
+
+        $this->assertFalse(
             $this->filter->shouldUseWebhook(
                 $measure,
-                $this->divisionDiscordWebhook
+                $this->ecfmpWebhook
             )
         );
     }
 
-    public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToDivisionWebhook()
+    public function testItShouldNotUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DiscordNotification::factory()
@@ -156,7 +202,7 @@ class ExpiredWebhookFilterTest extends TestCase
             ]
         );
 
-        $this->assertTrue(
+        $this->assertFalse(
             $this->filter->shouldUseWebhook(
                 $measure,
                 $this->divisionDiscordWebhook
@@ -164,7 +210,7 @@ class ExpiredWebhookFilterTest extends TestCase
         );
     }
 
-    public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenActivatedToDivisionWebhook()
+    public function testItShouldNotUseWebhookIfFlowMeasureHasOnlyBeenActivatedToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DiscordNotification::factory()
@@ -181,7 +227,7 @@ class ExpiredWebhookFilterTest extends TestCase
             ]
         );
 
-        $this->assertTrue(
+        $this->assertFalse(
             $this->filter->shouldUseWebhook(
                 $measure,
                 $this->divisionDiscordWebhook

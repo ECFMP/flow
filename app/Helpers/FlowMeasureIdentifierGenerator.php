@@ -26,7 +26,7 @@ class FlowMeasureIdentifierGenerator
     }
 
     public static function generateIdentifier(
-        Carbon $startTime,
+        Carbon                  $startTime,
         FlightInformationRegion $flightInformationRegion
     ): string {
         return sprintf(
@@ -35,6 +35,14 @@ class FlowMeasureIdentifierGenerator
             Str::padLeft($startTime->day, 2, '0'),
             self::designator($startTime, $flightInformationRegion)
         );
+    }
+
+    public static function timesRevised(FlowMeasure $flowMeasure)
+    {
+        $identifierParts = [];
+        preg_match(self::IDENTIFIER_REGEX, $flowMeasure->identifier, $identifierParts);
+
+        return isset($identifierParts[5]) ? ((int)$identifierParts[5]) - 1 : 0;
     }
 
     private static function designator(Carbon $startTime, FlightInformationRegion $flightInformationRegion): string
