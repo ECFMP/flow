@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -15,6 +16,7 @@ class FlowMeasureTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        Date::setTestNow(Date::now());
         DB::table('flow_measures')->delete();
         DB::table('users')->delete();
         DB::table('events')->delete();
@@ -67,6 +69,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -100,6 +103,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -133,6 +137,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -170,6 +175,7 @@ class FlowMeasureTest extends TestCase
                 'notified_flight_information_regions' => $flowMeasure->notifiedFlightInformationRegions
                     ->pluck('id')
                     ->toArray(),
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -207,6 +213,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -244,6 +251,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -281,6 +289,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -323,6 +332,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -365,6 +375,7 @@ class FlowMeasureTest extends TestCase
                     ],
                 ],
                 'notified_flight_information_regions' => [],
+                'withdrawn_at' => null,
             ]);
     }
 
@@ -437,6 +448,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -460,6 +472,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
             ]);
     }
@@ -519,6 +532,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -542,6 +556,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
             ]);
     }
@@ -595,6 +610,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -618,6 +634,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => ApiDateTimeFormatter::formatDateTime(Date::now()),
                 ],
             ]);
     }
@@ -670,6 +687,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -693,6 +711,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
             ]);
     }
@@ -745,6 +764,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => ApiDateTimeFormatter::formatDateTime(Date::now()),
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -768,6 +788,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
             ]);
     }
@@ -813,6 +834,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
             ]);
     }
@@ -859,6 +881,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => ApiDateTimeFormatter::formatDateTime(Date::now()),
                 ],
             ]);
     }
@@ -906,6 +929,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -929,6 +953,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
             ]);
     }
@@ -969,6 +994,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => null,
                 ],
                 [
                     'id' => $flowMeasure2->id,
@@ -992,6 +1018,7 @@ class FlowMeasureTest extends TestCase
                         ],
                     ],
                     'notified_flight_information_regions' => [],
+                    'withdrawn_at' => ApiDateTimeFormatter::formatDateTime(Date::now()),
                 ],
             ]);
     }

@@ -31,13 +31,14 @@ class FlowMeasureResource extends JsonResource
             ],
             'filters' => $this->formatFilters($this->filters),
             'notified_flight_information_regions' => $this->notifiedFlightInformationRegions->pluck('id')->toArray(),
+            'withdrawn_at' => $this->deleted_at ? ApiDateTimeFormatter::formatDateTime($this->deleted_at) : null,
         ];
     }
 
     private function formatFilters(array $filters): array
     {
         return array_map(
-            fn (array $filter) => [
+            fn(array $filter) => [
                 'type' => $filter['type'],
                 'value' => $this->formatSingleFilter($filter['type'], $filter['value']),
             ],
@@ -49,10 +50,10 @@ class FlowMeasureResource extends JsonResource
     {
         return match ($type) {
             'ADES', 'ADEP' => FlowMeasureFilterApiFormatter::formatAirportList($value),
-            'level_above', 'level_below' => (int) $value,
-            'level' => array_map(fn ($level) => (int) $level, $value),
+            'level_above', 'level_below' => (int)$value,
+            'level' => array_map(fn($level) => (int)$level, $value),
             'member_event', 'member_not_event' => [
-                'event_id' => (int) $value['event_id'],
+                'event_id' => (int)$value['event_id'],
                 'event_api' => $value['event_api'],
                 'event_vatcan' => $value['event_vatcan'],
             ],
