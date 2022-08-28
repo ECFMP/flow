@@ -38,7 +38,7 @@ class FlowMeasureResource extends JsonResource
     private function formatFilters(array $filters): array
     {
         return array_map(
-            fn(array $filter) => [
+            fn (array $filter) => [
                 'type' => $filter['type'],
                 'value' => $this->formatSingleFilter($filter['type'], $filter['value']),
             ],
@@ -51,7 +51,7 @@ class FlowMeasureResource extends JsonResource
         return match ($type) {
             'ADES', 'ADEP' => FlowMeasureFilterApiFormatter::formatAirportList($value),
             'level_above', 'level_below' => (int)$value,
-            'level' => array_map(fn($level) => (int)$level, $value),
+            'level' => array_map(fn ($level) => (int)$level, $value),
             'member_event', 'member_not_event' => [
                 'event_id' => (int)$value['event_id'],
                 'event_api' => $value['event_api'],
