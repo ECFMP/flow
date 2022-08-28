@@ -617,6 +617,12 @@
                         "format": "datetime",
                         "example": "2022-04-18T13:15:30Z"
                     },
+                    "withdrawn_at": {
+                        "type": "string",
+                        "format": "datetime",
+                        "example": "2022-04-18T13:15:30Z",
+                        "nullable": true
+                    },
                     "notified_flight_information_regions": {
                         "type": "array",
                         "description": "An array of flight information ids that are to be notified of this flow measure",
