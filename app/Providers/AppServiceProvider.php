@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Vite;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use App\Http\Resources\EventResource;
 use Illuminate\Support\ServiceProvider;
@@ -44,6 +45,16 @@ class AppServiceProvider extends ServiceProvider
             new HtmlString('<meta name="msapplication-TileColor" content="#603cba">'),
             new HtmlString('<meta name="theme-color" content="#ffffff">'),
         ]);
+
+        Filament::registerRenderHook(
+            'content.start',
+            fn (): string => Blade::render('dev')
+        );
+
+        Filament::registerRenderHook(
+            'content.end',
+            fn (): string => Blade::render('dev')
+        );
 
         Filament::serving(function () {
             Filament::registerTheme(
