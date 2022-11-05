@@ -83,27 +83,11 @@ jobs:
       - name: Run Tests
         run: ./vendor/bin/sail artisan test
 
-  release:
-    name: "Release"
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
-    needs: [ test ]
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-
-      - name: Semantic Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
-
   deploy:
-    name: "Deploy"
+    name: "Deploy To Staging"
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
-    needs: [test, release]
+    needs: [test]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -125,10 +109,10 @@ jobs:
       - name: Set deployment variables
         uses: allenevans/set-env@v2.0.0
         with:
-          APP_URL: https://ecfmp.vatsim.net
-          APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
-          RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
-          SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
+          APP_URL: https://flow-dev.ecfmp.net
+          APPLICATION_ROOT: ${{ secrets.APPLICATION_STAGING_ROOT }}
+          RELEASE_DIRECTORY: ${{ secrets.APPLICATION_STAGING_ROOT }}/releases/${{ env.COMMIT }}
+          SHARED_DIRECTORY: ${{ secrets.APPLICATION_STAGING_ROOT }}/shared
           PHP_PATH: /usr/bin/php
 
       - name: GitHub Deployment
@@ -136,8 +120,8 @@ jobs:
         id: github_deployment
         with:
           token: ${{ github.token }}
-          target_url: https://ecfmp.vatsim.net
-          environment: production
+          target_url: https://flow-dev.ecfmp.net
+          environment: staging
           ref: ${{ env.COMMIT }}
 
       - name: Configure PHP
@@ -254,7 +238,7 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
-          target_url: https://ecfmp.vatsim.net
+          target_url: https://flow-dev.ecfmp.net
           state: "failure"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
 
@@ -263,6 +247,6 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
-          target_url: https://ecfmp.vatsim.net
+          target_url: https://flow-dev.ecfmp.net
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
