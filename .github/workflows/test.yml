@@ -294,7 +294,7 @@ jobs:
       - name: Set deployment variables
         uses: allenevans/set-env@v2.0.0
         with:
-          APP_URL: https://flow-dev.ecfmp.net
+          APP_URL: https://ecfmp.vatsim.net
           APPLICATION_ROOT: ${{ secrets.APPLICATION_ROOT }}
           RELEASE_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/releases/${{ env.COMMIT }}
           SHARED_DIRECTORY: ${{ secrets.APPLICATION_ROOT }}/shared
@@ -305,8 +305,8 @@ jobs:
         id: github_deployment
         with:
           token: ${{ github.token }}
-          target_url: https://flow-dev.ecfmp.net
-          environment: staging
+          target_url: https://ecfmp.vatsim.net
+          environment: production
           ref: ${{ env.COMMIT }}
 
       - name: Configure PHP
@@ -423,7 +423,7 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
-          target_url: https://flow-dev.ecfmp.net
+          target_url: https://ecfmp.vatsim.net
           state: "failure"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
 
@@ -432,6 +432,6 @@ jobs:
         uses: chrnorm/deployment-status@releases/v1
         with:
           token: ${{ github.token }}
-          target_url: https://flow-dev.ecfmp.net
+          target_url: https://ecfmp.vatsim.net
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
