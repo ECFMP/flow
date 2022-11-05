@@ -48,12 +48,12 @@ class AppServiceProvider extends ServiceProvider
 
         Filament::registerRenderHook(
             'content.start',
-            fn(): string => Blade::render('dev')
+            fn (): string => Blade::render('dev')
         );
 
         Filament::registerRenderHook(
             'content.end',
-            fn(): string => Blade::render('dev')
+            fn (): string => Blade::render('dev')
         );
 
         Filament::serving(function () {
