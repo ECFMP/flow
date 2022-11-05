@@ -14,6 +14,11 @@
             <h2 class="text-2xl font-bold tracking-tight text-center">
                 {{ __('filament::login.heading') }}
             </h2>
+            @if (config('app.env') === 'staging')
+                <h3 class="font-bold tracking-tight text-center bg-danger-50/50" style="color: red">
+                    This is the dev site. Do not add real data here.
+                </h3>
+            @endif
 
             <x-filament::button type="submit" form="authenticate" class="w-full">
                 Login via VATSIM Connect
