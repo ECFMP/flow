@@ -217,7 +217,8 @@ class FlowMeasureResource extends Resource
                 self::filters($events),
                 Forms\Components\Fieldset::make('FAO')
                     ->schema([
-                        Forms\Components\BelongsToManyMultiSelect::make('notified_flight_information_regions')
+                        Forms\Components\Select::make('notified_flight_information_regions')
+                            ->multiple()
                             ->columnSpan('full')
                             ->required()
                             ->helperText(__('The selected FIRs will receive a tag in discord and be visible in the API'))
