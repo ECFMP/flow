@@ -141,6 +141,7 @@ trait Filters
                                 ->label(__('Event'))
                                 ->hintIcon('heroicon-o-calendar')
                                 ->hintIcon('heroicon-o-calendar')
+                                ->required()
                                 ->searchable()
                                 ->options(
                                     $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
@@ -153,6 +154,7 @@ trait Filters
                                 ->hintIcon('heroicon-o-calendar')
                                 ->label(__('Event'))
                                 ->hintIcon('heroicon-o-calendar')
+                                ->required()
                                 ->searchable()
                                 ->options(
                                     $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
