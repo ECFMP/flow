@@ -152,6 +152,12 @@ class EditFlowMeasure extends EditRecord
             $newFlowMeasure->identifier = FlowMeasureIdentifierGenerator::generateIdentifier($newFlowMeasure->start_time, $newFlowMeasure->flightInformationRegion);
             $newFlowMeasure->push();
 
+            /*
+             * Because relationships are saved by the Select component for FAO and happen before this point, they
+             * end up being set for the previous model. Copy the FAO's across to the new model here.
+             */
+            $newFlowMeasure->notifiedFlightInformationRegions()->sync($record->notifiedFlightInformationRegions->pluck('id')->toArray());
+
             $record->delete();
 
             $this->record = $newFlowMeasure;

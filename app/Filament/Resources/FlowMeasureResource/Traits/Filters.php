@@ -137,10 +137,11 @@ trait Filters
                     Block::make('member_event')
                         ->icon('heroicon-o-calendar')
                         ->schema([
-                            Forms\Components\Select::make('member_event')
+                            Forms\Components\Select::make('value')
                                 ->label(__('Event'))
                                 ->hintIcon('heroicon-o-calendar')
                                 ->hintIcon('heroicon-o-calendar')
+                                ->required()
                                 ->searchable()
                                 ->options(
                                     $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
@@ -149,10 +150,11 @@ trait Filters
                     Block::make('member_not_event')
                         ->icon('heroicon-o-calendar')
                         ->schema([
-                            Forms\Components\Select::make('member_not_event')
+                            Forms\Components\Select::make('value')
                                 ->hintIcon('heroicon-o-calendar')
                                 ->label(__('Event'))
                                 ->hintIcon('heroicon-o-calendar')
+                                ->required()
                                 ->searchable()
                                 ->options(
                                     $events->mapWithKeys(fn (Event $event) => [$event->id => $event->name_date])
