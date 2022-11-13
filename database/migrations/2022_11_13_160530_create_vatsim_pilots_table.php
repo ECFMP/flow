@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('vatsim_pilots', function (Blueprint $table) {
-            $table->id(); #
+            $table->id();
             $table->string('callsign')
                 ->comment('The pilot callsign')
                 ->unique();
@@ -22,13 +22,20 @@ return new class extends Migration {
                 ->index()
                 ->unique();
             $table->string('departure_airport', 4)
+                ->nullable()
                 ->index();
             $table->string('destination_airport', 4)
+                ->nullable()
                 ->index();
-            $table->unsignedMediumInteger('flight_level');
-            $table->unsignedMediumInteger('cruise_level');
-            $table->string('route_string', 1500);
-            $table->timestamps();
+            $table->mediumInteger('altitude');
+            $table->unsignedMediumInteger('cruise_altitude')
+                ->nullable();
+            $table->text('route_string')
+                ->nullable();
+            $table->timestamp('created_at')
+                ->index();
+            $table->timestamp('updated_at')
+                ->index();
         });
     }
 

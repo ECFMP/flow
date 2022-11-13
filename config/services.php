@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -20,21 +19,21 @@ return [
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
         'scheme' => 'https',
     ],
-
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
-
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-
     'vatsimconnect' => [
         'host' => env('VATSIMCONNECT_HOST'),
         'client_id' => env('VATSIMCONNECT_CLIENT_ID'),
         'client_secret' => env('VATSIMCONNECT_CLIENT_SECRET'),
         'redirect' => env('VATSIMCONNECT_CALLBACK_URL'),
-    ]
+    ],
+    'vatsim_data' => [
+        'url' => env('VATSIM_DATA_URL', 'https://data.vatsim.net/v3/vatsim-data.json')
+    ],
 ];
