@@ -22,5 +22,6 @@ abstract class TestCase extends BaseTestCase
         DB::table('airport_groups')->delete();
         DB::table('airports')->delete();
         DB::table('discord_tags')->delete();
+        DB::table('vatsim_pilots')->delete();
     }
 }

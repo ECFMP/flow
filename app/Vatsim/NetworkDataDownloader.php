@@ -33,4 +33,9 @@ class NetworkDataDownloader
             $processor->processNetworkData($networkDataResponse->json());
         }
     }
+
+    public function processors(): array
+    {
+        return $this->processors;
+    }
 }
