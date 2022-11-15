@@ -56,11 +56,15 @@ it('can create airport', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(CreateAction::class, data: [
-        'icao_code' => $airport->icao_code,
-    ])->assertHasNoTableActionErrors();
+            'icao_code' => $airport->icao_code,
+            'latitude' => $airport->latitude,
+            'longitude' => $airport->longitude,
+        ])->assertHasNoTableActionErrors();
 
     $this->assertDatabaseHas(Airport::class, [
         'icao_code' => $airport->icao_code,
+        'latitude' => $airport->latitude,
+        'longitude' => $airport->longitude,
     ]);
 });
 
@@ -75,8 +79,10 @@ it('can validate create input', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(CreateAction::class, data: [
-        'icao_code' => null,
-    ])->assertHasTableActionErrors(['icao_code' => 'required']);
+            'icao_code' => null,
+            'latitude' => null,
+            'longitude' => null,
+        ])->assertHasTableActionErrors(['icao_code' => 'required', 'latitude' => 'required', 'longitude' => 'required']);
 });
 
 it('can edit airport', function () {
@@ -98,11 +104,15 @@ it('can edit airport', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(EditAction::class, $airport, [
-        'icao_code' => $newData->icao_code,
-    ])->assertHasNoTableActionErrors();
+            'icao_code' => $newData->icao_code,
+            'latitude' => $newData->latitude,
+            'longitude' => $newData->longitude,
+        ])->assertHasNoTableActionErrors();
 
     $this->assertDatabaseHas(Airport::class, [
         'icao_code' => $newData->icao_code,
+        'latitude' => $newData->latitude,
+        'longitude' => $newData->longitude,
     ]);
 });
 
@@ -122,8 +132,10 @@ it('can validate edit input', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(EditAction::class, $airport, [
-        'icao_code' => null,
-    ])->assertHasTableActionErrors(['icao_code' => 'required']);
+            'icao_code' => null,
+            'latitude' => null,
+            'longitude' => null,
+        ])->assertHasTableActionErrors(['icao_code' => 'required', 'latitude' => 'required', 'longitude' => 'required']);
 });
 
 it('can attach airport', function () {
@@ -140,8 +152,8 @@ it('can attach airport', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(AttachAction::class, $airport, [
-        'recordId' => $airport->getKey(),
-    ])->assertHasNoTableActionErrors()
+            'recordId' => $airport->getKey(),
+        ])->assertHasNoTableActionErrors()
         ->assertCanSeeTableRecords([$airport]);
 });
 
@@ -159,8 +171,8 @@ it('can validate attach input', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(AttachAction::class, $airport, [
-        'recordId' => null,
-    ])->assertHasTableActionErrors(['recordId' => 'required']);
+            'recordId' => null,
+        ])->assertHasTableActionErrors(['recordId' => 'required']);
 });
 
 it('can detach airport', function () {
@@ -179,8 +191,8 @@ it('can detach airport', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(
-        DetachAction::class,
-        $airport->getKey()
-    )->assertHasNoTableActionErrors()
+            DetachAction::class,
+            $airport->getKey()
+        )->assertHasNoTableActionErrors()
         ->assertCanNotSeeTableRecords([$airport]);
 });

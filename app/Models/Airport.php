@@ -13,6 +13,13 @@ class Airport extends Model
 
     protected $fillable = [
         'icao_code',
+        'latitude',
+        'longitude',
+    ];
+
+    protected $casts = [
+        'latitude' => 'float',
+        'longitude' => 'float',
     ];
 
     public function groups(): BelongsToMany
@@ -28,8 +35,8 @@ class Airport extends Model
     protected function icaoCode(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => strtoupper($value),
-            set: fn ($value) => strtoupper($value)
+        get: fn($value) => strtoupper($value),
+        set: fn($value) => strtoupper($value)
         );
     }
 }

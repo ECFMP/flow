@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Helpers\HasCoordinateInputs;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Airport;
@@ -15,6 +16,8 @@ use App\Filament\Resources\AirportResource\RelationManagers;
 
 class AirportResource extends Resource
 {
+    use HasCoordinateInputs;
+
     protected static ?string $model = Airport::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
@@ -43,8 +46,9 @@ class AirportResource extends Resource
                 Forms\Components\TextInput::make('icao_code')
                     ->label(__('ICAO code'))
                     ->required()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->length(4),
+                ...self::coordinateInputs(),
             ]);
     }
 
@@ -60,6 +64,7 @@ class AirportResource extends Resource
             ])->defaultSort('icao_code')
             ->filters([
                 //
+
             ]);
     }
 

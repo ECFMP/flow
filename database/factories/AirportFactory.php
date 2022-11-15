@@ -16,6 +16,8 @@ class AirportFactory extends Factory
     {
         return [
             'icao_code' => Str::upper($this->faker->unique()->lexify('????')),
+            'latitude' => $this->faker->latitude(),
+            'longitude' => $this->faker->longitude(),
         ];
     }
 }
