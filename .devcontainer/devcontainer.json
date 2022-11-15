@@ -1,6 +1,6 @@
 // https://aka.ms/devcontainer.json
 {
-	"name": "Existing Docker Compose (Extend)",
+	"name": "Laravel Sail PHP",
 	"dockerComposeFile": [
 		"../docker-compose.yml"
 	],
