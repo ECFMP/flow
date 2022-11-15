@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Vatsim\Processor;
+namespace Tests\Vatsim\Processor\Pilot;
 
 use App\Models\VatsimPilot;
 use App\Vatsim\Processor\PilotProcessor;

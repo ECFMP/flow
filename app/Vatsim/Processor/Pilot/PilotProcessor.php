@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Vatsim\Processor;
+namespace App\Vatsim\Processor\Pilot;
 
 use App\Models\VatsimPilot;
-use Arr;
+use App\Vatsim\Processor\VatsimDataProcessorInterface;
 use Carbon\Carbon;
 use DB;
 
 class PilotProcessor implements VatsimDataProcessorInterface
 {
+    use ChecksFlightplanFields;
+
     private const STALE_PILOT_TIMEOUT_MINUTES = 15;
 
     /**
@@ -49,10 +51,5 @@ class PilotProcessor implements VatsimDataProcessorInterface
     {
         VatsimPilot::where('updated_at', '<', Carbon::now()->subMinutes(self::STALE_PILOT_TIMEOUT_MINUTES))
             ->delete();
-    }
-
-    private function getFlightplanItem(array $pilot, string $item): mixed
-    {
-        return Arr::get($pilot, sprintf('flight_plan.%s', $item));
     }
 }

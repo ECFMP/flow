@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Vatsim\NetworkDataDownloader;
-use App\Vatsim\Processor\PilotProcessor;
+use App\Vatsim\Processor\Pilot\PilotProcessor;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 

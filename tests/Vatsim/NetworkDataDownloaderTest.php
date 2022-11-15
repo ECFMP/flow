@@ -3,7 +3,7 @@
 namespace Tests\Vatsim;
 
 use App\Vatsim\NetworkDataDownloader;
-use App\Vatsim\Processor\PilotProcessor;
+use App\Vatsim\Processor\Pilot\PilotProcessor;
 use App\Vatsim\Processor\VatsimDataProcessorInterface;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Config;
