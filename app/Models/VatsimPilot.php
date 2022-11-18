@@ -16,12 +16,14 @@ class VatsimPilot extends Model
         'destination_airport',
         'altitude',
         'cruise_altitude',
-        'route_string'
+        'route_string',
+        'vatsim_pilot_status_id',
     ];
 
     protected $casts = [
         'cid' => 'integer',
         'altitude' => 'integer',
         'cruise_altitude' => 'integer',
+        'vatsim_pilot_status_id' => VatsimPilotStatus::class,
     ];
 }
