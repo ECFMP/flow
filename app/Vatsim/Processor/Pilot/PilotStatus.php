@@ -4,11 +4,10 @@ namespace App\Vatsim\Processor\Pilot;
 
 use App\Models\Airport;
 use App\Models\VatsimPilotStatus;
-use Location\Coordinate;
-use Location\Distance\Haversine;
 
 class PilotStatus implements PilotDataSubprocessorInterface
 {
+    use CalculatesDistancesFromAirfields;
     use ChecksFlightplanFields;
 
     // In knots
@@ -106,14 +105,6 @@ class PilotStatus implements PilotDataSubprocessorInterface
 
     private function aircraftWithinDistanceOfAirport(array $data, Airport $airport, int $nauticalMiles): bool
     {
-        return $this->metersToNauticalMiles(
-                (new Coordinate($data['latitude'], $data['longitude']))
-                ->getDistance(new Coordinate($airport->latitude, $airport->longitude), new Haversine())
-        ) < $nauticalMiles;
-    }
-
-    private function metersToNauticalMiles(float $meters): float
-    {
-        return $meters * 0.000539957;
+        return $this->distanceFromAirfield($data, $airport) < $nauticalMiles;
     }
 }
