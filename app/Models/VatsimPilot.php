@@ -18,6 +18,12 @@ class VatsimPilot extends Model
         'cruise_altitude',
         'route_string',
         'vatsim_pilot_status_id',
+        'estimated_arrival_time',
+        'distance_to_destination',
+    ];
+    
+    protected $dates = [
+        'estimated_arrival_time',
     ];
 
     protected $casts = [
@@ -25,5 +31,6 @@ class VatsimPilot extends Model
         'altitude' => 'integer',
         'cruise_altitude' => 'integer',
         'vatsim_pilot_status_id' => VatsimPilotStatus::class,
+        'distance_to_destination' => 'double',
     ];
 }

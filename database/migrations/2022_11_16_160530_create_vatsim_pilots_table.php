@@ -32,10 +32,18 @@ return new class extends Migration {
                 ->nullable();
             $table->text('route_string')
                 ->nullable();
+            $table->unsignedSmallInteger('vatsim_pilot_status_id')
+                ->comment('The calculated flight status');
+            $table->timestamp('estimated_arrival_time')
+                ->comment('The calculated EAT');
+            $table->float('distance_to_destination')
+                ->comment('The calculated distance to destination');
             $table->timestamp('created_at')
                 ->index();
             $table->timestamp('updated_at')
                 ->index();
+
+            $table->foreign('vatsim_pilot_status_id')->references('id')->on('vatsim_pilot_statuses');
         });
     }
 
