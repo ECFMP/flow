@@ -22,7 +22,7 @@ class DistanceToDestinationTest extends TestCase
             'flight_plan' => null,
         ];
 
-        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data));
+        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data, []));
     }
 
     public function testItReturnsNullIfArrivalAirportNotFound()
@@ -33,7 +33,7 @@ class DistanceToDestinationTest extends TestCase
             ],
         ];
 
-        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data));
+        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data, []));
     }
 
     public function testItReturnsNullIfArrivalAirportHasNoLatitude()
@@ -45,7 +45,7 @@ class DistanceToDestinationTest extends TestCase
             ],
         ];
 
-        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data));
+        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data, []));
     }
 
     public function testItReturnsNullIfArrivalAirportHasNoLongitude()
@@ -57,7 +57,7 @@ class DistanceToDestinationTest extends TestCase
             ],
         ];
 
-        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data));
+        $this->assertEquals(['distance_to_destination' => null], $this->distance->processPilotData($data, []));
     }
 
     public function testItReturnsDistanceToDestination()
@@ -71,6 +71,6 @@ class DistanceToDestinationTest extends TestCase
             ],
         ];
 
-        $this->assertEqualsWithDelta(133.29, $this->distance->processPilotData($data)['distance_to_destination'], 0.01);
+        $this->assertEqualsWithDelta(133.29, $this->distance->processPilotData($data, [])['distance_to_destination'], 0.01);
     }
 }

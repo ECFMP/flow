@@ -9,7 +9,7 @@ class DistanceToDestination implements PilotDataSubprocessorInterface
     use CalculatesDistancesFromAirfields;
     use ChecksFlightplanFields;
 
-    public function processPilotData(array $data): array
+    public function processPilotData(array $data, array $transformedData): array
     {
         return ['distance_to_destination' => $this->calculateDistanceToDestination($data)];
     }

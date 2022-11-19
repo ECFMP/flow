@@ -13,9 +13,9 @@ class EstimatedArrivalTime implements PilotDataSubprocessorInterface
     use CalculatesDistancesFromAirfields;
     use ChecksFlightplanFields;
 
-    public function processPilotData(array $data): array
+    public function processPilotData(array $data, array $transformedData): array
     {
-        if (!isset($data['vatsim_pilot_status_id'])) {
+        if (!isset($transformedData['vatsim_pilot_status_id'])) {
             throw new LogicException('Vatsim pilot status id not set');
         }
 
@@ -26,7 +26,7 @@ class EstimatedArrivalTime implements PilotDataSubprocessorInterface
         }
 
         return [
-            'estimated_arrival_time' => match ($data['vatsim_pilot_status_id']) {
+            'estimated_arrival_time' => match ($transformedData['vatsim_pilot_status_id']) {
                 VatsimPilotStatus::Ground => null,
                 VatsimPilotStatus::Departing => $this->calculateTimeToAirport($this->getFlightplanItem($data, 'cruise_tas'), $data, $arrivalAirfield),
                 VatsimPilotStatus::Cruise, VatsimPilotStatus::Descending => $this->calculateTimeToAirport($data['groundspeed'], $data, $arrivalAirfield),

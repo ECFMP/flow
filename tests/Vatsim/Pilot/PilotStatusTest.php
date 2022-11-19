@@ -260,7 +260,7 @@ class PilotStatusTest extends TestCase
     {
         $this->assertEquals(
             ['vatsim_pilot_status_id' => $status],
-                $this->pilotStatus->processPilotData($data)
+                $this->pilotStatus->processPilotData($data, [])
         );
     }
 }

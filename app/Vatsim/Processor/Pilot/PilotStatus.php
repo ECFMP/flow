@@ -23,7 +23,7 @@ class PilotStatus implements PilotDataSubprocessorInterface
     // In feet
     private const MAX_CRUISE_LEVEL_DEVIATION = 4000;
 
-    public function processPilotData(array $data): array
+    public function processPilotData(array $data, array $transformedData): array
     {
         return ['vatsim_pilot_status_id' => $this->generatePilotStatus($data)];
     }

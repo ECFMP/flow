@@ -3,7 +3,7 @@
 namespace Tests\Vatsim\Processor\Pilot;
 
 use App\Models\VatsimPilot;
-use App\Vatsim\Processor\PilotProcessor;
+use App\Vatsim\Processor\Pilot\PilotProcessor;
 use Carbon\Carbon;
 use Tests\TestCase;
 
@@ -28,6 +28,7 @@ class PilotProcessorTest extends TestCase
                     'callsign' => 'BAW123',
                     'cid' => 1234,
                     'altitude' => 23123,
+                    'groundspeed' => 425,
                     'flight_plan' => [
                         'departure' => 'EGGD',
                         'arrival' => 'EDDM',
@@ -40,6 +41,7 @@ class PilotProcessorTest extends TestCase
                     'callsign' => 'EZY456',
                     'cid' => 2345,
                     'altitude' => 31126,
+                    'groundspeed' => 425,
                     'flight_plan' => null,
                 ],
                 // Already exists, should get updated
@@ -47,6 +49,7 @@ class PilotProcessorTest extends TestCase
                     'callsign' => 'RYR789',
                     'cid' => 35261,
                     'altitude' => 23521,
+                    'groundspeed' => 425,
                     'flight_plan' => [
                         'departure' => 'EGKK',
                         'arrival' => 'EHAM',

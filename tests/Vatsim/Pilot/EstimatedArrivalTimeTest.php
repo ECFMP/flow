@@ -7,6 +7,7 @@ use App\Models\VatsimPilot;
 use App\Models\VatsimPilotStatus;
 use App\Vatsim\Processor\Pilot\EstimatedArrivalTime;
 use Carbon\Carbon;
+use LogicException;
 use Tests\TestCase;
 
 class EstimatedArrivalTimeTest extends TestCase
@@ -20,21 +21,34 @@ class EstimatedArrivalTimeTest extends TestCase
         Carbon::setTestNow(Carbon::parse('2022-11-18 17:33:00'));
     }
 
-    public function testItReturnsNullIfNoFlightplan()
+    public function testItThrowsExceptionIfNoPilotStatus()
     {
+        $this->expectException(LogicException::class);
         $data = [
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Ground,
             'flight_plan' => null
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data));
+        $this->estimatedArrivalTime->processPilotData($data, []);
+    }
+
+
+    public function testItReturnsNullIfNoFlightplan()
+    {
+        $data = [
+            'flight_plan' => null
+        ];
+
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Ground,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItReturnsNullIfOnTheGround()
     {
         $arrivalAirport = Airport::factory()->create(['latitude' => 1.23, 'longitude' => 3.45]);
         $data = [
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Ground,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -44,7 +58,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Ground,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItReturnsNullIfAirportNotFound()
@@ -54,7 +72,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -64,7 +81,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItReturnsNullIfAirportHasNoLatitude()
@@ -74,7 +95,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -84,7 +104,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
 
@@ -95,7 +119,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -105,7 +128,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItReturnsEstimatedForCruise()
@@ -115,7 +142,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -125,7 +151,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => Carbon::parse('2022-11-18 17:51:00')], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Cruise,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => Carbon::parse('2022-11-18 17:51:00')], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItReturnsEstimatedForDescent()
@@ -135,7 +165,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Descending,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -145,7 +174,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => Carbon::parse('2022-11-18 17:51:00')], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Descending,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => Carbon::parse('2022-11-18 17:51:00')], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItReturnsEstimatedForDeparting()
@@ -155,7 +188,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Departing,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -165,7 +197,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => Carbon::parse('2022-11-18 17:57:00')], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Departing,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => Carbon::parse('2022-11-18 17:57:00')], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItSetsCurrentTimeIfLanded()
@@ -175,7 +211,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Landed,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -185,7 +220,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => Carbon::now()], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Landed,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => Carbon::now()], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItSetsCurrentTimeIfLandedNoPilot()
@@ -194,7 +233,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => 'BAW123',
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Landed,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -204,7 +242,11 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => Carbon::now()], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Landed,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => Carbon::now()], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
     public function testItKeepsLandedTimeIfLanded()
@@ -214,7 +256,6 @@ class EstimatedArrivalTimeTest extends TestCase
 
         $data = [
             'callsign' => $pilot->callsign,
-            'vatsim_pilot_status_id' => VatsimPilotStatus::Landed,
             'groundspeed' => 400,
             'latitude' => $arrivalAirport->latitude + 2,
             'longitude' => $arrivalAirport->longitude,
@@ -224,6 +265,10 @@ class EstimatedArrivalTimeTest extends TestCase
             ]
         ];
 
-        $this->assertEquals(['estimated_arrival_time' => Carbon::now()->subMinutes(5)], $this->estimatedArrivalTime->processPilotData($data));
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Landed,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => Carbon::now()->subMinutes(5)], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 }

@@ -35,8 +35,10 @@ return new class extends Migration {
             $table->unsignedSmallInteger('vatsim_pilot_status_id')
                 ->comment('The calculated flight status');
             $table->timestamp('estimated_arrival_time')
+                ->nullable()
                 ->comment('The calculated EAT');
             $table->float('distance_to_destination')
+                ->nullable()
                 ->comment('The calculated distance to destination');
             $table->timestamp('created_at')
                 ->index();
