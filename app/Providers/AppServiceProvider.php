@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Filament\Widgets\AirportInbounds;
+use App\Filament\Widgets\AirportOverview;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;
@@ -11,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Http\Resources\FlowMeasureResource;
 use App\Http\Resources\AirportGroupResource;
 use App\Http\Resources\FlightInformationRegionResource;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -61,5 +64,8 @@ class AppServiceProvider extends ServiceProvider
                 app(Vite::class)('resources/css/filament.css'),
             );
         });
+
+        Livewire::component('airport-overview', AirportOverview::class);
+        Livewire::component('airport-inbounds', AirportInbounds::class);
     }
 }

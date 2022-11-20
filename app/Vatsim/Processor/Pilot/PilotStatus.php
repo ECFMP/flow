@@ -34,12 +34,12 @@ class PilotStatus implements PilotDataSubprocessorInterface
             return VatsimPilotStatus::Landed;
         }
 
-        if ($this->isDescending($data)) {
-            return VatsimPilotStatus::Descending;
-        }
-
         if ($this->isOnTheGround($data)) {
             return VatsimPilotStatus::Ground;
+        }
+
+        if ($this->isDescending($data)) {
+            return VatsimPilotStatus::Descending;
         }
 
         return $this->isCruising($data)
