@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Airport;
 use App\Models\VatsimPilotStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,4 +30,62 @@ class VatsimPilotFactory extends Factory
         ];
     }
 
+    public function distanceToDestination(float $distance): static
+    {
+        return $this->state(fn() => [
+            'distance_to_destination' => $distance,
+        ]);
+    }
+
+    public function destination(string|Airport $airport): static
+    {
+        return $this->state(fn() => [
+            'destination_airport' => $airport instanceof Airport ? $airport->icao_code : $airport,
+        ]);
+    }
+
+    public function landedMinutesAgo(int $minutes): static
+    {
+        return $this->withStatus(VatsimPilotStatus::Landed)
+            ->withEstimatedArrivalTime(Carbon::now()->subMinutes($minutes));
+    }
+
+    public function withEstimatedArrivalTime(Carbon $time): static
+    {
+        return $this->state(fn() => [
+            'estimated_arrival_time' => $time,
+        ]);
+    }
+
+    public function cruising(): static
+    {
+        return $this->withStatus(VatsimPilotStatus::Cruise);
+    }
+
+    public function departing(): static
+    {
+        return $this->withStatus(VatsimPilotStatus::Departing);
+    }
+
+    public function descending(): static
+    {
+        return $this->withStatus(VatsimPilotStatus::Descending);
+    }
+
+    public function onTheGround(): static
+    {
+        return $this->withStatus(VatsimPilotStatus::Ground);
+    }
+
+    public function landed(): static
+    {
+        return $this->landedMinutesAgo(0);
+    }
+
+    private function withStatus(VatsimPilotStatus $status): static
+    {
+        return $this->state(fn() => [
+            'vatsim_pilot_status_id' => $status,
+        ]);
+    }
 }

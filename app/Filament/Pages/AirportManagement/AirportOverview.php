@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Pages\AirportManagement;
 
 use App\Helpers\AirportStatistics;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -8,9 +8,9 @@ use Filament\Widgets\StatsOverviewWidget\Card;
 
 class AirportOverview extends BaseWidget
 {
-    protected static ?string $pollingInterval = null;
+    protected static ?string $pollingInterval = '5m';
 
-    protected ?int $airportId = null;
+    public ?int $airportId = null;
 
     public function mount(int $airportId)
     {
@@ -21,9 +21,12 @@ class AirportOverview extends BaseWidget
     {
         return [
             Card::make('Total Inbound', $this->getCardValue('getTotalInbound')),
-            Card::make('Inbound Next 15 Minutes', $this->getCardValue('getInbound15Minutes')),
             Card::make('Inbound Next 30 Minutes', $this->getCardValue('getInbound30Minutes')),
-            Card::make('Inbound Next 60 Minutes', $this->getCardValue('getInbound60Minutes')),
+            Card::make('Inbound Next 30-60 Minutes', $this->getCardValue('getInbound30To60Minutes')),
+            Card::make('Inbound Next 60-120 Minutes', $this->getCardValue('getInbound60To120Minutes')),
+            Card::make('Landed Last 10 Minutes', $this->getCardValue('getLandedLast10Minutes')),
+            Card::make('Awaiting Departure', $this->getCardValue('getAwaitingDeparture')),
+            Card::make('Departing Within 400nm', $this->getCardValue('getDepartingNearby')),
         ];
     }
 
