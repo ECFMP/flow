@@ -5783,16 +5783,16 @@
         },
         {
             "name": "spatie/laravel-activitylog",
-            "version": "4.6.0",
+            "version": "4.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-activitylog.git",
-                "reference": "7c08e6bd8fbd1cd2b57c0f6acf3708bcafc3f7e1"
+                "reference": "3619d823069333018dd94aa36ef900b88497210d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/7c08e6bd8fbd1cd2b57c0f6acf3708bcafc3f7e1",
-                "reference": "7c08e6bd8fbd1cd2b57c0f6acf3708bcafc3f7e1",
+                "url": "https://api.github.com/repos/spatie/laravel-activitylog/zipball/3619d823069333018dd94aa36ef900b88497210d",
+                "reference": "3619d823069333018dd94aa36ef900b88497210d",
                 "shasum": ""
             },
             "require": {
@@ -5858,7 +5858,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-activitylog/issues",
-                "source": "https://github.com/spatie/laravel-activitylog/tree/4.6.0"
+                "source": "https://github.com/spatie/laravel-activitylog/tree/4.7.1"
             },
             "funding": [
                 {
@@ -5870,7 +5870,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-09-22T09:31:29+00:00"
+            "time": "2022-11-11T15:38:25+00:00"
         },
         {
             "name": "spatie/laravel-markdown",
