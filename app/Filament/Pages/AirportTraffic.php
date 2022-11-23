@@ -19,7 +19,7 @@ class AirportTraffic extends Page
     protected static function shouldRegisterNavigation(): bool
     {
         return in_array(
-            auth()->user()->role->key, 
+            auth()->user()->role->key,
             [
                 RoleKey::SYSTEM,
                 RoleKey::NMT,
@@ -44,7 +44,7 @@ class AirportTraffic extends Page
         return [
             'airports' => Airport::orderBy('icao_code')
                 ->get()
-                ->mapWithKeys(fn(Airport $airport) => [$airport->id => $airport->icao_code])
+                ->mapWithKeys(fn (Airport $airport) => [$airport->id => $airport->icao_code])
                 ->toArray(),
             'airport' => Airport::find($this->airportId)?->toArray(),
         ];

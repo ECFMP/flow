@@ -37,7 +37,6 @@ class EstimatedArrivalTime implements PilotDataSubprocessorInterface
 
     private function calculateTimeToAirport(int $groundspeed, array $data, Airport $airport): Carbon
     {
-
         return Carbon::now()->addMinutes((int) (($this->distanceFromAirfield($data, $airport) / $groundspeed) * 60));
     }
 
@@ -49,7 +48,7 @@ class EstimatedArrivalTime implements PilotDataSubprocessorInterface
             : Carbon::now();
     }
 
-    private function arrivalAirport(array $data): ? Airport
+    private function arrivalAirport(array $data): ?Airport
     {
         return Airport::whereNotNull('latitude')
             ->whereNotNull('longitude')

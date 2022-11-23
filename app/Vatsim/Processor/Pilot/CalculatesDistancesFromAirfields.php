@@ -14,8 +14,8 @@ trait CalculatesDistancesFromAirfields
     private function distanceFromAirfield(array $data, Airport $airport): float
     {
         return $this->metersToNauticalMiles(
-                (new Coordinate($data['latitude'], $data['longitude']))
-                ->getDistance($airport->getCoordinate(), new Haversine())
+            (new Coordinate($data['latitude'], $data['longitude']))
+            ->getDistance($airport->getCoordinate(), new Haversine())
         );
     }
 }

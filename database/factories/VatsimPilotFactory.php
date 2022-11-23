@@ -24,22 +24,22 @@ class VatsimPilotFactory extends Factory
             'estimated_arrival_time' => Carbon::now()->addMinutes(30),
             'distance_to_destination' => $this->faker->unique()
                 ->randomFloat(
-                min: 500,
-                max: 1500
+                    min: 500,
+                    max: 1500
                 )
         ];
     }
 
     public function distanceToDestination(float $distance): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'distance_to_destination' => $distance,
         ]);
     }
 
     public function destination(string|Airport $airport): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'destination_airport' => $airport instanceof Airport ? $airport->icao_code : $airport,
         ]);
     }
@@ -52,7 +52,7 @@ class VatsimPilotFactory extends Factory
 
     public function withEstimatedArrivalTime(Carbon $time): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'estimated_arrival_time' => $time,
         ]);
     }
@@ -84,7 +84,7 @@ class VatsimPilotFactory extends Factory
 
     private function withStatus(VatsimPilotStatus $status): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'vatsim_pilot_status_id' => $status,
         ]);
     }

@@ -191,8 +191,8 @@ it('can detach airport', function () {
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
     ])->callTableAction(
-            DetachAction::class,
-            $airport->getKey()
-        )->assertHasNoTableActionErrors()
+        DetachAction::class,
+        $airport->getKey()
+    )->assertHasNoTableActionErrors()
         ->assertCanNotSeeTableRecords([$airport]);
 });

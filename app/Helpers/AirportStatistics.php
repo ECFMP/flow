@@ -58,17 +58,18 @@ class AirportStatistics
         return $this->cache[$airportId] = [
             'total_inbound' => $allInbound->count(),
             'landed_last_10_minutes' => $allInbound->where(
-                fn(VatsimPilot $pilot) => $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Landed &&
+                fn (VatsimPilot $pilot) => $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Landed &&
                 $pilot->estimated_arrival_time > Carbon::now()->subMinutes(10),
             )->count(),
-            'inbound_30_minutes' => $allInbound->where(fn(VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now(), Carbon::now()->addMinutes(30)))
+            'inbound_30_minutes' => $allInbound->where(fn (VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now(), Carbon::now()->addMinutes(30)))
                 ->count(),
-            'inbound_30_60_minutes' => $allInbound->where(fn(VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now()->addMinutes(30), Carbon::now()->addMinutes(60)))
+            'inbound_30_60_minutes' => $allInbound->where(fn (VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now()->addMinutes(30), Carbon::now()->addMinutes(60)))
                 ->count(),
-            'inbound_60_120_minutes' => $allInbound->where(fn(VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now()->addMinutes(60), Carbon::now()->addMinutes(120)))
+            'inbound_60_120_minutes' => $allInbound->where(fn (VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now()->addMinutes(60), Carbon::now()->addMinutes(120)))
                 ->count(),
-            'awaiting_departure' => $allInbound->where(fn(VatsimPilot $pilot) => $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Ground)->count(),
-            'departing_nearby' => $allInbound->where(fn(VatsimPilot $pilot) =>
+            'awaiting_departure' => $allInbound->where(fn (VatsimPilot $pilot) => $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Ground)->count(),
+            'departing_nearby' => $allInbound->where(
+                fn (VatsimPilot $pilot) =>
                 $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Departing && $pilot->distance_to_destination < 400
             )->count(),
         ];

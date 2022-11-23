@@ -23,7 +23,7 @@ class DistanceToDestination implements PilotDataSubprocessorInterface
             : null;
     }
 
-    private function getArrivalAirport(array $data): ? Airport
+    private function getArrivalAirport(array $data): ?Airport
     {
         return Airport::whereNotNull('latitude')
             ->whereNotNull('longitude')

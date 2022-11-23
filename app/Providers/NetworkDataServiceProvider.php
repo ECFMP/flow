@@ -16,12 +16,12 @@ class NetworkDataServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             NetworkDataDownloader::class,
-            fn(Application $application, array $overrideParams) => new NetworkDataDownloader($this->resolveProcessors($overrideParams))
+            fn (Application $application, array $overrideParams) => new NetworkDataDownloader($this->resolveProcessors($overrideParams))
         );
 
         $this->app->bind(
             PilotProcessor::class,
-            fn() => new PilotProcessor(
+            fn () => new PilotProcessor(
                 [
                         $this->app->make(PilotStatus::class),
                         $this->app->make(EstimatedArrivalTime::class),

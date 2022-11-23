@@ -95,7 +95,7 @@ class PilotStatus implements PilotDataSubprocessorInterface
         return $cruiseLevel && abs((int) $cruiseLevel - (int) $data['altitude']) < self::MAX_CRUISE_LEVEL_DEVIATION;
     }
 
-    private function getAirport(string $icao): ? Airport
+    private function getAirport(string $icao): ?Airport
     {
         return Airport::whereNotNull('latitude')
             ->whereNotNull('longitude')

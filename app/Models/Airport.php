@@ -36,8 +36,8 @@ class Airport extends Model
     protected function icaoCode(): Attribute
     {
         return Attribute::make(
-        get: fn($value) => strtoupper($value),
-        set: fn($value) => strtoupper($value)
+            get: fn ($value) => strtoupper($value),
+            set: fn ($value) => strtoupper($value)
         );
     }
 

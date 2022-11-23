@@ -40,8 +40,9 @@ class PilotProcessor implements VatsimDataProcessorInterface
     {
         VatsimPilot::upsert(
             array_map(
-                fn(array $pilot): array => array_reduce(
-                    $this->subprocessors, fn(array $formattedData, PilotDataSubprocessorInterface $processor) =>
+                fn (array $pilot): array => array_reduce(
+                    $this->subprocessors,
+                    fn (array $formattedData, PilotDataSubprocessorInterface $processor) =>
                     array_merge($formattedData, $processor->processPilotData($pilot, $formattedData)),
                     [
                         'callsign' => $pilot['callsign'],

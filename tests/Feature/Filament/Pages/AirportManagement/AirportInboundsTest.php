@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 use function Pest\Livewire\livewire;
 
 it('can display inbound aircraft', function () {
-
     $airport = Airport::factory()->create();
 
     $landingTooFarInFuture = VatsimPilot::factory()

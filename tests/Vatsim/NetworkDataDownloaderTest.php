@@ -24,7 +24,7 @@ class NetworkDataDownloaderTest extends TestCase
         $downloader = $this->app->make(NetworkDataDownloader::class);
         $this->assertEquals(
             [PilotProcessor::class],
-            array_map(fn(VatsimDataProcessorInterface $processor) => get_class($processor), $downloader->processors())
+            array_map(fn (VatsimDataProcessorInterface $processor) => get_class($processor), $downloader->processors())
         );
     }
 
@@ -45,7 +45,7 @@ class NetworkDataDownloaderTest extends TestCase
 
         Http::assertSentCount(1);
         Http::assertSent(
-            fn(Request $request) => $request->url() === 'https://data.vatsim.net/v3/vatsim-data.json' &&
+            fn (Request $request) => $request->url() === 'https://data.vatsim.net/v3/vatsim-data.json' &&
             $request->method() === 'GET'
         );
     }
@@ -67,7 +67,7 @@ class NetworkDataDownloaderTest extends TestCase
 
         Http::assertSentCount(1);
         Http::assertSent(
-            fn(Request $request) => $request->url() === 'https://data.vatsim.net/v3/vatsim-data.json' &&
+            fn (Request $request) => $request->url() === 'https://data.vatsim.net/v3/vatsim-data.json' &&
             $request->method() === 'GET'
         );
     }

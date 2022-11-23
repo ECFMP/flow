@@ -11,7 +11,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 
 class AirportsRelationManager extends RelationManager
 {
-
     use HasCoordinateInputs;
 
     protected static string $relationship = 'airports';
