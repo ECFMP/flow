@@ -3,7 +3,6 @@
 use App\Filament\Resources\AirportResource;
 use App\Models\Airport;
 use App\Models\User;
-use Tests\FrontendTestCase;
 
 use function Pest\Livewire\livewire;
 
@@ -72,10 +71,15 @@ it('can edit', function () {
         'record' => $airport->getKey(),
     ])
         ->set('data.icao_code', $newData->icao_code)
+        ->set('data.latitude', $newData->latitude)
+        ->set('data.longitude', $newData->longitude)
         ->call('save');
 
     expect($airport->refresh())
-        ->icao_code->toBe($newData->icao_code);
+        ->latitude->toBe($newData->latitude);
+
+    expect($airport->refresh())
+        ->longitude->toBe($newData->longitude);
 });
 
 it('can validate edit input', function () {
@@ -87,8 +91,10 @@ it('can validate edit input', function () {
         'record' => $airport->getKey(),
     ])
         ->set('data.icao_code', null)
+        ->set('data.latitude', null)
+        ->set('data.longitude', null)
         ->call('save')
-        ->assertHasErrors(['data.icao_code' => 'required']);
+        ->assertHasErrors(['data.icao_code' => 'required', 'data.latitude' => 'required', 'data.longitude' => 'required']);
 });
 
 it('can render view page', function () {
