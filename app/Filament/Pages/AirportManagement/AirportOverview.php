@@ -8,15 +8,22 @@ use Filament\Widgets\StatsOverviewWidget\Card;
 
 class AirportOverview extends BaseWidget
 {
-    protected static ?string $pollingInterval = '5m';
+    protected static ?string $pollingInterval = '300s';
 
-    public ?int $airportId = null;
+    public $airportId;
+
+    protected $listeners = ['airportIdUpdated'];
 
     public function mount(int $airportId)
     {
         $this->airportId = $airportId;
     }
 
+    public function airportIdUpdated(int $airportId)
+    {
+        $this->airportId = $airportId;
+    }
+    
     protected function getCards(): array
     {
         return [

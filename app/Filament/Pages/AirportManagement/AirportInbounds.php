@@ -17,14 +17,21 @@ class AirportInbounds extends BaseWidget
 
     public ?int $airportId = null;
 
+    protected $listeners = ['airportIdUpdated'];
+
     public function mount(int $airportId)
+    {
+        $this->airportId = $airportId;
+    }
+
+    public function airportIdUpdated(int $airportId)
     {
         $this->airportId = $airportId;
     }
 
     protected function getTablePollingInterval(): ?string
     {
-        return '5m';
+        return '300s';
     }
 
     public function getTableQuery(): Builder
