@@ -13,6 +13,7 @@ trait HasCoordinateInputs
             ->numeric('decimal:7')
             ->minValue(-90)
             ->maxValue(90)
+            ->label('Latitude')
             ->label('In decimal degrees');
     }
 
@@ -23,7 +24,8 @@ trait HasCoordinateInputs
             ->numeric('decimal:7')
             ->minValue(-180)
             ->maxValue(180)
-            ->label('In decimal degrees');
+            ->label('Longitude')
+            ->helperText('In decimal degrees');
     }
 
     public static function coordinateInputs(): array
