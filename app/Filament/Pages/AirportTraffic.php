@@ -2,16 +2,37 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\RoleKey;
 use App\Models\Airport;
 use Filament\Pages\Page;
 
-class AirportManagement extends Page
+class AirportTraffic extends Page
 {
     public ?int $airportId = null;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
 
-    protected static string $view = 'filament.pages.airport-management';
+    protected static string $view = 'filament.pages.airport-traffic';
+
+    protected static ?string $title = 'Airport Traffic Insights';
+
+    protected static function shouldRegisterNavigation(): bool
+    {
+        return in_array(
+            auth()->user()->role->key, 
+            [
+                RoleKey::SYSTEM,
+                RoleKey::NMT,
+                RoleKey::EVENT_MANAGER,
+                RoleKey::FLOW_MANAGER
+            ]
+        );
+    }
+
+    public function mount(): void
+    {
+        abort_unless(self::shouldRegisterNavigation(), 403);
+    }
 
     public function updatedAirportId()
     {

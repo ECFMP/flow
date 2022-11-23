@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages\AirportManagement;
+namespace App\Filament\Pages\AirportTraffic;
 
 use App\Helpers\AirportStatistics;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;

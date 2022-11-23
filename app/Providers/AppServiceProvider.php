@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Filament\Pages\AirportManagement\AirportInbounds;
-use App\Filament\Pages\AirportManagement\AirportOverview;
+use App\Filament\Pages\AirportTraffic\AirportInbounds;
+use App\Filament\Pages\AirportTraffic\AirportOverview;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;

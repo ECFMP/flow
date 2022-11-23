@@ -1,6 +1,6 @@
 <?php
 
-use App\Filament\Pages\AirportManagement\AirportInbounds;
+use App\Filament\Pages\AirportTraffic\AirportInbounds;
 use App\Models\Airport;
 use App\Models\VatsimPilot;
 use Illuminate\Support\Carbon;
