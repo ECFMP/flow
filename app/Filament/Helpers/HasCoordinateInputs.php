@@ -14,7 +14,7 @@ trait HasCoordinateInputs
             ->minValue(-90)
             ->maxValue(90)
             ->label('Latitude')
-            ->label('In decimal degrees');
+            ->helperText('In decimal degrees');
     }
 
     public static function longitudeInput(): TextInput
