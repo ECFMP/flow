@@ -31,7 +31,7 @@ class AirportInbounds extends BaseWidget
 
     protected function getTablePollingInterval(): ?string
     {
-        return '300s';
+        return '60s';
     }
 
     public function getTableQuery(): Builder
@@ -45,14 +45,19 @@ class AirportInbounds extends BaseWidget
     protected function getTableColumns(): array
     {
         return [
-            TextColumn::make('callsign'),
-            TextColumn::make('departure_airport'),
+            TextColumn::make('callsign')
+                ->label('Callsign'),
+            TextColumn::make('departure_airport')
+                ->label('Departure Airport'),
             TextColumn::make('vatsim_pilot_status_id')
+                ->label('Status')
                 ->formatStateUsing(fn(VatsimPilot $record) => $record->vatsim_pilot_status_id->name),
             TextColumn::make('distance_to_destination')
+                ->label('Distance to Destination')
                 ->formatStateUsing(fn(VatsimPilot $record) => $record->vatsim_pilot_status_id === VatsimPilotStatus::Landed ? '--' : $record->distance_to_destination
                 ),
             TextColumn::make('estimated_arrival_time')
+                ->label('Estimated Arrival Time')
         ];
     }
 }

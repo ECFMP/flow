@@ -8,7 +8,7 @@ use Filament\Widgets\StatsOverviewWidget\Card;
 
 class AirportOverview extends BaseWidget
 {
-    protected static ?string $pollingInterval = '300s';
+    protected static ?string $pollingInterval = '60s';
 
     public $airportId;
 
@@ -23,7 +23,7 @@ class AirportOverview extends BaseWidget
     {
         $this->airportId = $airportId;
     }
-    
+
     protected function getCards(): array
     {
         return [
