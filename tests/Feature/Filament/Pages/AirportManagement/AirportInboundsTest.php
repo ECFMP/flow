@@ -30,13 +30,13 @@ it('can display inbound aircraft', function () {
     $departing = VatsimPilot::factory()
         ->destination($airport)
         ->departing()
-        ->withEstimatedArrivalTime(Carbon::now()->addMinutes(25))
+        ->withEstimatedArrivalTime(Carbon::now()->addMinutes(500))
         ->create();
 
     $descending = VatsimPilot::factory()
         ->destination($airport)
         ->descending()
-        ->withEstimatedArrivalTime(Carbon::now()->addMinutes(500))
+        ->withEstimatedArrivalTime(Carbon::now()->addMinutes(10))
         ->create();
 
     $recentlyLanded = VatsimPilot::factory()
