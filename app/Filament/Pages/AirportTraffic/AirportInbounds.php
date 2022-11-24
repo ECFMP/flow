@@ -53,9 +53,12 @@ class AirportInbounds extends BaseWidget
                 ->label('Status')
                 ->formatStateUsing(fn (VatsimPilot $record) => $record->vatsim_pilot_status_id->name),
             TextColumn::make('distance_to_destination')
-                ->label('Distance to Destination')
+                ->label('Distance to Destination (NM)')
                 ->formatStateUsing(
-                    fn (VatsimPilot $record) => $record->vatsim_pilot_status_id === VatsimPilotStatus::Landed ? '--' : $record->distance_to_destination
+                    fn (VatsimPilot $record) =>
+                        $record->vatsim_pilot_status_id === VatsimPilotStatus::Landed
+                            ? '--'
+                            : round($record->distance_to_destination),
                 ),
             TextColumn::make('estimated_arrival_time')
                 ->label('Estimated Arrival Time')
