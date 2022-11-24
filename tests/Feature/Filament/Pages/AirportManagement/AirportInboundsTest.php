@@ -10,12 +10,6 @@ use function Pest\Livewire\livewire;
 it('can display inbound aircraft', function () {
     $airport = Airport::factory()->create();
 
-    $landingTooFarInFuture = VatsimPilot::factory()
-        ->destination($airport)
-        ->cruising()
-        ->withEstimatedArrivalTime(Carbon::now()->addMinutes(61))
-        ->create();
-
     $differentDestination = VatsimPilot::factory()
         ->destination('1234')
         ->cruising()
@@ -42,7 +36,7 @@ it('can display inbound aircraft', function () {
     $descending = VatsimPilot::factory()
         ->destination($airport)
         ->descending()
-        ->withEstimatedArrivalTime(Carbon::now()->addMinutes(10))
+        ->withEstimatedArrivalTime(Carbon::now()->addMinutes(500))
         ->create();
 
     $recentlyLanded = VatsimPilot::factory()
@@ -52,5 +46,5 @@ it('can display inbound aircraft', function () {
 
     livewire(AirportInbounds::class, ['airportId' => $airport->id])
         ->assertCanSeeTableRecords([$recentlyLanded, $descending, $departing, $cruising], inOrder: true)
-        ->assertCanNotSeeTableRecords([$landingTooFarInFuture, $landedTooFarInPast, $differentDestination]);
+        ->assertCanNotSeeTableRecords([$landedTooFarInPast, $differentDestination]);
 });

@@ -36,8 +36,7 @@ class AirportInbounds extends BaseWidget
 
     public function getTableQuery(): Builder
     {
-        return VatsimPilot::where('estimated_arrival_time', '<', Carbon::now()->addMinutes(60))
-            ->where('destination_airport', Airport::find($this->airportId)?->icao_code)
+        return VatsimPilot::where('destination_airport', Airport::find($this->airportId)?->icao_code)
             ->where('estimated_arrival_time', '>', Carbon::now()->subMinutes(5))
             ->orderBy('estimated_arrival_time');
     }
