@@ -11,6 +11,7 @@ class AirportTraffic extends Page
     public ?int $airportId = null;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
+    protected static ?int $navigationSort = 3;
 
     protected static string $view = 'filament.pages.airport-traffic';
 
