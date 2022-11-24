@@ -6,6 +6,7 @@ use App\Models\Airport;
 use App\Models\VatsimPilot;
 use App\Models\VatsimPilotStatus;
 use Carbon\CarbonInterface;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\Concerns\CanPoll;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -49,13 +50,18 @@ class AirportInbounds extends BaseWidget
                 ->label('Callsign'),
             TextColumn::make('departure_airport')
                 ->label('Departure Airport'),
-            TextColumn::make('vatsim_pilot_status_id')
+            BadgeColumn::make('vatsim_pilot_status_id')
                 ->label('Status')
-                ->formatStateUsing(fn (VatsimPilot $record) => $record->vatsim_pilot_status_id->name),
+                ->formatStateUsing(fn (int $state): string => VatsimPilotStatus::from($state)->name)
+                ->colors([
+                    'primary',
+                    'warning' => VatsimPilotStatus::Descending->value,
+                    'danger' => VatsimPilotStatus::Departing->value
+                ]),
             TextColumn::make('distance_to_destination')
                 ->label('Distance to Destination (NM)')
                 ->formatStateUsing(
-                    fn (VatsimPilot $record) =>
+                    fn (VatsimPilot $record): string|int =>
                         $record->vatsim_pilot_status_id === VatsimPilotStatus::Landed
                             ? '--'
                             : round($record->distance_to_destination),
@@ -63,7 +69,7 @@ class AirportInbounds extends BaseWidget
             TextColumn::make('estimated_arrival_time')
                 ->label('Estimated Arrival Time')
                 ->formatStateUsing(
-                    fn (CarbonInterface $state) => $state->isToday()
+                    fn (CarbonInterface $state): string => $state->isToday()
                         ? $state->format('H:i')
                         : $state->format('Y-m-d H:i')
                 )
