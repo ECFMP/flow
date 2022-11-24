@@ -5,6 +5,7 @@ namespace App\Filament\Pages\AirportTraffic;
 use App\Models\Airport;
 use App\Models\VatsimPilot;
 use App\Models\VatsimPilotStatus;
+use Carbon\CarbonInterface;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\Concerns\CanPoll;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -61,6 +62,11 @@ class AirportInbounds extends BaseWidget
                 ),
             TextColumn::make('estimated_arrival_time')
                 ->label('Estimated Arrival Time')
+                ->formatStateUsing(
+                    fn (CarbonInterface $state) => $state->isToday()
+                        ? $state->format('H:i')
+                        : $state->format('Y-m-d H:i')
+                )
         ];
     }
 }
