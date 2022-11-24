@@ -45,6 +45,6 @@ it('can display inbound aircraft', function () {
         ->create();
 
     livewire(AirportInbounds::class, ['airportId' => $airport->id])
-        ->assertCanSeeTableRecords([$recentlyLanded, $descending, $departing, $cruising], inOrder: true)
+        ->assertCanSeeTableRecords([$recentlyLanded, $descending, $cruising, $departing], inOrder: true)
         ->assertCanNotSeeTableRecords([$landedTooFarInPast, $differentDestination]);
 });
