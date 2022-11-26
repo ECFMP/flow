@@ -17,6 +17,16 @@ class AirportTraffic extends Page
 
     protected static ?string $title = 'Airport Traffic Insights';
 
+    protected $listeners = ['airportIdUpdated'];
+
+    protected function getTitle(): string
+    {
+        return sprintf(
+            'Airport Traffic Insights%s',
+            $this->airportId ? ' - ' . Airport::findOrFail($this->airportId)->icao_code : ''
+        );
+    }
+
     protected static function shouldRegisterNavigation(): bool
     {
         return in_array(
@@ -35,9 +45,9 @@ class AirportTraffic extends Page
         abort_unless(self::shouldRegisterNavigation(), 403);
     }
 
-    public function updatedAirportId()
+    public function airportIdUpdated(int $airportId)
     {
-        $this->emit('airportIdUpdated', $this->airportId);
+        $this->airportId = $airportId;
     }
 
     public function getViewData(): array
