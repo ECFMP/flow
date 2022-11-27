@@ -34,7 +34,7 @@ it('displays partially matched airport options', function () {
         ->assertDontSee('LIRF');
 });
 
-it('airports can be selected by mouse over and click', function () {
+it('airports can be selected', function () {
     Airport::factory()->create(['icao_code' => 'EGCC']);
     $airport = Airport::factory()->create(['icao_code' => 'EGKR']);
     Airport::factory()->create(['icao_code' => 'EGKK']);
@@ -42,28 +42,7 @@ it('airports can be selected by mouse over and click', function () {
 
     livewire(AirportSearch::class)
         ->set('query', 'E')
-        ->call('setHighlight', 2)
-        ->call('selectAirport')
-        ->assertSet('selectedAirport.id', $airport->id)
-        ->assertSet('query', '')
-        ->assertSet('airports', [])
-        ->assertSet('highlightIndex', 0)
-        ->assertEmitted('airportIdUpdated', $airport->id);
-});
-
-it('airports can be selected arrow keys', function () {
-    $airport = Airport::factory()->create(['icao_code' => 'EGCC']);
-    Airport::factory()->create(['icao_code' => 'EGKR']);
-    Airport::factory()->create(['icao_code' => 'EGKK']);
-    Airport::factory()->create(['icao_code' => 'LIRF']);
-
-    livewire(AirportSearch::class)
-        ->set('query', 'E')
-        ->call('incrementHighlight')
-        ->call('incrementHighlight')
-        ->call('decrementHighlight')
-        ->call('decrementHighlight')
-        ->call('selectAirport')
+        ->call('selectAirport', 2)
         ->assertSet('selectedAirport.id', $airport->id)
         ->assertSet('query', '')
         ->assertSet('airports', [])
