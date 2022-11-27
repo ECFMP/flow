@@ -204,6 +204,29 @@ class EstimatedArrivalTimeTest extends TestCase
         $this->assertEquals(['estimated_arrival_time' => Carbon::parse('2022-11-18 17:57:00')], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
     }
 
+    public function testItReturnsNullForDepartingIfNoCruiseTas()
+    {
+        $arrivalAirport = Airport::factory()->create(['latitude' => 1.23, 'longitude' => 3.45]);
+        $pilot = VatsimPilot::factory()->create();
+
+        $data = [
+            'callsign' => $pilot->callsign,
+            'groundspeed' => 400,
+            'latitude' => $arrivalAirport->latitude + 2,
+            'longitude' => $arrivalAirport->longitude,
+            'flight_plan' => [
+                'arrival' => $arrivalAirport->icao_code,
+                'cruise_tas' => 0,
+            ]
+        ];
+
+        $formattedData = [
+            'vatsim_pilot_status_id' => VatsimPilotStatus::Departing,
+        ];
+
+        $this->assertEquals(['estimated_arrival_time' => null], $this->estimatedArrivalTime->processPilotData($data, $formattedData));
+    }
+
     public function testItSetsCurrentTimeIfLanded()
     {
         $arrivalAirport = Airport::factory()->create(['latitude' => 1.23, 'longitude' => 3.45]);
