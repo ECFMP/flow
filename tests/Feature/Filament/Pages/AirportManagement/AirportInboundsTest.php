@@ -44,7 +44,12 @@ it('can display inbound aircraft', function () {
         ->landedMinutesAgo(4)
         ->create();
 
+    $onTheGround = VatsimPilot::factory()
+        ->destination($airport)
+        ->onTheGround()
+        ->create();
+
     livewire(AirportInbounds::class, ['airportId' => $airport->id])
-        ->assertCanSeeTableRecords([$recentlyLanded, $descending, $cruising, $departing], inOrder: true)
+        ->assertCanSeeTableRecords([$recentlyLanded, $descending, $cruising, $departing, $onTheGround], inOrder: true)
         ->assertCanNotSeeTableRecords([$landedTooFarInPast, $differentDestination]);
 });

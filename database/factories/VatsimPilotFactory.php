@@ -50,6 +50,13 @@ class VatsimPilotFactory extends Factory
             ->withEstimatedArrivalTime(Carbon::now()->subMinutes($minutes));
     }
 
+    public function withNoEstimatedArrivalTime(): static
+    {
+        return $this->state(fn () => [
+            'estimated_arrival_time' => null,
+        ]);
+    }
+
     public function withEstimatedArrivalTime(Carbon $time): static
     {
         return $this->state(fn () => [
@@ -74,7 +81,8 @@ class VatsimPilotFactory extends Factory
 
     public function onTheGround(): static
     {
-        return $this->withStatus(VatsimPilotStatus::Ground);
+        return $this->withStatus(VatsimPilotStatus::Ground)
+            ->withNoEstimatedArrivalTime();
     }
 
     public function landed(): static

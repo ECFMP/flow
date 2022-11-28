@@ -39,7 +39,11 @@ class AirportInbounds extends BaseWidget
     public function getTableQuery(): Builder
     {
         return VatsimPilot::where('destination_airport', Airport::find($this->airportId)?->icao_code)
-            ->where('estimated_arrival_time', '>', Carbon::now()->subMinutes(5))
+            ->where(function (Builder $query): void {
+                $query->where('estimated_arrival_time', '>', Carbon::now()->subMinutes(5))
+                   ->orWhereNull('estimated_arrival_time');
+            })
+            ->orderByRaw('estimated_arrival_time IS NULL')
             ->orderBy('estimated_arrival_time');
     }
 
@@ -69,9 +73,12 @@ class AirportInbounds extends BaseWidget
             TextColumn::make('estimated_arrival_time')
                 ->label('Estimated Arrival Time')
                 ->formatStateUsing(
-                    fn (CarbonInterface $state): string => $state->isToday()
-                        ? $state->format('H:i')
-                        : $state->format('Y-m-d H:i')
+                    fn (?CarbonInterface $state): string =>
+                    is_null($state)
+                        ? '--'
+                        : ($state->isToday()
+                            ? $state->format('H:i')
+                            : $state->format('Y-m-d H:i'))
                 )
         ];
     }
