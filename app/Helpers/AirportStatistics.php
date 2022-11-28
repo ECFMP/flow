@@ -56,7 +56,7 @@ class AirportStatistics
         $allInbound = VatsimPilot::where('destination_airport', $airport->icao_code)->get();
 
         return $this->cache[$airportId] = [
-            'total_inbound' => $allInbound->count(),
+            'total_inbound' => $allInbound->where(fn (VatsimPilot $pilot): bool => is_null($pilot->estimated_arrival_time) || $pilot->estimated_arrival_time->gt(Carbon::now()->subMinutes(5)))->count(),
             'landed_last_10_minutes' => $allInbound->where(
                 fn (VatsimPilot $pilot) => $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Landed &&
                 $pilot->estimated_arrival_time > Carbon::now()->subMinutes(10),

@@ -24,13 +24,16 @@ class AirportStatisticsTest extends TestCase
 
         // Should not be included, different ICAO
         VatsimPilot::factory()->destination('1234')->create();
+        VatsimPilot::factory()->destination($airport)->landedMinutesAgo(6)->create();
 
         // Should be included
         VatsimPilot::factory()->destination($airport)->create();
         VatsimPilot::factory()->destination($airport)->create();
         VatsimPilot::factory()->destination($airport)->create();
+        VatsimPilot::factory()->destination($airport)->onTheGround()->create();
+        VatsimPilot::factory()->destination($airport)->landedMinutesAgo(4)->create();
 
-        $this->assertEquals(3, $this->statistics->getTotalInbound($airport->id));
+        $this->assertEquals(5, $this->statistics->getTotalInbound($airport->id));
     }
 
     public function testItReturnsLandedLastTenMinutes()
