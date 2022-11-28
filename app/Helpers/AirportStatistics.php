@@ -46,6 +46,11 @@ class AirportStatistics
         return $this->getAirportStatistics($airportId)['departing_nearby'];
     }
 
+        public function getGroundNearby(int $airportId): int
+        {
+            return $this->getAirportStatistics($airportId)['ground_nearby'];
+        }
+
     private function getAirportStatistics(int $airportId): array
     {
         if (isset($this->cache[$airportId])) {
@@ -68,9 +73,11 @@ class AirportStatistics
             'inbound_60_120_minutes' => $allInbound->where(fn (VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now()->addMinutes(60), Carbon::now()->addMinutes(120)))
                 ->count(),
             'awaiting_departure' => $allInbound->where(fn (VatsimPilot $pilot) => $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Ground)->count(),
-            'departing_nearby' => $allInbound->where(
+            'departing_nearby' => $allInbound->where(fn (VatsimPilot $pilot) =>
+                $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Departing && $pilot->distance_to_destination < 400)->count(),
+            'ground_nearby' => $allInbound->where(
                 fn (VatsimPilot $pilot) =>
-                $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Departing && $pilot->distance_to_destination < 400
+                $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Ground && $pilot->distance_to_destination < 400
             )->count(),
         ];
     }

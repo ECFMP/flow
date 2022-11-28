@@ -34,6 +34,7 @@ class AirportOverview extends BaseWidget
             Card::make('Landed Last 10 Minutes', $this->getCardValue('getLandedLast10Minutes')),
             Card::make('Awaiting Departure', $this->getCardValue('getAwaitingDeparture')),
             Card::make('Departing Within 400nm', $this->getCardValue('getDepartingNearby')),
+            Card::make('Ground Within 400nm', $this->getCardValue('getGroundNearby')),
         ];
     }
 

@@ -313,4 +313,60 @@ class AirportStatisticsTest extends TestCase
 
         $this->assertEquals(4, $this->statistics->getDepartingNearby($airport->id));
     }
+
+    public function testItReturnsGroundNearby()
+    {
+        $airport = Airport::factory()->create();
+
+        // Should not be included, different ICAO
+        VatsimPilot::factory()->destination('1234')
+            ->departing()
+            ->distanceToDestination(100)
+            ->create();
+
+        // Should not be included, wrong status
+        VatsimPilot::factory()->destination($airport)
+            ->distanceToDestination(100)
+            ->departing()
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->distanceToDestination(100)
+            ->descending()
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->distanceToDestination(100)
+            ->cruising()
+            ->create();
+
+        // Should not be included, too far
+        VatsimPilot::factory()->destination($airport)
+            ->distanceToDestination(401)
+            ->onTheGround()
+            ->create();
+
+        // Should be included
+        VatsimPilot::factory()->destination($airport)
+            ->onTheGround()
+            ->distanceToDestination(10)
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->onTheGround()
+            ->distanceToDestination(100)
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->onTheGround()
+            ->distanceToDestination(200)
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->onTheGround()
+            ->distanceToDestination(399)
+            ->create();
+
+        $this->assertEquals(4, $this->statistics->getGroundNearby($airport->id));
+    }
 }
