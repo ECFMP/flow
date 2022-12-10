@@ -295,7 +295,9 @@ class FlowMeasureTest extends TestCase
 
     public function testItReturnsAFlowMeasureWithAMemberEventFilter()
     {
-        $event = Event::factory()->create();
+        $event = Event::factory()
+            ->withVatcanCode()
+            ->create();
         $flowMeasure = FlowMeasure::factory()
             ->withMemberEvent($event)
             ->create();
@@ -326,8 +328,8 @@ class FlowMeasureTest extends TestCase
                         'type' => 'member_event',
                         'value' => [
                             'event_id' => $event->id,
-                            'event_api' => 'testapicode',
-                            'event_vatcan' => 'testvatcancode',
+                            'event_api' => null,
+                            'event_vatcan' => $event->vatcan_code,
                         ],
                     ],
                 ],
@@ -338,7 +340,9 @@ class FlowMeasureTest extends TestCase
 
     public function testItReturnsAFlowMeasureWithAMemberNotEventFilter()
     {
-        $event = Event::factory()->create();
+        $event = Event::factory()
+            ->withVatcanCode()
+            ->create();
         $flowMeasure = FlowMeasure::factory()
             ->withMemberNotEvent($event)
             ->create();
@@ -369,8 +373,8 @@ class FlowMeasureTest extends TestCase
                         'type' => 'member_not_event',
                         'value' => [
                             'event_id' => $event->id,
-                            'event_api' => 'testapicode',
-                            'event_vatcan' => 'testvatcancode',
+                            'event_api' => null,
+                            'event_vatcan' => $event->vatcan_code,
                         ],
                     ],
                 ],
