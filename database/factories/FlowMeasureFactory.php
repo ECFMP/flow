@@ -183,7 +183,7 @@ class FlowMeasureFactory extends Factory
                 'type' => 'member_event',
                 'value' => [
                     'event_id' => (string) $event->id,
-                    'event_api' => 'testapicode',
+                    'event_api' => null,
                     'event_vatcan' => 'testvatcancode',
                 ]
             ]
@@ -197,7 +197,7 @@ class FlowMeasureFactory extends Factory
                 'type' => 'member_not_event',
                 'value' => [
                     'event_id' => (string) $event->id,
-                    'event_api' => 'testapicode',
+                    'event_api' => null,
                     'event_vatcan' => 'testvatcancode',
                 ]
             ]
