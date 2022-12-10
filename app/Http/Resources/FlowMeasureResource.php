@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Helpers\ApiDateTimeFormatter;
 use App\Helpers\FlowMeasureFilterApiFormatter;
+use App\Models\Event;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FlowMeasureResource extends JsonResource
@@ -26,8 +27,8 @@ class FlowMeasureResource extends JsonResource
             'measure' => [
                 'type' => $this->type,
                 'value' => $this->isMandatoryRoute()
-                    ? $this->mandatory_route
-                    : $this->value,
+                ? $this->mandatory_route
+                : $this->value,
             ],
             'filters' => $this->formatFilters($this->filters),
             'notified_flight_information_regions' => $this->notifiedFlightInformationRegions->pluck('id')->toArray(),
@@ -46,18 +47,25 @@ class FlowMeasureResource extends JsonResource
         );
     }
 
-    private function formatSingleFilter(string $type, $value): array|int|string
+    private function formatSingleFilter(string $type, $value): array |int|string
     {
         return match ($type) {
             'ADES', 'ADEP' => FlowMeasureFilterApiFormatter::formatAirportList($value),
-            'level_above', 'level_below' => (int)$value,
-            'level' => array_map(fn ($level) => (int)$level, $value),
-            'member_event', 'member_not_event' => [
-                'event_id' => (int)$value['event_id'],
-                'event_api' => $value['event_api'],
-                'event_vatcan' => $value['event_vatcan'],
-            ],
+            'level_above', 'level_below' => (int) $value,
+            'level' => array_map(fn ($level) => (int) $level, $value),
+            'member_event', 'member_not_event' => $this->formatEventMembershipFilters($value),
             default => $value
         };
+    }
+
+    private function formatEventMembershipFilters($value): array
+    {
+        $event = Event::withTrashed()->where('id', $value)->first();
+
+        return [
+            'event_id' => $event->id,
+            'event_api' => null,
+            'event_vatcan' => $event->vatcan_code,
+        ];
     }
 }
