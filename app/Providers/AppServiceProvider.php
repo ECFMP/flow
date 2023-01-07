@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Filament\Pages\AirportTraffic\AirportInbounds;
 use App\Filament\Pages\AirportTraffic\AirportOverview;
+use App\Filament\Pages\AirportTraffic\InboundGroupsGraph;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;
@@ -67,5 +68,6 @@ class AppServiceProvider extends ServiceProvider
 
         Livewire::component('airport-overview', AirportOverview::class);
         Livewire::component('airport-inbounds', AirportInbounds::class);
+        Livewire::component('airport-graph', InboundGroupsGraph::class);
     }
 }

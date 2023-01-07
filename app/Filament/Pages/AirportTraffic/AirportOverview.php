@@ -28,11 +28,7 @@ class AirportOverview extends BaseWidget
     {
         return [
             Card::make('Total Inbound', $this->getCardValue('getTotalInbound')),
-            Card::make('Inbound Next 30 Minutes', $this->getCardValue('getInbound30Minutes')),
-            Card::make('Inbound Next 30-60 Minutes', $this->getCardValue('getInbound30To60Minutes')),
-            Card::make('Inbound Next 60-120 Minutes', $this->getCardValue('getInbound60To120Minutes')),
             Card::make('Landed Last 10 Minutes', $this->getCardValue('getLandedLast10Minutes')),
-            Card::make('Awaiting Departure', $this->getCardValue('getAwaitingDeparture')),
             Card::make('Departing Within 400nm', $this->getCardValue('getDepartingNearby')),
             Card::make('Ground Within 400nm', $this->getCardValue('getGroundNearby')),
         ];
