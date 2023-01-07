@@ -16,9 +16,7 @@ class InboundGroupsGraph extends LineChartWidget
     public function airportIdUpdated(int $airportId)
     {
         $this->airportId = $airportId;
-
-        $statistics = app()->make(AirportStatistics::class);
-        $graphData = $statistics->getInboundGraphData($this->airportId);
+        $this->updateChartData();
     }
 
     protected function getHeading(): ?string
