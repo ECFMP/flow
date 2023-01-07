@@ -14,7 +14,7 @@ class AirportStatisticsTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        Carbon::setTestNow(Carbon::now());
+        Carbon::setTestNow(Carbon::now()->startOfMinute());
         $this->statistics = $this->app->make(AirportStatistics::class);
     }
 
@@ -368,5 +368,78 @@ class AirportStatisticsTest extends TestCase
             ->create();
 
         $this->assertEquals(4, $this->statistics->getGroundNearby($airport->id));
+    }
+
+    public function testItReturnsAircraftSortedIntoGraphGroups()
+    {
+        $airport = Airport::factory()->create();
+
+        // Should not be included, different ICAO
+        VatsimPilot::factory()->destination('1234')
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(100))
+            ->create();
+
+        // Should not be included, wrong status
+        VatsimPilot::factory()->destination($airport)
+            ->landed()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(100))
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->onTheGround()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(100))
+            ->create();
+
+        // Should not be included, outside timeframe
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(121))
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(125))
+            ->create();
+
+        // Should be included
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(22))
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(29))
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(30))
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(35))
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(53))
+            ->create();
+
+        VatsimPilot::factory()->destination($airport)
+            ->cruising()
+            ->withEstimatedArrivalTime(Carbon::now()->addMinutes(112))
+            ->create();
+
+        $expected = [
+            30 => 2,
+            60 => 3,
+            90 => 0,
+            120 => 1,
+        ];
+
+        $this->assertEquals($expected, $this->statistics->getInboundGraphData($airport->id)->toArray());
     }
 }

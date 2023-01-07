@@ -6,6 +6,7 @@ use App\Models\Airport;
 use App\Models\VatsimPilot;
 use App\Models\VatsimPilotStatus;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 class AirportStatistics
 {
@@ -46,10 +47,15 @@ class AirportStatistics
         return $this->getAirportStatistics($airportId)['departing_nearby'];
     }
 
-        public function getGroundNearby(int $airportId): int
-        {
-            return $this->getAirportStatistics($airportId)['ground_nearby'];
-        }
+    public function getGroundNearby(int $airportId): int
+    {
+        return $this->getAirportStatistics($airportId)['ground_nearby'];
+    }
+
+    public function getInboundGraphData(int $airportId): Collection
+    {
+        return $this->getAirportStatistics($airportId)['inbound_graph_data'];
+    }
 
     private function getAirportStatistics(int $airportId): array
     {
@@ -79,6 +85,7 @@ class AirportStatistics
                 fn (VatsimPilot $pilot) =>
                 $pilot->vatsim_pilot_status_id === VatsimPilotStatus::Ground && $pilot->distance_to_destination < 400
             )->count(),
+            'inbound_graph_data' => $this->sortAircraftIntoLandingGroups($allInbound),
         ];
     }
 
@@ -87,7 +94,25 @@ class AirportStatistics
         return $pilot->vatsim_pilot_status_id !== VatsimPilotStatus::Landed &&
             $pilot->vatsim_pilot_status_id !== VatsimPilotStatus::Ground &&
             $pilot->estimated_arrival_time &&
-                $pilot->estimated_arrival_time->gte($from) &&
-                $pilot->estimated_arrival_time->lt($to);
+            $pilot->estimated_arrival_time->gte($from) &&
+            $pilot->estimated_arrival_time->lt($to);
+    }
+
+    private function getMinutesUntilLandingGroup(VatsimPilot $pilot): int
+    {
+        return floor((Carbon::now()->diffInMinutes($pilot->estimated_arrival_time) / 30) + 1) * 30;
+    }
+
+    private function sortAircraftIntoLandingGroups(Collection $aircraft): Collection
+    {
+        $groupedAircraft = $aircraft->where(fn (VatsimPilot $pilot) => $this->landingBetween($pilot, Carbon::now(), Carbon::now()->addMinutes(120)))
+            ->groupBy(fn (VatsimPilot $pilot) => $this->getMinutesUntilLandingGroup($pilot))
+            ->map(fn (Collection $items) => $items->count());
+        $aircraftGroups = collect();
+        for ($i = 30; $i <= 120; $i += 30) {
+            $aircraftGroups[$i] = $groupedAircraft->has($i) ? $groupedAircraft[$i] : 0;
+        }
+
+        return $aircraftGroups;
     }
 }
