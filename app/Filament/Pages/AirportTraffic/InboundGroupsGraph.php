@@ -28,7 +28,6 @@ class InboundGroupsGraph extends LineChartWidget
 
     protected function getData(): array
     {
-
         if (!$this->airportId) {
             return [];
         }
