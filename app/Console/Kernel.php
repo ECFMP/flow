@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\OptimiseTables;
 use App\Console\Commands\SendDiscordNotifications;
+use App\Console\Commands\UpdateNetworkData;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command(SendDiscordNotifications::class)->everyMinute();
         $schedule->command(OptimiseTables::class)->daily();
+        $schedule->command(UpdateNetworkData::class)->everyFiveMinutes();
     }
 
     /**

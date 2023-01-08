@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AirportGroupResource\RelationManagers;
 
+use App\Filament\Helpers\HasCoordinateInputs;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Resources\Form;
@@ -10,6 +11,8 @@ use Filament\Resources\RelationManagers\RelationManager;
 
 class AirportsRelationManager extends RelationManager
 {
+    use HasCoordinateInputs;
+
     protected static string $relationship = 'airports';
 
     protected static ?string $recordTitleAttribute = 'icao_code';
@@ -23,8 +26,9 @@ class AirportsRelationManager extends RelationManager
                 Forms\Components\TextInput::make('icao_code')
                     ->label(__('ICAO code'))
                     ->required()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->length(4),
+                ...self::coordinateInputs(),
             ]);
     }
 
@@ -36,6 +40,7 @@ class AirportsRelationManager extends RelationManager
             ])
             ->filters([
                 //
+
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

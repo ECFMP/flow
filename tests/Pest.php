@@ -13,7 +13,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 |
 */
 
-uses(Tests\FrontendTestCase::class, RefreshDatabase::class)->in('Feature');
+uses(Tests\FrontendTestCase::class, RefreshDatabase::class)
+    ->in('Feature');
+
+uses(Tests\FrontendTestCase::class, RefreshDatabase::class)
+    ->in('Http/Livewire');
 
 /*
 |--------------------------------------------------------------------------
