@@ -2397,16 +2397,16 @@
         },
         {
             "name": "laravel/tinker",
-            "version": "v2.7.2",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/tinker.git",
-                "reference": "dff39b661e827dae6e092412f976658df82dbac5"
+                "reference": "5062061b4924af3392225dd482ca7b4d85d8b8ef"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/tinker/zipball/dff39b661e827dae6e092412f976658df82dbac5",
-                "reference": "dff39b661e827dae6e092412f976658df82dbac5",
+                "url": "https://api.github.com/repos/laravel/tinker/zipball/5062061b4924af3392225dd482ca7b4d85d8b8ef",
+                "reference": "5062061b4924af3392225dd482ca7b4d85d8b8ef",
                 "shasum": ""
             },
             "require": {
@@ -2459,9 +2459,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/tinker/issues",
-                "source": "https://github.com/laravel/tinker/tree/v2.7.2"
+                "source": "https://github.com/laravel/tinker/tree/v2.7.3"
             },
-            "time": "2022-03-23T12:38:24+00:00"
+            "time": "2022-11-09T15:11:38+00:00"
         },
         {
             "name": "league/commonmark",
@@ -5034,16 +5034,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.11.5",
+            "version": "v0.11.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "c23686f9c48ca202710dbb967df8385a952a2daf"
+                "reference": "e9eadffbed9c9deb5426fd107faae0452bf20a36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/c23686f9c48ca202710dbb967df8385a952a2daf",
-                "reference": "c23686f9c48ca202710dbb967df8385a952a2daf",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/e9eadffbed9c9deb5426fd107faae0452bf20a36",
+                "reference": "e9eadffbed9c9deb5426fd107faae0452bf20a36",
                 "shasum": ""
             },
             "require": {
@@ -5104,9 +5104,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.11.5"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.11.10"
             },
-            "time": "2022-05-27T18:03:49+00:00"
+            "time": "2022-12-23T17:47:18+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
