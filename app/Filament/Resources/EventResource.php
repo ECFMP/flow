@@ -60,12 +60,12 @@ class EventResource extends Resource
                     ->hintIcon('heroicon-o-folder')
                     ->searchable()
                     ->options(
-                        fn (Event $record) =>
+                        fn (?Event $record) =>
                         in_array(auth()->user()->role->key, [
                             RoleKey::SYSTEM,
                             RoleKey::NMT
                         ]) ? self::setFirOptions(FlightInformationRegion::all()) :
-                            self::setFirOptions(collect([$record->flightInformationRegion->id => $record->flightInformationRegion])->merge(auth()->user()
+                            self::setFirOptions(collect(is_null($record) ? [] : [$record->flightInformationRegion->id => $record->flightInformationRegion])->merge(auth()->user()
                                 ->flightInformationRegions))
                     )
                     ->required(),
