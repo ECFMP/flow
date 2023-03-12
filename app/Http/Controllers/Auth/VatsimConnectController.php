@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class VatsimConnectController
@@ -36,6 +37,7 @@ class VatsimConnectController
 
             return to_route('filament.pages.dashboard');
         } catch (Exception $e) {
+            Log::error('Exception on login: ' . $e->getMessage());
             Filament::notify('danger', __('Something went wrong, please try again'));
             return to_route('filament.auth.login');
         }
