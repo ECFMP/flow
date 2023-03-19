@@ -453,3 +453,4 @@ jobs:
           workflow: update-flow.yml
           repo: ECFMP/flow_docker
           inputs: '{ "flow-branch": "$GITHUB_REF" }'
+          token: ${{ secrets.DOCKER_WORKFLOW_TOKEN }}
