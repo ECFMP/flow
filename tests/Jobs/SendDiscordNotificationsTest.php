@@ -2,7 +2,7 @@
 
 namespace Tests\Jobs;
 
-use App\Discord\FlowMeasure\Sender\Sender;
+use App\Discord\Message\Sender\Sender;
 use App\Jobs\SendDiscordNotifications;
 use Illuminate\Support\Facades\Config;
 use Mockery;

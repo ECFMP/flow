@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Discord\FlowMeasure\Sender\Sender;
+use App\Discord\Message\Sender\Sender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
