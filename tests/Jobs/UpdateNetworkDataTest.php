@@ -1,10 +1,9 @@
 <?php
 
-namespace Tests\Console\Commands;
+namespace Tests\Jobs;
 
-use App\Console\Commands\UpdateNetworkData;
+use App\Jobs\UpdateNetworkData;
 use App\Vatsim\NetworkDataDownloader;
-use Illuminate\Support\Facades\Artisan;
 use Mockery;
 use Tests\TestCase;
 
@@ -16,6 +15,7 @@ class UpdateNetworkDataTest extends TestCase
         $downloaderMock->shouldReceive('updateNetworkData')->once();
         $this->app->instance(NetworkDataDownloader::class, $downloaderMock);
 
-        Artisan::call(UpdateNetworkData::class);
+        $job = $this->app->make(UpdateNetworkData::class);
+        $job->handle();
     }
 }

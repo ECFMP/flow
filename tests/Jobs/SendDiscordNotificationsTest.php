@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Console\Commands;
+namespace Tests\Jobs;
 
 use App\Discord\Message\Sender\Sender;
-use Illuminate\Support\Facades\Artisan;
+use App\Jobs\SendDiscordNotifications;
 use Illuminate\Support\Facades\Config;
 use Mockery;
 use Tests\TestCase;
@@ -18,7 +18,8 @@ class SendDiscordNotificationsTest extends TestCase
         $senderMock->shouldReceive('sendDiscordMessages')->once();
         $this->app->instance(Sender::class, $senderMock);
 
-        Artisan::call('discord:send-notifications');
+        $job = $this->app->make(SendDiscordNotifications::class);
+        $job->handle();
     }
 
     public function testItDoesntRunsNotificationSendingIfSwitchedOff()
@@ -29,6 +30,7 @@ class SendDiscordNotificationsTest extends TestCase
         $senderMock->shouldReceive('sendDiscordMessages')->never();
         $this->app->instance(Sender::class, $senderMock);
 
-        Artisan::call('discord:send-notifications');
+        $job = $this->app->make(SendDiscordNotifications::class);
+        $job->handle();
     }
 }

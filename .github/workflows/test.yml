@@ -83,7 +83,7 @@ jobs:
 
       - name: Run Tests
         run: ./vendor/bin/sail artisan test
-        
+
   release:
     name: "Release"
     runs-on: ubuntu-latest
@@ -94,7 +94,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           persist-credentials: false
-          
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -272,7 +272,7 @@ jobs:
           target_url: https://flow-dev.ecfmp.net
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
-          
+
   deploy-production:
     name: "Deploy To Production"
     runs-on: ubuntu-latest
@@ -440,3 +440,16 @@ jobs:
           target_url: https://ecfmp.vatsim.net
           state: "success"
           deployment_id: ${{ steps.github_deployment.outputs.deployment_id }}
+
+  update-deploy-reference:
+    name: "Update Deploy App Reference"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/development' || github.ref == 'refs/heads/main')
+    #needs: [ test ]
+    steps:
+      - name: Dispatch
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update-flow.yml
+          repo: ECFMP/flow_docker
+          token: ${{ secrets.DOCKER_WORKFLOW_TOKEN }}
