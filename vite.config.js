@@ -6,7 +6,7 @@ export default defineConfig({
         laravel([
             'resources/css/filament.css',
             // 'resources/css/app.css',
-            // 'resources/js/app.js',
+            'resources/js/app.js',
         ]),
     ],
 });
