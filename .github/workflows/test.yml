@@ -445,7 +445,7 @@ jobs:
     name: "Update Deploy App Reference"
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/development' || github.ref == 'refs/heads/main')
-    #needs: [ test ]
+    needs: [ test ]
     steps:
       - name: Dispatch
         uses: benc-uk/workflow-dispatch@v1
