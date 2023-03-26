@@ -5,8 +5,8 @@ export default defineConfig({
     plugins: [
         laravel([
             'resources/css/filament.css',
-            // 'resources/css/app.css',
-            // 'resources/js/app.js',
+            'resources/css/app.css',
+            'resources/js/app.js',
         ]),
     ],
 });
