@@ -106,7 +106,7 @@ jobs:
         run: npx semantic-release
 
   update-deploy-reference:
-    name: "Update Deploy App Reference"
+    name: "Trigger Docker Build"
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (github.ref == 'refs/heads/development' || github.ref == 'refs/heads/main')
     needs: [ test ]
