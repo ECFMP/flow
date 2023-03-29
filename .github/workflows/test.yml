@@ -114,6 +114,6 @@ jobs:
       - name: Dispatch
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: update-flow.yml
+          workflow: build.yml
           repo: ECFMP/flow_docker
           token: ${{ secrets.DOCKER_WORKFLOW_TOKEN }}
