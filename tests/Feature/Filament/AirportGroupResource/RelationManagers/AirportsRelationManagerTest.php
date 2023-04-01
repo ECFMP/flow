@@ -151,9 +151,9 @@ it('can attach airport', function () {
 
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
-    ])->callTableAction(AttachAction::class, $airport, [
-            'recordId' => $airport->getKey(),
-        ])->assertHasNoTableActionErrors()
+    ])->callTableAction(AttachAction::class, data: [
+        'recordId' => $airport->getKey(),
+    ])->assertHasNoTableActionErrors()
         ->assertCanSeeTableRecords([$airport]);
 });
 
@@ -170,9 +170,9 @@ it('can validate attach input', function () {
 
     livewire(AirportGroupResource\RelationManagers\AirportsRelationManager::class, [
         'ownerRecord' => $airportGroup,
-    ])->callTableAction(AttachAction::class, $airport, [
-            'recordId' => null,
-        ])->assertHasTableActionErrors(['recordId' => 'required']);
+    ])->callTableAction(AttachAction::class, data: [
+        'recordId' => null,
+    ])->assertHasTableActionErrors(['recordId' => 'required']);
 });
 
 it('can detach airport', function () {
