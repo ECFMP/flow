@@ -119,7 +119,7 @@ class PluginTest extends TestCase
                         FlightInformationRegion::all()
                     )->toArray(new Request()),
                     'flow_measures' => FlowMeasureResource::collection(
-                        FlowMeasure::whereIn('id', [$active->id, $notStarted->id, $finished->id, $deleted->id])->get()
+                        FlowMeasure::whereIn('id', [$active->id, $notStarted->id, $finished->id, $deleted->id])->withTrashed()->get()
                     )->toArray(new Request()),
                 ]
             );
