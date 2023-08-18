@@ -24,9 +24,9 @@ class Event extends Model
         'vatcan_code'
     ];
 
-    protected $dates = [
-        'date_start',
-        'date_end',
+    protected $casts = [
+        'date_start' => 'datetime',
+        'date_end' => 'datetime',
     ];
 
     public function flightInformationRegion(): BelongsTo
