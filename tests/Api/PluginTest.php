@@ -10,12 +10,64 @@ use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class PluginTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        Cache::forget('plugin_api_response');
+    }
+
+    public function tearDown(): void
+    {
+        Cache::forget('plugin_api_response');
+        parent::tearDown();
+    }
+
     public function testItReturnsEmptyPluginApiData()
     {
+        $this->get('api/v1/plugin')
+            ->assertStatus(200)
+            ->assertExactJson(
+                [
+                    'events' => [],
+                    'flight_information_regions' => [],
+                    'flow_measures' => [],
+                ]
+            );
+    }
+
+    public function testItReturnsCachedData()
+    {
+        // Put some fake data in cache
+        Cache::remember(
+            'plugin_api_response',
+            Carbon::now()->addMinutes(1),
+            fn () => [
+                'events' => [],
+                'flight_information_regions' => [],
+                'flow_measures' => [],
+            ]
+        );
+
+        FlightInformationRegion::factory()->count(5)->create();
+        Event::factory()->count(3)->create();
+
+        // Should show, if the data weren't cached
+        $active = FlowMeasure::factory()
+            ->create();
+
+        $notStarted = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $finished = FlowMeasure::factory()
+            ->finished()
+            ->create();
+
         $this->get('api/v1/plugin')
             ->assertStatus(200)
             ->assertExactJson(
