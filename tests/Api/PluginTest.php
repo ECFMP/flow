@@ -75,4 +75,53 @@ class PluginTest extends TestCase
                 ]
             );
     }
+
+    public function testItReturnsPluginApiDataWithDeleted()
+    {
+        FlightInformationRegion::factory()->count(5)->create();
+        Event::factory()->count(3)->create();
+
+        // Should show
+        $active = FlowMeasure::factory()
+            ->create();
+
+        $notStarted = FlowMeasure::factory()
+            ->notStarted()
+            ->create();
+
+        $finished = FlowMeasure::factory()
+            ->finished()
+            ->create();
+
+        // Should show, deleted
+        $deleted = FlowMeasure::factory()
+            ->create();
+        $deleted->delete();
+
+        // Shouldn't show, too far in the future
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->addDay()->addHour(), Carbon::now()->addDay()->addHours(2))
+            ->withEvent()
+            ->create();
+
+        // Shouldn't show, too far in the past
+        FlowMeasure::factory()
+            ->withTimes(Carbon::now()->subDay()->subHours(3), Carbon::now()->subDay()->subHours(2))
+            ->withEvent()
+            ->create();
+
+        $this->get('api/v1/plugin?deleted=1')
+            ->assertStatus(200)
+            ->assertExactJson(
+                [
+                    'events' => EventResource::collection(Event::all())->toArray(new Request()),
+                    'flight_information_regions' => FlightInformationRegionResource::collection(
+                        FlightInformationRegion::all()
+                    )->toArray(new Request()),
+                    'flow_measures' => FlowMeasureResource::collection(
+                        FlowMeasure::whereIn('id', [$active->id, $notStarted->id, $finished->id, $deleted->id])->withTrashed()->get()
+                    )->toArray(new Request()),
+                ]
+            );
+    }
 }
