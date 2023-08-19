@@ -30,6 +30,9 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    // Should the app make all routes into HTTPS, useful for asset serving
+    'secure_routes' => env('SECURE_ROUTES', true),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode

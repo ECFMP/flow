@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Log;
 
 class OptimiseTables implements ShouldQueue, ShouldBeUnique
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private const TABLES_TO_OPTIMISE = [
         'events',
