@@ -35,14 +35,11 @@ class FlowMeasure extends Model
         'end_time',
     ];
 
-    protected $dates = [
-        'start_time',
-        'end_time',
-    ];
-
     protected $casts = [
         'mandatory_route' => 'array',
         'filters' => 'array',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
     ];
 
     public function user(): BelongsTo
