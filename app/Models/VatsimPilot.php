@@ -23,16 +23,13 @@ class VatsimPilot extends Model
         'distance_to_destination',
     ];
 
-    protected $dates = [
-        'estimated_arrival_time',
-    ];
-
     protected $casts = [
         'cid' => 'integer',
         'altitude' => 'integer',
         'cruise_altitude' => 'integer',
         'vatsim_pilot_status_id' => VatsimPilotStatus::class,
         'distance_to_destination' => 'double',
+        'estimated_arrival_time' => 'datetime',
     ];
 
     public function getCoordinate(): Coordinate

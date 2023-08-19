@@ -13,7 +13,10 @@ use Log;
 
 class SendDiscordNotifications implements ShouldQueue, ShouldBeUnique
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     private readonly Sender $sender;
 
