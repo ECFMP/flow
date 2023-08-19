@@ -8,6 +8,7 @@ use App\Filament\Pages\AirportTraffic\InboundGroupsGraph;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\HtmlString;
 use App\Http\Resources\EventResource;
 use Illuminate\Support\ServiceProvider;
@@ -35,11 +36,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Resource wrapping
         AirportGroupResource::withoutWrapping();
         EventResource::withoutWrapping();
         FlowMeasureResource::withoutWrapping();
         FlightInformationRegionResource::withoutWrapping();
 
+        // If we're in production, all routes and assets should be HTTPS
+        if (config('app.secure_routes')) {
+            URL::forceScheme('https');
+        }
+
+        // Filament
         Filament::pushMeta([
             new HtmlString('<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">'),
             new HtmlString('<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">'),
