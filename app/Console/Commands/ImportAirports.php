@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Imports\AirportImport;
-use App\Models\DivisionDiscordWebhook;
 use Illuminate\Console\Command;
 use InvalidArgumentException;
 use Maatwebsite\Excel\Excel;
@@ -34,7 +33,6 @@ class ImportAirports extends Command
      */
     public function handle(AirportImport $airportImport)
     {
-        dd(DivisionDiscordWebhook::find(1)->flightInformationRegions->first());
         if (!Storage::disk(self::DISK_NAME)->exists($this->argument('file_name'))) {
             throw new InvalidArgumentException(sprintf('Airport file not found: %s', $this->argument('file_name')));
         }
