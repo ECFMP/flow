@@ -124,7 +124,7 @@ class DivisionDiscordWebhookPolicy
         return false;
     }
 
-        /**
+    /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
@@ -139,7 +139,7 @@ class DivisionDiscordWebhookPolicy
         ]);
     }
 
-        /**
+    /**
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
