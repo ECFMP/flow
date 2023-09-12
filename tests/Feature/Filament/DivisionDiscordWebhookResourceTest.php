@@ -8,6 +8,7 @@ use App\Models\DivisionDiscordWebhook;
 use App\Models\User;
 
 use Illuminate\Support\Str;
+
 use function Pest\Livewire\livewire;
 
 it('can render index page with permissions', function () {
@@ -187,7 +188,7 @@ it('rejects invalid urls on create', function () {
 
 it('nmt and system can edit', function () {
     $webhook = DivisionDiscordWebhook::factory()->create();
-    
+
     $this->get(DivisionDiscordWebhookResource::getUrl('edit', ['record' => $webhook->id]))->assertForbidden();
 
     $this->actingAs(User::factory()->eventManager()->create());
