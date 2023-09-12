@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DivisionDiscordWebhookResource\Pages;
+use App\Filament\Resources\DivisionDiscordWebhookResource\RelationManagers\FlightinformationregionsRelationManager;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlightInformationRegion;
 use Filament\Forms\Components\TextInput;
@@ -30,7 +31,8 @@ class DivisionDiscordWebhookResource extends Resource
                 TextInput::make('url')
                     ->url()
                     ->required()
-                    ->maxLength(500
+                    ->maxLength(
+                        500
                     )
             ]);
     }
@@ -42,7 +44,8 @@ class DivisionDiscordWebhookResource extends Resource
                 TextColumn::make('id')
                     ->label(__('id')),
                     TextColumn::make('description')
-                    ->label(__('description')),
+                    ->label(__('description'))
+                    ->searchable(),
                 TextColumn::make('url')
                     ->label(__('URL')),
                 TagsColumn::make('firs')
@@ -51,21 +54,15 @@ class DivisionDiscordWebhookResource extends Resource
                 TextColumn::make('created_at')
                     ->label(__('Created At')),
             ])
-            ->filters([
-                //
-            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 
     public static function getRelations(): array
     {
         return [
-            //
+            FlightinformationregionsRelationManager::class,
         ];
     }
 
