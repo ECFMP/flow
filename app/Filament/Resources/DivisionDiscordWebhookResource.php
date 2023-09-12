@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DivisionDiscordWebhookResource\Pages;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlightInformationRegion;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -22,7 +23,15 @@ class DivisionDiscordWebhookResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('description')
+                    ->label(__('Description'))
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('url')
+                    ->url()
+                    ->required()
+                    ->maxLength(500
+                    )
             ]);
     }
 
