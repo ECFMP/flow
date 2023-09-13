@@ -2,12 +2,15 @@
 
 namespace App\Filament\Resources\FlightInformationRegionResource\RelationManagers;
 
+use App\Models\DiscordTag;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Actions\AttachAction;
+use Illuminate\Database\Eloquent\Builder;
 
 class DiscordTagsRelationManager extends RelationManager
 {
@@ -42,7 +45,20 @@ class DiscordTagsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make(),
+                Tables\Actions\AttachAction::make()
+                    ->form(fn (AttachAction $action) => [
+                        $action->getRecordSelect()
+                            ->getSearchResultsUsing(fn (string $query, DiscordTagsRelationManager $livewire) => DiscordTag::whereDoesntHave('flightInformationRegions', function (Builder $fir) use ($livewire) {
+                                $fir->where('flight_information_regions.id', $livewire->ownerRecord->id);
+                            })
+                            ->where(function (Builder $subquery) use ($query) {
+                                $subquery->where('tag', 'like', '%' . $query . '%')
+                                ->orWhere('description', 'like', '%' . $query . '%');
+                            })
+                            ->get()
+                            ->mapWithKeys(fn (DiscordTag $tag) => [$tag->id => sprintf('%s (%s)', $tag->description, $tag->tag)])
+                            ->toArray())
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
