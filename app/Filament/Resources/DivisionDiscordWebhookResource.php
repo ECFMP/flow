@@ -46,8 +46,6 @@ class DivisionDiscordWebhookResource extends Resource
                     TextColumn::make('description')
                     ->label(__('description'))
                     ->searchable(),
-                TextColumn::make('url')
-                    ->label(__('URL')),
                 TagsColumn::make('firs')
                     ->getStateUsing(fn (DivisionDiscordWebhook $record) => $record->flightInformationRegions->map(fn (FlightInformationRegion $fir) => $fir->identifierName)->toArray())
                     ->label(__('FIRs')),
