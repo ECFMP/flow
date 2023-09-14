@@ -20,6 +20,8 @@ class DivisionDiscordWebhookResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $navigationGroup = 'Admin';
+
     public static function form(Form $form): Form
     {
         return $form
@@ -46,8 +48,6 @@ class DivisionDiscordWebhookResource extends Resource
                     TextColumn::make('description')
                     ->label(__('description'))
                     ->searchable(),
-                TextColumn::make('url')
-                    ->label(__('URL')),
                 TagsColumn::make('firs')
                     ->getStateUsing(fn (DivisionDiscordWebhook $record) => $record->flightInformationRegions->map(fn (FlightInformationRegion $fir) => $fir->identifierName)->toArray())
                     ->label(__('FIRs')),
