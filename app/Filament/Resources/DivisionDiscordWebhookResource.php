@@ -19,7 +19,7 @@ class DivisionDiscordWebhookResource extends Resource
     protected static ?string $model = DivisionDiscordWebhook::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-    
+
     protected static ?string $navigationGroup = 'Admin';
 
     public static function form(Form $form): Form
