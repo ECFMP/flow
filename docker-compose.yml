@@ -43,8 +43,10 @@ services:
         healthcheck:
             test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
             interval: 10s
-            retries: 5
-            timeout: 5s
+            retries: 10
+            timeout: 100s
+            start_period: 15s
+            start_interval: 1s
 networks:
     sail:
         driver: bridge
