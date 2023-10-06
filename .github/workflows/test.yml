@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
