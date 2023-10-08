@@ -21,7 +21,7 @@ class NotifiedWebhookFilter implements FilterInterface
     {
         return $this->existingNotificationDoesntExist(
             $flowMeasure->notifiedDiscordNotifications()
-                ->where('discord_notification_flow_measure.notified_as', $flowMeasure->identifier),
+                ->where('division_discord_notification_flow_measure.notified_as', $flowMeasure->identifier),
             $webhook
         );
     }

@@ -4,7 +4,7 @@ namespace App\Discord\FlowMeasure\Helper;
 
 use App\Discord\Webhook\WebhookInterface;
 use App\Enums\DiscordNotificationType;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\FlowMeasure;
 
 class NotificationReissuer implements NotificationReissuerInterface
@@ -34,14 +34,14 @@ class NotificationReissuer implements NotificationReissuerInterface
             ->get();
 
         return $notificationsOfType->filter(
-            fn (
-                DiscordNotification $notification
-            ) => $notification->pivot->notified_as !== $this->measure->identifier
+            fn(
+            DivisionDiscordNotification $notification
+        ) => $notification->pivot->notified_as !== $this->measure->identifier
         )->isNotEmpty() && $notificationsOfType->filter(
-            fn (
-                DiscordNotification $notification
+                fn(
+                DivisionDiscordNotification $notification
             ) => $notification->pivot->notified_as === $this->measure->identifier
-        )->isEmpty();
+            )->isEmpty();
     }
 
     public function measure(): FlowMeasure

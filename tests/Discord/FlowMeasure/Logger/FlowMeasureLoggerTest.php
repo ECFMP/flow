@@ -4,7 +4,7 @@ namespace Tests\Discord\FlowMeasure\Logger;
 
 use App\Discord\FlowMeasure\Logger\FlowMeasureLogger;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlowMeasure;
 use Tests\TestCase;
@@ -13,7 +13,7 @@ class FlowMeasureLoggerTest extends TestCase
 {
     public function testItLogsTheNotificationForEcfmp()
     {
-        $notification = DiscordNotification::factory()->create();
+        $notification = DivisionDiscordNotification::factory()->create();
         $measure = FlowMeasure::factory()->create();
 
         $logger = new FlowMeasureLogger($measure, DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
@@ -24,7 +24,7 @@ class FlowMeasureLoggerTest extends TestCase
             [
                 'log_name' => 'Discord',
                 'description' => 'Sending discord notification',
-                'subject_type' => 'App\Models\DiscordNotification',
+                'subject_type' => 'App\Models\DivisionDiscordNotification',
                 'event' => $measure->identifier . ' - Activated',
             ]
         );
@@ -33,7 +33,7 @@ class FlowMeasureLoggerTest extends TestCase
     public function testItLogsTheNotificationForDivisions()
     {
         $webhook = DivisionDiscordWebhook::factory()->create();
-        $notification = DiscordNotification::factory()->toDivisionWebhook($webhook)->create();
+        $notification = DivisionDiscordNotification::factory()->toDivisionWebhook($webhook)->create();
         $measure = FlowMeasure::factory()->create();
 
         $logger = new FlowMeasureLogger($measure, DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED);
@@ -44,7 +44,7 @@ class FlowMeasureLoggerTest extends TestCase
             [
                 'log_name' => 'Discord',
                 'description' => 'Sending discord notification',
-                'subject_type' => 'App\Models\DiscordNotification',
+                'subject_type' => 'App\Models\DivisionDiscordNotification',
                 'event' => $measure->identifier . ' - Activated',
             ]
         );

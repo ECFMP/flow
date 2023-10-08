@@ -118,7 +118,7 @@ class FlowMeasure extends Model
 
     public function discordNotifications(): BelongsToMany
     {
-        return $this->belongsToMany(DiscordNotification::class)
+        return $this->belongsToMany(DivisionDiscordNotification::class)
             ->withPivot(['discord_notification_type_id', 'notified_as'])
             ->withTimestamps();
     }
@@ -180,7 +180,7 @@ class FlowMeasure extends Model
         return array_values(
             array_filter(
                 $this->filters,
-                fn (array $filter) => FilterType::tryFrom($filter['type']) === $filterType
+                fn(array $filter) => FilterType::tryFrom($filter['type']) === $filterType
             )
         );
     }
@@ -194,7 +194,7 @@ class FlowMeasure extends Model
     {
         return array_filter(
             $this->filters,
-            fn (array $filter) => !in_array(
+            fn(array $filter) => !in_array(
                 FilterType::tryFrom($filter['type']),
                 [FilterType::DEPARTURE_AIRPORTS, FilterType::ARRIVAL_AIRPORTS]
             )
@@ -215,7 +215,8 @@ class FlowMeasure extends Model
 
     public function status(): Attribute
     {
-        return new Attribute(function () {
+        return new Attribute(function ()
+        {
             if ($this->trashed()) {
                 return FlowMeasureStatus::DELETED;
             }

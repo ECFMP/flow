@@ -5,7 +5,7 @@ namespace Tests\Discord\FlowMeasure\Webhook\Filter;
 use App\Discord\FlowMeasure\Webhook\Filter\WithdrawnWebhookFilter;
 use App\Discord\Webhook\EcfmpWebhook;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DiscordNotificationType;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlowMeasure;
@@ -28,7 +28,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldUseEcfmpWebhookIfItHasBeenNotified()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()->create();
+        $discordNotification = DivisionDiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
                 $discordNotification->id => [
@@ -50,7 +50,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldUseEcfmpWebhookIfItHasBeenActivated()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()->create();
+        $discordNotification = DivisionDiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
                 $discordNotification->id => [
@@ -72,7 +72,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldNotUseEcfmpWebhookIfItHasBeenWithdrawn()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()->create();
+        $discordNotification = DivisionDiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
                 $discordNotification->id => [
@@ -105,7 +105,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldNotUseEcfmpWebhookIfItHasBeenExpired()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()->create();
+        $discordNotification = DivisionDiscordNotification::factory()->create();
         $measure->discordNotifications()->attach(
             [
                 $discordNotification->id => [
@@ -138,7 +138,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldUseDivisionWebhookIfItHasBeenNotified()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
         $measure->discordNotifications()->attach(
@@ -162,7 +162,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldUseDivisionWebhookIfItHasBeenActivated()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
         $measure->discordNotifications()->attach(
@@ -186,7 +186,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldNotUseDivisionWebhookIfItHasBeenWithdrawn()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
         $measure->discordNotifications()->attach(
@@ -221,7 +221,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     public function testItShouldNotUseDivisionWebhookIfItHasBeenExpired()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
         $measure->discordNotifications()->attach(

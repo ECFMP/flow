@@ -4,7 +4,7 @@ namespace App\Discord\FlowMeasure\Associator;
 
 use App\Discord\Message\Associator\AssociatorInterface;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DiscordNotificationType;
 use App\Models\FlowMeasure;
 
@@ -20,7 +20,7 @@ class FlowMeasureAssociator implements AssociatorInterface
     }
 
 
-    public function associate(DiscordNotification $notification): void
+    public function associate(DivisionDiscordNotification $notification): void
     {
         $this->flowMeasure->discordNotifications()->attach(
             [

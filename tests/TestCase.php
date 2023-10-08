@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
 
     public function beforeRefreshingDatabase()
     {
-        DB::table('discord_notifications')->delete();
+        DB::table('division_discord_notifications')->delete();
         DB::table('division_discord_webhooks')->delete();
         DB::table('flow_measures')->delete();
         DB::table('events')->delete();

@@ -5,7 +5,7 @@ namespace App\Discord\FlowMeasure\Content;
 use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
 use App\Discord\Message\Tag\Tag;
 use App\Enums\DiscordNotificationType;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DiscordTag;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlightInformationRegion;
@@ -29,18 +29,18 @@ class FlowMeasureRecipientsFactory
         $measure = $pendingMessage->flowMeasure();
         return $pendingMessage->type(
         ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDiscordNotifications->firstWhere(
-            fn (DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
+                fn(DivisionDiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
                 $notification->pivot->notified_as === $measure->identifier
-        ) !== null;
+            ) !== null;
     }
 
     private function ecfmpRecipients(PendingMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
     {
         return new EcfmpInterestedParties(
             $pendingMessage->flowMeasure()->notifiedFlightInformationRegions
-                ->map(fn (FlightInformationRegion $flightInformationRegion) => $flightInformationRegion->discordTags)
+                ->map(fn(FlightInformationRegion $flightInformationRegion) => $flightInformationRegion->discordTags)
                 ->flatten()
-                ->map(fn (DiscordTag $discordTag) => new Tag($discordTag))
+                ->map(fn(DiscordTag $discordTag) => new Tag($discordTag))
         );
     }
 
@@ -49,13 +49,13 @@ class FlowMeasureRecipientsFactory
         $recipients = DivisionDiscordWebhook::find($pendingMessage->webhook()->id())
             ->flightInformationRegions
             ->filter(
-                fn (FlightInformationRegion $flightInformationRegion) => $pendingMessage
+                fn(FlightInformationRegion $flightInformationRegion) => $pendingMessage
                     ->flowMeasure()
                     ->notifiedFlightInformationRegions
-                    ->firstWhere(fn (FlightInformationRegion $notifiedFir) => $notifiedFir->id === $flightInformationRegion->id)
+                    ->firstWhere(fn(FlightInformationRegion $notifiedFir) => $notifiedFir->id === $flightInformationRegion->id)
             )
-            ->filter(fn (FlightInformationRegion $flightInformationRegion) => !empty($flightInformationRegion->pivot->tag))
-            ->map(fn (FlightInformationRegion $flightInformationRegion) => new Tag($flightInformationRegion->pivot));
+            ->filter(fn(FlightInformationRegion $flightInformationRegion) => !empty($flightInformationRegion->pivot->tag))
+            ->map(fn(FlightInformationRegion $flightInformationRegion) => new Tag($flightInformationRegion->pivot));
 
         return $recipients->isEmpty()
             ? new NoRecipients()

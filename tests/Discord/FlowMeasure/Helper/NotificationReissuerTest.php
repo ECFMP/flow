@@ -5,7 +5,7 @@ namespace Tests\Discord\FlowMeasure\Helper;
 use App\Discord\FlowMeasure\Helper\NotificationReissuer;
 use App\Discord\Webhook\EcfmpWebhook;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DiscordNotificationType;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlowMeasure;
@@ -25,11 +25,13 @@ class NotificationReissuerTest extends TestCase
     {
         $this->assertEquals(
             DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                new EcfmpWebhook()
-            ))->type()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    new EcfmpWebhook()
+                )
+            )->type()
         );
     }
 
@@ -37,17 +39,19 @@ class NotificationReissuerTest extends TestCase
     {
         $this->assertEquals(
             $this->flowMeasure,
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                new EcfmpWebhook()
-            ))->measure()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    new EcfmpWebhook()
+                )
+            )->measure()
         );
     }
 
     public function testItsAReissueIfItsNotifiedAndTheIdentifierHasChanged()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -60,17 +64,19 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertTrue(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItsAReissueIfItsActivatedAndTheIdentifierHasChanged()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -83,17 +89,19 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertTrue(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItsAReissueIfItWasNotifiedAndTheIdentifierHasChangedForActivation()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -106,21 +114,23 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertTrue(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItsAReissueIfItsNotifiedOnAEcfmpWebhook()
     {
-        $previousNotificationEcfmp = DiscordNotification::factory()
+        $previousNotificationEcfmp = DivisionDiscordNotification::factory()
             ->create();
 
         $divisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $previousDivisionNotification = DiscordNotification::factory()
+        $previousDivisionNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($divisionWebhook)
             ->create();
 
@@ -142,23 +152,25 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertTrue(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItsAReissueIfItsNotifiedOnADifferentDivisionWebhook()
     {
         $otherDivisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $previousNotificationOtherDivision = DiscordNotification::factory()
+        $previousNotificationOtherDivision = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($otherDivisionWebhook)
             ->create();
 
         $divisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $previousDivisionNotification = DiscordNotification::factory()
+        $previousDivisionNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($divisionWebhook)
             ->create();
 
@@ -180,23 +192,25 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertTrue(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                $divisionWebhook
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    $divisionWebhook
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItsAReissueIfItsActivatedOnADifferentDivisionWebhook()
     {
         $otherDivisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $previousNotificationOtherDivision = DiscordNotification::factory()
+        $previousNotificationOtherDivision = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($otherDivisionWebhook)
             ->create();
 
         $divisionWebhook = DivisionDiscordWebhook::factory()->create();
-        $previousDivisionNotification = DiscordNotification::factory()
+        $previousDivisionNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($divisionWebhook)
             ->create();
 
@@ -218,17 +232,19 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertTrue(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                $divisionWebhook
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
+                    $divisionWebhook
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItsAReissueIfItsActivatedOnAEcfmpWebhook()
     {
-        $previousNotification = DiscordNotification::factory()
+        $previousNotification = DivisionDiscordNotification::factory()
             ->create();
 
         $this->flowMeasure->discordNotifications()->sync(
@@ -243,17 +259,19 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertTrue(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItIsNotAReissueIfItsNotifiedAndTheIdentifierHasNotChanged()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -266,17 +284,19 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertFalse(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItIsNotAReissueIfItsActivatedAndTheIdentifierHasNotChanged()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -289,17 +309,19 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertFalse(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItIsNotAReissueIfItsNotifiedAndThenActivatedTheIdentifierHasNotChanged()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -312,39 +334,45 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertFalse(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItIsNotAReissueIfItsNotifiedAndNeverBeenNotified()
     {
         $this->assertFalse(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItIsNotAReissueIfItsNotifiedAndNeverBeenActivated()
     {
         $this->assertFalse(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItIsNotAReissueIfItsWithdrawn()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -357,17 +385,19 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertFalse(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 
     public function testItIsNotAReissueIfItsExpired()
     {
-        $previousNotification = DiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()->create();
         $this->flowMeasure->discordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -380,11 +410,13 @@ class NotificationReissuerTest extends TestCase
         );
 
         $this->assertFalse(
-            (new NotificationReissuer(
-                $this->flowMeasure,
-                DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED,
-                new EcfmpWebhook()
-            ))->isReissuedNotification()
+            (
+                new NotificationReissuer(
+                    $this->flowMeasure,
+                    DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED,
+                    new EcfmpWebhook()
+                )
+            )->isReissuedNotification()
         );
     }
 }

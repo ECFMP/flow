@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class DiscordNotification extends Model
+class DivisionDiscordNotification extends Model
 {
     use HasFactory;
 

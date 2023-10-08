@@ -4,7 +4,7 @@ namespace App\Discord\FlowMeasure\Webhook\Filter;
 
 use App\Discord\Webhook\WebhookInterface;
 use App\Helpers\FlowMeasureIdentifierGenerator;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\FlowMeasure;
 use App\Repository\FlowMeasureRepository;
 use Carbon\Carbon;
@@ -44,9 +44,9 @@ class ExpiredWebhookFilter implements FilterInterface
 
     private function notManyWebhooksRecentlySent(): bool
     {
-        return DiscordNotification::where('created_at', '>=', Carbon::now()->subHours(2))
-                ->whereNull('division_discord_webhook_id')
-                ->count() <= 5;
+        return DivisionDiscordNotification::where('created_at', '>=', Carbon::now()->subHours(2))
+            ->whereNull('division_discord_webhook_id')
+            ->count() <= 5;
     }
 
     private function notRevisedMoreThanOnce(FlowMeasure $flowMeasure): bool
@@ -57,7 +57,7 @@ class ExpiredWebhookFilter implements FilterInterface
     private function lessThanThreeActiveMeasures(FlowMeasure $measure): bool
     {
         return $this->flowMeasureRepository->getFlowMeasuresActiveDuringPeriod($measure->start_time, $measure->end_time)
-                ->reject(fn (FlowMeasure $activeMeasure) => $activeMeasure->id === $measure->id)
-                ->count() < 3;
+            ->reject(fn(FlowMeasure $activeMeasure) => $activeMeasure->id === $measure->id)
+            ->count() < 3;
     }
 }

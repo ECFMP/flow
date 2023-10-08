@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DiscordTag>
  */
-class DiscordNotificationFactory extends Factory
+class DivisionDiscordNotificationFactory extends Factory
 {
     /**
      * Define the model's default state.
