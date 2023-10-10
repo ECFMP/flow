@@ -149,4 +149,99 @@ class EmbedTest extends TestCase
 
         $this->assertEquals($expected, Embed::make()->withFooter($mockFooter)->toArray());
     }
+
+    public function testItHasATitleInProtobuf()
+    {
+        $mockTitle = Mockery::mock(TitleInterface::class);
+        $mockTitle->shouldReceive('title')->once()->andReturn('Foo');
+
+
+        $this->assertEquals('Foo', Embed::make()->withTitle($mockTitle)->toProtobuf()->getTitle());
+    }
+
+    public function testItHasAColourInProtobuf()
+    {
+        $this->assertEquals(
+            Colour::ACTIVATED->value,
+            Embed::make()->withColour(Colour::ACTIVATED)->toProtobuf()->getColor()
+        );
+    }
+
+
+    public function testItHasADescriptionInProtobuf()
+    {
+        $mockDescription = Mockery::mock(DescriptionInterface::class);
+        $mockDescription->shouldReceive('description')->once()->andReturn('Foo');
+
+        $this->assertEquals('Foo', Embed::make()->withDescription($mockDescription)->toProtobuf()->getDescription());
+    }
+
+    public function testItHasFieldsInProtobuf()
+    {
+        $field1 = Mockery::mock(FieldInterface::class);
+        $field1->shouldReceive('name')->once()->andReturn('Field1');
+        $field1->shouldReceive('value')->once()->andReturn('Value1');
+        $field1->shouldReceive('inline')->once()->andReturn(true);
+        $field2 = Mockery::mock(FieldInterface::class);
+        $field2->shouldReceive('name')->once()->andReturn('Field2');
+        $field2->shouldReceive('value')->once()->andReturn('Value2');
+        $field2->shouldReceive('inline')->once()->andReturn(false);
+
+        $embed = Embed::make()->withField($field1)->withField($field2);
+        $embedProtobuf = $embed->toProtobuf();
+        $embedField1 = $embedProtobuf->getFields()[0];
+
+        $this->assertEquals('Field1', $embedField1->getName());
+        $this->assertEquals('Value1', $embedField1->getValue());
+        $this->assertEquals(true, $embedField1->getInline());
+
+        $embedField2 = $embedProtobuf->getFields()[1];
+        $this->assertEquals('Field2', $embedField2->getName());
+        $this->assertEquals('Value2', $embedField2->getValue());
+        $this->assertEquals(false, $embedField2->getInline());
+    }
+
+    public function testItSkipsFieldsByConditionInProtobuf()
+    {
+        $field1 = Mockery::mock(FieldInterface::class);
+        $field1->shouldReceive('name')->once()->andReturn('Field1');
+        $field1->shouldReceive('value')->once()->andReturn('Value1');
+        $field1->shouldReceive('inline')->once()->andReturn(true);
+        $field2 = Mockery::mock(FieldInterface::class);
+
+        $embed = Embed::make()->withField($field1)->withField($field2, false);
+        $embedProtobuf = $embed->toProtobuf();
+        $embedField1 = $embedProtobuf->getFields()[0];
+
+        $this->assertEquals('Field1', $embedField1->getName());
+        $this->assertEquals('Value1', $embedField1->getValue());
+        $this->assertEquals(true, $embedField1->getInline());
+
+        $this->assertCount(1, $embedProtobuf->getFields());
+    }
+
+    public function testItHasFieldsByCollectionInProtobuf()
+    {
+        $field1 = Mockery::mock(FieldInterface::class);
+        $field1->shouldReceive('name')->once()->andReturn('Field1');
+        $field1->shouldReceive('value')->once()->andReturn('Value1');
+        $field1->shouldReceive('inline')->once()->andReturn(true);
+        $field2 = Mockery::mock(FieldInterface::class);
+        $field2->shouldReceive('name')->once()->andReturn('Field2');
+        $field2->shouldReceive('value')->once()->andReturn('Value2');
+        $field2->shouldReceive('inline')->once()->andReturn(false);
+
+        $embed = Embed::make()->withFields(collect([$field1, $field2]));
+        $embedProtobuf = $embed->toProtobuf();
+        $embedField1 = $embedProtobuf->getFields()[0];
+
+        $this->assertEquals('Field1', $embedField1->getName());
+        $this->assertEquals('Value1', $embedField1->getValue());
+        $this->assertEquals(true, $embedField1->getInline());
+
+        $embedField2 = $embedProtobuf->getFields()[1];
+        $this->assertEquals('Field2', $embedField2->getName());
+        $this->assertEquals('Value2', $embedField2->getValue());
+        $this->assertEquals(false, $embedField2->getInline());
+    }
 }

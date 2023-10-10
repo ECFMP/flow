@@ -2,6 +2,8 @@
 
 namespace App\Discord\Message\Embed;
 
+use Ecfmp_discord\DiscordEmbeds;
+use Ecfmp_discord\DiscordEmbedsFields;
 use Illuminate\Support\Collection;
 
 class Embed implements EmbedInterface
@@ -62,7 +64,8 @@ class Embed implements EmbedInterface
 
     public function withFields(Collection $fields): static
     {
-        $fields->each(function (FieldInterface $field) {
+        $fields->each(function (FieldInterface $field)
+        {
             $this->fields->add($field);
         });
 
@@ -97,7 +100,7 @@ class Embed implements EmbedInterface
         }
 
         if ($this->fields->isNotEmpty()) {
-            $return['fields'] = $this->fields->map(fn (FieldInterface $field) => [
+            $return['fields'] = $this->fields->map(fn(FieldInterface $field) => [
                 'name' => $field->name(),
                 'value' => $field->value(),
                 'inline' => $field->inline(),
@@ -111,5 +114,36 @@ class Embed implements EmbedInterface
         }
 
         return $return;
+    }
+
+    public function toProtobuf(): DiscordEmbeds
+    {
+        return tap(
+            new DiscordEmbeds(),
+            function (DiscordEmbeds $embed)
+            {
+                if (isset($this->title)) {
+                    $embed->setTitle($this->title->title());
+                }
+
+                if (isset($this->colour)) {
+                    $embed->setColor($this->colour->value);
+                }
+
+                if (isset($this->description)) {
+                    $embed->setDescription($this->description->description());
+                }
+
+                if ($this->fields->isNotEmpty()) {
+                    $embed->setFields(
+                        $this->fields->map(fn(FieldInterface $field) => new DiscordEmbedsFields([
+                            'name' => $field->name(),
+                            'value' => $field->value(),
+                            'inline' => $field->inline(),
+                        ]))->toArray()
+                    );
+                }
+            }
+        );
     }
 }

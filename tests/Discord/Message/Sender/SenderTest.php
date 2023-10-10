@@ -51,7 +51,7 @@ class SenderTest extends TestCase
         $sender->sendDiscordMessages();
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'division_discord_notifications',
             [
                 'division_discord_webhook_id' => $divisionWebhook->id,
                 'content' => 'foo',
@@ -59,7 +59,7 @@ class SenderTest extends TestCase
         );
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'division_discord_notifications',
             [
                 'division_discord_webhook_id' => $divisionWebhook->id,
                 'content' => 'bar',

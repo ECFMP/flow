@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Discord\Client\ClientFactory;
 use App\Discord\DiscordInterface;
 use App\Discord\DiscordMessageSender;
+use App\Discord\DiscordServiceMessageSender;
 use App\Discord\FlowMeasure\Message\FlowMeasureMessageFactory;
 use App\Discord\FlowMeasure\Message\MessageGenerator;
 use App\Discord\FlowMeasure\Message\MessageGeneratorInterface;
@@ -21,6 +23,8 @@ use App\Repository\FlowMeasureNotification\ExpiredRepository;
 use App\Repository\FlowMeasureNotification\NotifiedRepository;
 use App\Repository\FlowMeasureNotification\RepositoryInterface;
 use App\Repository\FlowMeasureNotification\WithdrawnRepository;
+use Ecfmp_discord\DiscordClient;
+use Grpc\ChannelCredentials;
 use Illuminate\Support\ServiceProvider;
 
 class DiscordServiceProvider extends ServiceProvider
@@ -32,16 +36,22 @@ class DiscordServiceProvider extends ServiceProvider
         ExpiredRepository::class => ExpiredWebhookFilter::class,
     ];
 
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(DiscordInterface::class, function () {
             return new DiscordMessageSender();
         });
         $this->app->singleton(EcfmpWebhook::class);
-        $this->app->singleton(Sender::class, fn () => new Sender(
-            $this->flowMeasureMessageProviders(),
-            $this->app->make(DiscordInterface::class)
-        ));
+        $this->app->singleton(
+            Sender::class,
+            fn() => new Sender(
+                $this->flowMeasureMessageProviders(),
+                $this->app->make(DiscordInterface::class),
+                $this->app->make(DiscordServiceMessageSender::class)
+            )
+        );
+
+        $this->app->singleton(ClientFactory::class);
     }
 
     private function flowMeasureMessageProviders(): array
