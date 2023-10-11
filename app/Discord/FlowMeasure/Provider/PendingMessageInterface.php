@@ -17,6 +17,6 @@ interface PendingMessageInterface
     public function type(): DiscordNotificationType;
 
     public function reissue(): NotificationReissuerInterface;
-    
+
     public function webhook(): ?WebhookInterface;
 }

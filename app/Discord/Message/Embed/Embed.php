@@ -64,8 +64,7 @@ class Embed implements EmbedInterface
 
     public function withFields(Collection $fields): static
     {
-        $fields->each(function (FieldInterface $field)
-        {
+        $fields->each(function (FieldInterface $field) {
             $this->fields->add($field);
         });
 
@@ -100,7 +99,7 @@ class Embed implements EmbedInterface
         }
 
         if ($this->fields->isNotEmpty()) {
-            $return['fields'] = $this->fields->map(fn(FieldInterface $field) => [
+            $return['fields'] = $this->fields->map(fn (FieldInterface $field) => [
                 'name' => $field->name(),
                 'value' => $field->value(),
                 'inline' => $field->inline(),
@@ -120,8 +119,7 @@ class Embed implements EmbedInterface
     {
         return tap(
             new DiscordEmbeds(),
-            function (DiscordEmbeds $embed)
-            {
+            function (DiscordEmbeds $embed) {
                 if (isset($this->title)) {
                     $embed->setTitle($this->title->title());
                 }
@@ -136,7 +134,7 @@ class Embed implements EmbedInterface
 
                 if ($this->fields->isNotEmpty()) {
                     $embed->setFields(
-                        $this->fields->map(fn(FieldInterface $field) => new DiscordEmbedsFields([
+                        $this->fields->map(fn (FieldInterface $field) => new DiscordEmbedsFields([
                             'name' => $field->name(),
                             'value' => $field->value(),
                             'inline' => $field->inline(),

@@ -34,14 +34,14 @@ class NotificationReissuer implements NotificationReissuerInterface
             ->get();
 
         return $notificationsOfType->filter(
-            fn(
-            DivisionDiscordNotification $notification
-        ) => $notification->pivot->notified_as !== $this->measure->identifier
+            fn (
+                DivisionDiscordNotification $notification
+            ) => $notification->pivot->notified_as !== $this->measure->identifier
         )->isNotEmpty() && $notificationsOfType->filter(
-                fn(
+            fn (
                 DivisionDiscordNotification $notification
             ) => $notification->pivot->notified_as === $this->measure->identifier
-            )->isEmpty();
+        )->isEmpty();
     }
 
     public function measure(): FlowMeasure

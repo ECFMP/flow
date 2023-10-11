@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Discord\Client\ClientFactory;
-use App\Discord\DiscordServiceMessageSender;
 use App\Discord\DiscordWebhookInterface;
 use App\Discord\DiscordWebhookSender;
 use App\Discord\FlowMeasure\Message\FlowMeasureMessageFactory;
@@ -42,7 +41,7 @@ class DiscordServiceProvider extends ServiceProvider
         $this->app->singleton(EcfmpWebhook::class);
         $this->app->singleton(
             DivisionWebhookSender::class,
-            fn() => new DivisionWebhookSender(
+            fn () => new DivisionWebhookSender(
                 $this->flowMeasureMessageProviders(),
                 $this->app->make(DiscordWebhookInterface::class)
             )

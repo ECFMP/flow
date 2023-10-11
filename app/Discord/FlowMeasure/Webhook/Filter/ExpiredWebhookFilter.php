@@ -57,7 +57,7 @@ class ExpiredWebhookFilter implements FilterInterface
     private function lessThanThreeActiveMeasures(FlowMeasure $measure): bool
     {
         return $this->flowMeasureRepository->getFlowMeasuresActiveDuringPeriod($measure->start_time, $measure->end_time)
-            ->reject(fn(FlowMeasure $activeMeasure) => $activeMeasure->id === $measure->id)
+            ->reject(fn (FlowMeasure $activeMeasure) => $activeMeasure->id === $measure->id)
             ->count() < 3;
     }
 }

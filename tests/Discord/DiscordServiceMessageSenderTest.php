@@ -66,7 +66,7 @@ class DiscordServiceMessageSenderTest extends TestCase
         $this->embeds->shouldReceive('toProtobuf')->andReturn([$this->discordEmbeds]);
         $this->unaryCall->shouldReceive('wait')->andReturn([$this->response, $this->status]);
         $this->client->shouldReceive('Create')->with(Mockery::on(
-            fn(CreateRequest $request) => $request->getContent() === 'content' &&
+            fn (CreateRequest $request) => $request->getContent() === 'content' &&
             count($request->getEmbeds()) === 1 &&
             $request->getEmbeds()[0] == $this->discordEmbeds
         ), [
@@ -88,7 +88,7 @@ class DiscordServiceMessageSenderTest extends TestCase
         $this->embeds->shouldReceive('toProtobuf')->andReturn([$this->discordEmbeds]);
         $this->unaryCall->shouldReceive('wait')->andReturn([$this->response, $this->status]);
         $this->client->shouldReceive('Create')->with(Mockery::on(
-            fn(CreateRequest $request) => $request->getContent() === 'content' &&
+            fn (CreateRequest $request) => $request->getContent() === 'content' &&
             count($request->getEmbeds()) === 1 &&
             $request->getEmbeds()[0] == $this->discordEmbeds
         ), [
