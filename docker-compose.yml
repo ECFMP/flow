@@ -46,7 +46,6 @@ services:
             retries: 10
             timeout: 100s
             start_period: 15s
-            start_interval: 1s
 
     mongodb:
         extends:
