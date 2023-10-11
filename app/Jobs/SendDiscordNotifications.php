@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Discord\Message\Sender\Sender;
+use App\Discord\Message\Sender\DivisionWebhookSender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,9 +18,9 @@ class SendDiscordNotifications implements ShouldQueue, ShouldBeUnique
     use Queueable;
     use SerializesModels;
 
-    private readonly Sender $sender;
+    private readonly DivisionWebhookSender $sender;
 
-    public function __construct(Sender $sender)
+    public function __construct(DivisionWebhookSender $sender)
     {
         $this->sender = $sender;
     }

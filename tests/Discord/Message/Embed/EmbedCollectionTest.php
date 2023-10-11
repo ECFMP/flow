@@ -46,7 +46,7 @@ class EmbedCollectionTest extends TestCase
         $embeds = (new EmbedCollection())
                 ->add(Embed::make()->withTitle($mockTitle1))
                 ->add(Embed::make()->withTitle($mockTitle2))
-                ->toProtobuf()
+                ->toProtobuf();
 
         $this->assertCount(2, $embeds);
 

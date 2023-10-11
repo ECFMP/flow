@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Discord\Client\ClientFactory;
-use App\Discord\DiscordInterface;
-use App\Discord\DiscordMessageSender;
 use App\Discord\DiscordServiceMessageSender;
+use App\Discord\DiscordWebhookInterface;
+use App\Discord\DiscordWebhookSender;
 use App\Discord\FlowMeasure\Message\FlowMeasureMessageFactory;
 use App\Discord\FlowMeasure\Message\MessageGenerator;
 use App\Discord\FlowMeasure\Message\MessageGeneratorInterface;
@@ -16,15 +16,13 @@ use App\Discord\FlowMeasure\Webhook\Filter\FilterInterface;
 use App\Discord\FlowMeasure\Webhook\Filter\NotifiedWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\Filter\WithdrawnWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\WebhookMapper;
-use App\Discord\Message\Sender\Sender;
+use App\Discord\Message\Sender\DivisionWebhookSender;
 use App\Discord\Webhook\EcfmpWebhook;
 use App\Repository\FlowMeasureNotification\ActiveRepository;
 use App\Repository\FlowMeasureNotification\ExpiredRepository;
 use App\Repository\FlowMeasureNotification\NotifiedRepository;
 use App\Repository\FlowMeasureNotification\RepositoryInterface;
 use App\Repository\FlowMeasureNotification\WithdrawnRepository;
-use Ecfmp_discord\DiscordClient;
-use Grpc\ChannelCredentials;
 use Illuminate\Support\ServiceProvider;
 
 class DiscordServiceProvider extends ServiceProvider
@@ -38,16 +36,15 @@ class DiscordServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        $this->app->singleton(DiscordInterface::class, function () {
-            return new DiscordMessageSender();
+        $this->app->singleton(DiscordWebhookInterface::class, function () {
+            return new DiscordWebhookSender();
         });
         $this->app->singleton(EcfmpWebhook::class);
         $this->app->singleton(
-            Sender::class,
-            fn() => new Sender(
+            DivisionWebhookSender::class,
+            fn() => new DivisionWebhookSender(
                 $this->flowMeasureMessageProviders(),
-                $this->app->make(DiscordInterface::class),
-                $this->app->make(DiscordServiceMessageSender::class)
+                $this->app->make(DiscordWebhookInterface::class)
             )
         );
 
