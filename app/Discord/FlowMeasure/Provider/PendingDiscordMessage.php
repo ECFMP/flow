@@ -11,13 +11,13 @@ class PendingDiscordMessage implements PendingMessageInterface
 {
     private readonly FlowMeasure $measure;
     private readonly DiscordNotificationType $type;
-    private readonly WebhookInterface $webhook;
+    private readonly ?WebhookInterface $webhook;
     private readonly NotificationReissuerInterface $resissue;
 
     public function __construct(
         FlowMeasure $measure,
         DiscordNotificationType $type,
-        WebhookInterface $webhook,
+        ?WebhookInterface $webhook,
         NotificationReissuerInterface $resissue
     ) {
         $this->measure = $measure;

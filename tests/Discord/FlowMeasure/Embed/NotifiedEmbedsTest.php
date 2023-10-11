@@ -43,7 +43,7 @@ class NotifiedEmbedsTest extends TestCase
 
         $this->pendingMessage->shouldReceive('flowMeasure')->andReturn($measure);
         $this->pendingMessage->shouldReceive('reissue')->andReturn($this->reissuer);
-        $this->pendingMessage->shouldReceive('webhook')->andReturn($this->webhook);
+        $this->pendingMessage->shouldReceive('webhook')->andReturn(null);
         $this->reissuer->shouldReceive('isReissuedNotification')->andReturn(false);
         $this->webhook->shouldReceive('id')->andReturnNull();
 
@@ -118,7 +118,7 @@ class NotifiedEmbedsTest extends TestCase
 
         $this->pendingMessage->shouldReceive('flowMeasure')->andReturn($measure);
         $this->pendingMessage->shouldReceive('reissue')->andReturn($this->reissuer);
-        $this->pendingMessage->shouldReceive('webhook')->andReturn($this->webhook);
+        $this->pendingMessage->shouldReceive('webhook')->andReturn(null);
         $this->reissuer->shouldReceive('isReissuedNotification')->andReturn(true);
         $this->webhook->shouldReceive('id')->andReturnNull();
 

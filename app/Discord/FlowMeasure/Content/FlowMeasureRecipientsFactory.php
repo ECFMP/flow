@@ -19,7 +19,7 @@ class FlowMeasureRecipientsFactory
             return new NoRecipients();
         }
 
-        return $pendingMessage->webhook()->id() === null
+        return $pendingMessage->webhook() === null
             ? $this->ecfmpRecipients($pendingMessage)
             : $this->divisionRecipients($pendingMessage);
     }

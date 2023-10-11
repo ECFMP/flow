@@ -7,7 +7,7 @@ use App\Discord\FlowMeasure\Webhook\MapperInterface;
 use App\Repository\FlowMeasureNotification\RepositoryInterface;
 use Illuminate\Support\Collection;
 
-class MessageProvider implements MessageProviderInterface
+class DivisionWebhookMessageProvider implements MessageProviderInterface
 {
     private readonly RepositoryInterface $repository;
     private readonly MapperInterface $webhookMapper;
