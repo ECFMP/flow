@@ -29,7 +29,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DivisionDiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -51,7 +51,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DivisionDiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -73,7 +73,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DivisionDiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -83,7 +83,7 @@ class WithdrawnWebhookFilterTest extends TestCase
                 ],
             ]
         );
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -106,7 +106,7 @@ class WithdrawnWebhookFilterTest extends TestCase
     {
         $measure = FlowMeasure::factory()->create();
         $discordNotification = DivisionDiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -116,7 +116,7 @@ class WithdrawnWebhookFilterTest extends TestCase
                 ],
             ]
         );
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -141,7 +141,7 @@ class WithdrawnWebhookFilterTest extends TestCase
         $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -165,7 +165,7 @@ class WithdrawnWebhookFilterTest extends TestCase
         $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -189,7 +189,7 @@ class WithdrawnWebhookFilterTest extends TestCase
         $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -199,7 +199,7 @@ class WithdrawnWebhookFilterTest extends TestCase
                 ],
             ]
         );
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -224,7 +224,7 @@ class WithdrawnWebhookFilterTest extends TestCase
         $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -234,7 +234,7 @@ class WithdrawnWebhookFilterTest extends TestCase
                 ],
             ]
         );
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(

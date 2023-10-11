@@ -10,7 +10,7 @@ class ExpiredRepository implements RepositoryInterface
 {
     public function flowMeasuresForNotification(): Collection
     {
-        return FlowMeasure::with('discordNotifications')
+        return FlowMeasure::with('divisionDiscordNotifications')
             ->expiredRecently()
             ->get();
     }

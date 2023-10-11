@@ -116,7 +116,7 @@ class FlowMeasure extends Model
         return $query->where('flight_information_region_id', $flightInformationRegion->id);
     }
 
-    public function discordNotifications(): BelongsToMany
+    public function divisionDiscordNotifications(): BelongsToMany
     {
         return $this->belongsToMany(DivisionDiscordNotification::class)
             ->withPivot(['discord_notification_type_id', 'notified_as'])
@@ -165,7 +165,7 @@ class FlowMeasure extends Model
 
     private function notificationsOfType(array $types): BelongsToMany
     {
-        return $this->discordNotifications()
+        return $this->divisionDiscordNotifications()
             ->wherePivotIn(
                 'discord_notification_type_id',
                 DiscordNotificationType::whereIn(

@@ -22,7 +22,7 @@ class FlowMeasureAssociator implements AssociatorInterface
 
     public function associate(DivisionDiscordNotification $notification): void
     {
-        $this->flowMeasure->discordNotifications()->attach(
+        $this->flowMeasure->divisionDiscordNotifications()->attach(
             [
                 $notification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum($this->type),

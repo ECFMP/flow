@@ -11,7 +11,7 @@ class NotifiedRepository implements RepositoryInterface
 {
     public function flowMeasuresForNotification(): Collection
     {
-        return FlowMeasure::with('discordNotifications')
+        return FlowMeasure::with('divisionDiscordNotifications')
             ->where('start_time', '<', Carbon::now()->addDay())
             ->where('start_time', '>', Carbon::now())
             ->get();

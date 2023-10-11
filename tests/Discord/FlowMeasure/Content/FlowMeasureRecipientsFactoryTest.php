@@ -157,7 +157,7 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
         $this->webhook->shouldReceive('id')->andReturn(null);
 
-        $notification = $this->flowMeasure->discordNotifications()->create(
+        $notification = $this->flowMeasure->divisionDiscordNotifications()->create(
             [
                 'content' => '',
                 'embeds' => [],
@@ -186,7 +186,7 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
         $this->webhook->shouldReceive('id')->andReturn(null);
 
-        $notification = $this->flowMeasure->discordNotifications()->create(
+        $notification = $this->flowMeasure->divisionDiscordNotifications()->create(
             [
                 'content' => '',
                 'embeds' => [],
@@ -216,7 +216,7 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
         $this->webhook->shouldReceive('id')->andReturn(null);
 
-        $notification = $this->flowMeasure->discordNotifications()->create(
+        $notification = $this->flowMeasure->divisionDiscordNotifications()->create(
             [
                 'content' => '',
                 'embeds' => [],
@@ -246,7 +246,7 @@ class FlowMeasureRecipientsFactoryTest extends TestCase
         $this->flowMeasure->notifiedFlightInformationRegions()->sync([$fir->id]);
         $this->webhook->shouldReceive('id')->andReturn(null);
 
-        $notification = $this->flowMeasure->discordNotifications()->create(
+        $notification = $this->flowMeasure->divisionDiscordNotifications()->create(
             [
                 'content' => '',
                 'embeds' => [],

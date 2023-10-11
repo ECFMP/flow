@@ -20,7 +20,7 @@ class WithdrawnRepository implements RepositoryInterface
 
     private function baseQuery(): Builder
     {
-        return FlowMeasure::with('discordNotifications')
+        return FlowMeasure::with('divisionDiscordNotifications')
             ->onlyTrashed()
             ->where('deleted_at', '>', Carbon::now()->subHour());
     }
