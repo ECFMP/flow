@@ -39,3 +39,5 @@ public/mix-manifest.json
 storage/imports
 
 .vscode
+
+.DS_STORE
