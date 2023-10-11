@@ -4,7 +4,6 @@ namespace App\Discord;
 
 use App\Discord\Client\ClientFactoryInterface;
 use App\Discord\Exception\DiscordServiceException;
-use App\Discord\Message\Embed\Embed;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Message\MessageInterface;
 use Ecfmp_discord\CreateRequest;
@@ -12,6 +11,7 @@ use Ecfmp_discord\CreateResponse;
 use Ecfmp_discord\DiscordClient;
 use Ecfmp_discord\DiscordEmbeds;
 use Grpc\Status;
+use Grpc\UnaryCall;
 use Mockery;
 use Tests\TestCase;
 
@@ -29,6 +29,8 @@ class DiscordServiceMessageSenderTest extends TestCase
 
     private readonly DiscordServiceMessageSender $sender;
 
+    private readonly UnaryCall $unaryCall;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -39,10 +41,11 @@ class DiscordServiceMessageSenderTest extends TestCase
         $this->embeds = Mockery::mock(EmbedCollection::class);
         $this->response = Mockery::mock(CreateResponse::class);
         $this->status = Mockery::mock(Status::class);
-        $this->sender = new DiscordServiceMessageSender($this->clientFactory);
         $this->discordEmbeds = Mockery::mock(DiscordEmbeds::class);
+        $this->unaryCall = Mockery::mock(UnaryCall::class);
 
         $this->clientFactory->shouldReceive('create')->andReturn($this->client);
+        $this->sender = new DiscordServiceMessageSender($this->clientFactory);
     }
 
     public function testItThrowsExceptionIfClientIsNotReady()
@@ -61,13 +64,15 @@ class DiscordServiceMessageSenderTest extends TestCase
         $this->message->shouldReceive('content')->andReturn('content');
         $this->message->shouldReceive('embeds')->andReturn($this->embeds);
         $this->embeds->shouldReceive('toProtobuf')->andReturn([$this->discordEmbeds]);
+        $this->unaryCall->shouldReceive('wait')->andReturn([$this->response, $this->status]);
         $this->client->shouldReceive('Create')->with(Mockery::on(
-            fn(CreateRequest $request) => $request->getContent() === 'content'
-            // TODO: See if we can check embeds
+            fn(CreateRequest $request) => $request->getContent() === 'content' &&
+            count($request->getEmbeds()) === 1 &&
+            $request->getEmbeds()[0] == $this->discordEmbeds
         ), [
             'authorization' => [config('discord.service_token')],
             'x-client-request-id' => ['client-request-id'],
-        ])->andReturn([$this->response, $this->status]);
+        ])->andReturn($this->unaryCall);
         $this->status->code = STATUS_OK;
 
         $this->response->shouldReceive('getId')->andReturn('id');
@@ -81,14 +86,15 @@ class DiscordServiceMessageSenderTest extends TestCase
         $this->message->shouldReceive('content')->andReturn('content');
         $this->message->shouldReceive('embeds')->andReturn($this->embeds);
         $this->embeds->shouldReceive('toProtobuf')->andReturn([$this->discordEmbeds]);
-        $this->client->shouldReceive('Create')->with(
-            Mockery::on(
-                fn(CreateRequest $request, array $metadata) => $request->getContent() === 'content'
-                && $request->getEmbeds() === [$this->discordEmbeds]
-                && $metadata['authorization'] === [config('discord.service_token')]
-                && $metadata['x-client-request-id'] === ['client-request-id']
-            )
-        )->andReturn([$this->response, $this->status]);
+        $this->unaryCall->shouldReceive('wait')->andReturn([$this->response, $this->status]);
+        $this->client->shouldReceive('Create')->with(Mockery::on(
+            fn(CreateRequest $request) => $request->getContent() === 'content' &&
+            count($request->getEmbeds()) === 1 &&
+            $request->getEmbeds()[0] == $this->discordEmbeds
+        ), [
+            'authorization' => [config('discord.service_token')],
+            'x-client-request-id' => ['client-request-id'],
+        ])->andReturn($this->unaryCall);
         $this->status->code = 1;
         $this->status->details = 'details';
 

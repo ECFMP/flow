@@ -7,6 +7,7 @@ use App\Discord\Exception\DiscordServiceException;
 use App\Discord\Message\MessageInterface;
 use Ecfmp_discord\CreateRequest;
 use Log;
+
 use const Grpc\STATUS_OK;
 
 class DiscordServiceMessageSender implements DiscordServiceInterface
