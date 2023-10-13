@@ -9,6 +9,15 @@ use Illuminate\Support\Collection;
 
 class NotifiedRepository implements RepositoryInterface
 {
+    public function flowMeasuresToBeSentToEcfmp(): Collection
+    {
+        return FlowMeasure::where('start_time', '<', Carbon::now()->addDay())
+            ->where('start_time', '>', Carbon::now())
+            ->withoutEcfmpNotificationOfTypeForIdentifier($this->notificationType())
+            ->withoutEcfmpNotificationOfType(DiscordNotificationType::FLOW_MEASURE_ACTIVATED)
+            ->get();
+    }
+
     public function flowMeasuresForNotification(): Collection
     {
         return FlowMeasure::with('divisionDiscordNotifications')

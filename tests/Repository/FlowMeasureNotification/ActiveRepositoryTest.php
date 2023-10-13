@@ -2,9 +2,11 @@
 
 namespace Tests\Repository\FlowMeasureNotification;
 
-use App\Enums\DiscordNotificationType;
+use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
+use App\Models\DiscordNotificationType;
 use App\Models\FlowMeasure;
 use App\Repository\FlowMeasureNotification\ActiveRepository;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class ActiveRepositoryTest extends TestCase
@@ -20,7 +22,7 @@ class ActiveRepositoryTest extends TestCase
     public function testItHasANotificationType()
     {
         $this->assertEquals(
-            DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+            DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
             $this->repository->notificationType()
         );
     }
@@ -58,5 +60,76 @@ class ActiveRepositoryTest extends TestCase
         FlowMeasure::factory()->finished()->count(3)->create();
 
         $this->assertEmpty($this->repository->flowMeasuresForNotification());
+    }
+
+    public function testItReturnsEcfmpMeasuresToSend()
+    {
+        // Should send, is active and never notified
+        [$measure1, $measure2] = FlowMeasure::factory()->count(2)->create();
+
+        // Active, but should send, has been notified with a different identifier
+        $measure3 = FlowMeasure::factory()
+            ->afterCreating(
+                function (FlowMeasure $measure) {
+                    $measure->discordNotifications()->create(
+                        [
+                            'remote_id' => Str::uuid(),
+                        ],
+                        joining: [
+                            'discord_notification_type_id' => DiscordNotificationType::idFromEnum(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED),
+                            'notified_as' => 'different_identifier',
+                        ]
+                    );
+                }
+            )
+            ->create();
+
+        // Active, but should send, has been notified as a notified type
+        $measure4 = FlowMeasure::factory()
+            ->afterCreating(
+                function (FlowMeasure $measure) {
+                    $measure->discordNotifications()->create(
+                        [
+                            'remote_id' => Str::uuid(),
+                        ],
+                        joining: [
+                            'discord_notification_type_id' => DiscordNotificationType::idFromEnum(DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED),
+                            'notified_as' => 'different_identifier',
+                        ]
+                    );
+                }
+            )
+            ->create();
+
+        // Should not send, is only notified
+        FlowMeasure::factory()->notStarted()->count(1)->create();
+
+        // Should not send, is expired
+        FlowMeasure::factory()->finished()->count(1)->create();
+
+        // Should not send, is withdrawn
+        FlowMeasure::factory()->withdrawn()->count(1)->create();
+
+        // Active, but should not send, has already been notified with this identifier
+        FlowMeasure::factory()
+            ->afterCreating(
+                function (FlowMeasure $measure) {
+                    $measure->discordNotifications()->create(
+                        [
+                            'remote_id' => Str::uuid(),
+                        ],
+                        joining: [
+                            'discord_notification_type_id' => DiscordNotificationType::idFromEnum(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED),
+                            'notified_as' => $measure->identifier,
+                        ]
+                    );
+                }
+            )
+            ->create();
+
+        $this->assertEquals(
+            [$measure1->id, $measure2->id, $measure3->id, $measure4->id],
+            $this->repository->flowMeasuresToBeSentToEcfmp()->pluck('id')->toArray()
+        );
     }
 }

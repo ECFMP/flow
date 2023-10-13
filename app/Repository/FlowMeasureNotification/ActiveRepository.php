@@ -8,6 +8,13 @@ use Illuminate\Support\Collection;
 
 class ActiveRepository implements RepositoryInterface
 {
+    public function flowMeasuresToBeSentToEcfmp(): Collection
+    {
+        return FlowMeasure::active()
+            ->withoutEcfmpNotificationOfTypeForIdentifier($this->notificationType())
+            ->get();
+    }
+
     public function flowMeasuresForNotification(): Collection
     {
         return FlowMeasure::with('divisionDiscordNotifications')

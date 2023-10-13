@@ -8,11 +8,20 @@ use Illuminate\Support\Collection;
 
 class ExpiredRepository implements RepositoryInterface
 {
+    public function flowMeasuresToBeSentToEcfmp(): Collection
+    {
+        return FlowMeasure::expiredRecently()
+            ->withoutEcfmpNotificationOfTypes([
+                DiscordNotificationType::FLOW_MEASURE_EXPIRED,
+                DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
+            ])
+            ->get();
+    }
+
     public function flowMeasuresForNotification(): Collection
     {
         return FlowMeasure::with('divisionDiscordNotifications')
-            ->expiredRecently()
-            ->get();
+            ->expiredRecently();
     }
 
     public function notificationType(): DiscordNotificationType

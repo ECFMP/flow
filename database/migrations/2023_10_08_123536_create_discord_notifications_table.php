@@ -12,8 +12,9 @@ return new class () extends Migration {
     {
         Schema::create('discord_notifications', function (Blueprint $table) {
             $table->id();
-            $table->uuid('remote_id')->unique();
-            $table->timestamps();
+            $table->uuid('remote_id')
+                ->unique();
+            $table->timestamp('created_at');
         });
     }
 

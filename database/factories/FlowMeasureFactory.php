@@ -102,6 +102,14 @@ class FlowMeasureFactory extends Factory
         ]);
     }
 
+
+    public function withdrawn(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'deleted_at' => Carbon::now(),
+        ]);
+    }
+
     public function withEvent(): static
     {
         return $this->state(fn (array $attributes) => [

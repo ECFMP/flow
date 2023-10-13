@@ -123,6 +123,13 @@ class FlowMeasure extends Model
             ->withTimestamps();
     }
 
+    public function discordNotifications(): BelongsToMany
+    {
+        return $this->belongsToMany(DiscordNotification::class)
+            ->withPivot(['discord_notification_type_id', 'notified_as'])
+            ->withTimestamps();
+    }
+
     public function notifiedDivisionNotifications(): BelongsToMany
     {
         return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
@@ -161,6 +168,48 @@ class FlowMeasure extends Model
                 DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
             ]
         );
+    }
+
+    public function scopeWithoutEcfmpNotificationOfTypeForIdentifier(
+        Builder $query,
+        DiscordNotificationTypeEnum $type
+    ): Builder {
+        return $query->whereDoesntHave('discordNotifications', function (Builder $query) use ($type) {
+            $query->where('discord_notification_type_id', DiscordNotificationType::where('type', $type)->firstOrFail()->id)
+                ->whereRaw('`notified_as` = `identifier`');
+        });
+    }
+
+    public function scopeWithoutEcfmpNotificationOfType(
+        Builder $query,
+        DiscordNotificationTypeEnum $type
+    ): Builder {
+        return $this->scopeWithoutEcfmpNotificationOfTypes($query, [$type]);
+    }
+
+    public function scopeWithoutEcfmpNotificationOfTypes(
+        Builder $query,
+        array $types
+    ): Builder {
+        return $query->whereDoesntHave('discordNotifications', function (Builder $query) use ($types) {
+            $query->whereIn('discord_notification_type_id', DiscordNotificationType::whereIn('type', $types)->pluck('id'));
+        });
+    }
+
+    public function scopeWithEcfmpNotificationOfType(
+        Builder $query,
+        DiscordNotificationTypeEnum $type
+    ): Builder {
+        return $this->scopeWithEcfmpNotificationOfTypes($query, [$type]);
+    }
+
+    public function scopeWithEcfmpNotificationOfTypes(
+        Builder $query,
+        array $types
+    ): Builder {
+        return $query->whereHas('discordNotifications', function (Builder $query) use ($types) {
+            $query->whereIn('discord_notification_type_id', DiscordNotificationType::whereIn('type', $types)->pluck('id'));
+        });
     }
 
     private function divisionNotificationsOfType(array $types): BelongsToMany

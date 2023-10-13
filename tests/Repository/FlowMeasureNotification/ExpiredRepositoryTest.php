@@ -63,4 +63,14 @@ class ExpiredRepositoryTest extends TestCase
         FlowMeasure::factory()->count(3)->create();
         $this->assertEmpty($this->repository->flowMeasuresForNotification());
     }
+
+    public function testItReturnsQueryForExtension()
+    {
+        $measures = FlowMeasure::factory()->finishedRecently()->count(3)->create();
+
+        $this->assertEquals(
+            $measures->pluck('id')->toArray(),
+            $this->repository->flowMeasureQuery()->get()->pluck('id')->toArray()
+        );
+    }
 }
