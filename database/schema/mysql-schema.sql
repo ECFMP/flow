@@ -219,13 +219,13 @@ LOCK TABLES `discord_tags` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `division_discord_notification_flow_measure`
+-- Table structure for table `discord_notification_flow_measure`
 --
 
-DROP TABLE IF EXISTS `division_discord_notification_flow_measure`;
+DROP TABLE IF EXISTS `discord_notification_flow_measure`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `division_discord_notification_flow_measure` (
+CREATE TABLE `discord_notification_flow_measure` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `discord_notification_id` bigint unsigned NOT NULL,
   `flow_measure_id` bigint unsigned NOT NULL,
@@ -237,29 +237,29 @@ CREATE TABLE `division_discord_notification_flow_measure` (
   KEY `discord_flow_measure_discord` (`discord_notification_id`),
   KEY `discord_flow_measure_flow` (`flow_measure_id`),
   KEY `discord_flow_measure_type` (`discord_notification_type_id`),
-  CONSTRAINT `discord_flow_measure_discord` FOREIGN KEY (`discord_notification_id`) REFERENCES `division_discord_notifications` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `discord_flow_measure_discord` FOREIGN KEY (`discord_notification_id`) REFERENCES `discord_notifications` (`id`) ON DELETE CASCADE,
   CONSTRAINT `discord_flow_measure_flow` FOREIGN KEY (`flow_measure_id`) REFERENCES `flow_measures` (`id`) ON DELETE CASCADE,
   CONSTRAINT `discord_flow_measure_type` FOREIGN KEY (`discord_notification_type_id`) REFERENCES `discord_notification_types` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `division_discord_notification_flow_measure`
+-- Dumping data for table `discord_notification_flow_measure`
 --
 
-LOCK TABLES `division_discord_notification_flow_measure` WRITE;
-/*!40000 ALTER TABLE `division_discord_notification_flow_measure` DISABLE KEYS */;
-/*!40000 ALTER TABLE `division_discord_notification_flow_measure` ENABLE KEYS */;
+LOCK TABLES `discord_notification_flow_measure` WRITE;
+/*!40000 ALTER TABLE `discord_notification_flow_measure` DISABLE KEYS */;
+/*!40000 ALTER TABLE `discord_notification_flow_measure` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `division_discord_notifications`
+-- Table structure for table `discord_notifications`
 --
 
-DROP TABLE IF EXISTS `division_discord_notifications`;
+DROP TABLE IF EXISTS `discord_notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `division_discord_notifications` (
+CREATE TABLE `discord_notifications` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `division_discord_webhook_id` bigint unsigned DEFAULT NULL COMMENT 'Which divisional discord server this notification was sent to',
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -273,12 +273,12 @@ CREATE TABLE `division_discord_notifications` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `division_discord_notifications`
+-- Dumping data for table `discord_notifications`
 --
 
-LOCK TABLES `division_discord_notifications` WRITE;
-/*!40000 ALTER TABLE `division_discord_notifications` DISABLE KEYS */;
-/*!40000 ALTER TABLE `division_discord_notifications` ENABLE KEYS */;
+LOCK TABLES `discord_notifications` WRITE;
+/*!40000 ALTER TABLE `discord_notifications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `discord_notifications` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -586,7 +586,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2022_04_26_194754_create_flight_information_regions_table',1),(2,'2022_04_26_194754_create_roles_table',1),(3,'2022_04_26_194842_create_users_table',1),(4,'2022_04_26_195947_add_roles',1),(5,'2022_04_26_201324_create_flight_information_region_user_table',1),(6,'2022_04_26_211837_create_airports_table',1),(7,'2022_04_26_211905_create_airport_groups_table',1),(8,'2022_04_26_211957_create_airport_airport_group_table',1),(9,'2022_04_26_212720_create_events_table',1),(10,'2022_04_27_113215_add_oauth_fields_in_users',1),(11,'2022_04_28_192549_create_flow_measures_table',1),(12,'2022_05_02_154200_add_participants_column_to_events_table',1),(13,'2022_05_03_194237_create_discord_tags_table',1),(14,'2022_05_03_194357_create_discord_tag_flight_information_region_table',1),(15,'2022_05_03_200854_create_flight_information_region_flow_measure_table',1),(16,'2022_05_05_122316_create_discord_notifications_table',1),(17,'2022_05_23_202255_add_embeds_column_to_discord_notifications_table',1),(18,'2022_05_24_122756_make_embed_nullable_in_discord_notifications',1),(19,'2022_05_29_122427_create_activity_log_table',1),(20,'2022_05_29_122428_add_event_column_to_activity_log_table',1),(21,'2022_05_29_122429_add_batch_uuid_column_to_activity_log_table',1),(22,'2022_06_01_204104_add_index_to_airport_groups_table',1),(23,'2022_06_10_094740_create_discord_notification_types_table',1),(24,'2022_06_10_094832_create_discord_notification_flow_measure_table',1),(25,'2022_06_10_101521_drop_column_from_discord_notifications_table',1),(26,'2022_06_30_174947_create_division_discord_webhooks_table',1),(27,'2022_06_30_182456_create_division_discord_webhook_flight_information_region_table',1),(28,'2022_06_30_193055_add_division_discord_webhook_id_column_to_discord_notifications_table',1),(29,'2022_07_19_171630_add_event_manager_in_roles',1),(30,'2022_07_26_200013_create_event_participants_table',1),(31,'2022_07_28_184847_drop_event_participants_column',1),(32,'2022_08_03_193646_add_tag_column_to_division_discord_webhook_flight_information_region_table',1),(33,'2022_08_03_194127_migrate_division_discord_webhook_tags',1),(34,'2022_08_04_144847_drop_tag_column_from_division_discord_webhook_table',1),(35,'2022_08_18_162121_add_index_to_discord_notifications_table',1),(36,'2022_10_17_183844_drop_unique_index_on_flow_measures_table',1),(37,'2022_11_15_191602_add_coordinates_to_airport_table',1),(38,'2022_11_15_213619_create_vatsim_pilot_statuses_table',1),(39,'2022_11_16_160530_create_vatsim_pilots_table',1),(40,'2022_11_24_203502_drop_index_from_vatsim_pilots_table',1),(41,'2023_03_27_190127_create_failed_jobs_table',1),(42,'2023_10_08_112953_rename_discord_notifications_tables',1);
+INSERT INTO `migrations` VALUES (1,'2022_04_26_194754_create_flight_information_regions_table',1),(2,'2022_04_26_194754_create_roles_table',1),(3,'2022_04_26_194842_create_users_table',1),(4,'2022_04_26_195947_add_roles',1),(5,'2022_04_26_201324_create_flight_information_region_user_table',1),(6,'2022_04_26_211837_create_airports_table',1),(7,'2022_04_26_211905_create_airport_groups_table',1),(8,'2022_04_26_211957_create_airport_airport_group_table',1),(9,'2022_04_26_212720_create_events_table',1),(10,'2022_04_27_113215_add_oauth_fields_in_users',1),(11,'2022_04_28_192549_create_flow_measures_table',1),(12,'2022_05_02_154200_add_participants_column_to_events_table',1),(13,'2022_05_03_194237_create_discord_tags_table',1),(14,'2022_05_03_194357_create_discord_tag_flight_information_region_table',1),(15,'2022_05_03_200854_create_flight_information_region_flow_measure_table',1),(16,'2022_05_05_122316_create_discord_notifications_table',1),(17,'2022_05_23_202255_add_embeds_column_to_discord_notifications_table',1),(18,'2022_05_24_122756_make_embed_nullable_in_discord_notifications',1),(19,'2022_05_29_122427_create_activity_log_table',1),(20,'2022_05_29_122428_add_event_column_to_activity_log_table',1),(21,'2022_05_29_122429_add_batch_uuid_column_to_activity_log_table',1),(22,'2022_06_01_204104_add_index_to_airport_groups_table',1),(23,'2022_06_10_094740_create_discord_notification_types_table',1),(24,'2022_06_10_094832_create_discord_notification_flow_measure_table',1),(25,'2022_06_10_101521_drop_column_from_discord_notifications_table',1),(26,'2022_06_30_174947_create_division_discord_webhooks_table',1),(27,'2022_06_30_182456_create_division_discord_webhook_flight_information_region_table',1),(28,'2022_06_30_193055_add_division_discord_webhook_id_column_to_discord_notifications_table',1),(29,'2022_07_19_171630_add_event_manager_in_roles',1),(30,'2022_07_26_200013_create_event_participants_table',1),(31,'2022_07_28_184847_drop_event_participants_column',1),(32,'2022_08_03_193646_add_tag_column_to_division_discord_webhook_flight_information_region_table',1),(33,'2022_08_03_194127_migrate_division_discord_webhook_tags',1),(34,'2022_08_04_144847_drop_tag_column_from_division_discord_webhook_table',1),(35,'2022_08_18_162121_add_index_to_discord_notifications_table',1),(36,'2022_10_17_183844_drop_unique_index_on_flow_measures_table',1),(37,'2022_11_15_191602_add_coordinates_to_airport_table',1),(38,'2022_11_15_213619_create_vatsim_pilot_statuses_table',1),(39,'2022_11_16_160530_create_vatsim_pilots_table',1),(40,'2022_11_24_203502_drop_index_from_vatsim_pilots_table',1),(41,'2023_03_27_190127_create_failed_jobs_table',1);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 

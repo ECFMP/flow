@@ -12,6 +12,9 @@ return new class () extends Migration {
     {
         Schema::create('discord_notification_flow_measure', function (Blueprint $table) {
             $table->id();
+            $table->string('notified_as')
+                ->index()
+                ->comment('The identifier of the flow measure at the point of notification');
             $table->foreignId('discord_notification_id')
                 ->constrained('discord_notifications', indexName: 'discord_notification_id')
                 ->cascadeOnDelete();
