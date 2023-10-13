@@ -123,29 +123,29 @@ class FlowMeasure extends Model
             ->withTimestamps();
     }
 
-    public function notifiedDiscordNotifications(): BelongsToMany
+    public function notifiedDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
     }
 
-    public function activatedDiscordNotifications(): BelongsToMany
+    public function activatedDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED]);
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED]);
     }
 
-    public function withdrawnDiscordNotifications(): BelongsToMany
+    public function withdrawnDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN]);
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN]);
     }
 
-    public function expiredDiscordNotifications(): BelongsToMany
+    public function expiredDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED]);
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED]);
     }
 
-    public function withdrawnAndExpiredDiscordNotifications(): BelongsToMany
+    public function withdrawnAndExpiredDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType(
+        return $this->divisionNotificationsOfType(
             [
                 DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN,
                 DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED,
@@ -153,9 +153,9 @@ class FlowMeasure extends Model
         );
     }
 
-    public function activatedAndNotifiedNotifications(): BelongsToMany
+    public function activatedAndNotifiedDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType(
+        return $this->divisionNotificationsOfType(
             [
                 DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
                 DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
@@ -163,7 +163,7 @@ class FlowMeasure extends Model
         );
     }
 
-    private function notificationsOfType(array $types): BelongsToMany
+    private function divisionNotificationsOfType(array $types): BelongsToMany
     {
         return $this->divisionDiscordNotifications()
             ->wherePivotIn(

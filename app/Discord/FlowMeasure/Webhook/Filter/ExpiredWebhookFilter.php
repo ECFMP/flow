@@ -37,7 +37,7 @@ class ExpiredWebhookFilter implements FilterInterface
         }
 
         return $this->existingNotificationDoesntExist(
-            $flowMeasure->withdrawnAndExpiredDiscordNotifications(),
+            $flowMeasure->withdrawnAndExpiredDivisionNotifications(),
             $webhook
         );
     }

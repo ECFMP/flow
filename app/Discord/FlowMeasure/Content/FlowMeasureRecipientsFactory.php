@@ -28,7 +28,7 @@ class FlowMeasureRecipientsFactory
     {
         $measure = $pendingMessage->flowMeasure();
         return $pendingMessage->type(
-        ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDiscordNotifications->firstWhere(
+        ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDivisionNotifications->firstWhere(
             fn (DivisionDiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
                 $notification->pivot->notified_as === $measure->identifier
         ) !== null;

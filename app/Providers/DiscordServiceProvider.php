@@ -8,6 +8,7 @@ use App\Discord\DiscordWebhookSender;
 use App\Discord\FlowMeasure\Message\FlowMeasureMessageFactory;
 use App\Discord\FlowMeasure\Message\MessageGenerator;
 use App\Discord\FlowMeasure\Message\MessageGeneratorInterface;
+use App\Discord\FlowMeasure\Provider\DivisionWebhookMessageProvider;
 use App\Discord\FlowMeasure\Provider\MessageProvider;
 use App\Discord\FlowMeasure\Webhook\Filter\ActivatedWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\Filter\ExpiredWebhookFilter;
@@ -69,7 +70,7 @@ class DiscordServiceProvider extends ServiceProvider
         FilterInterface $filter
     ): MessageGeneratorInterface {
         return new MessageGenerator(
-            new MessageProvider(
+            new DivisionWebhookMessageProvider(
                 $repository,
                 $this->app->make(
                     WebhookMapper::class,

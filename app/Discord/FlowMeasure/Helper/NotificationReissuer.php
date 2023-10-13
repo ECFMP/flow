@@ -20,6 +20,7 @@ class NotificationReissuer implements NotificationReissuerInterface
         $this->webhook = $webhook;
     }
 
+    // TODO: Update this
     public function isReissuedNotification(): bool
     {
         if (
@@ -29,7 +30,7 @@ class NotificationReissuer implements NotificationReissuerInterface
             return false;
         }
 
-        $notificationsOfType = $this->measure->activatedAndNotifiedNotifications()
+        $notificationsOfType = $this->measure->activatedAndNotifiedDivisionNotifications()
             ->where('division_discord_webhook_id', $this->webhook->id())
             ->get();
 
