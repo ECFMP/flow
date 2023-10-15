@@ -23,6 +23,8 @@ class FlowMeasure extends Model
 
     protected $fillable = [
         'identifier',
+        'canonical_identifier',
+        'revision_number',
         'user_id',
         'flight_information_region_id',
         'event_id',
@@ -36,6 +38,7 @@ class FlowMeasure extends Model
     ];
 
     protected $casts = [
+        'revision_number' => 'integer',
         'mandatory_route' => 'array',
         'filters' => 'array',
         'start_time' => 'datetime',

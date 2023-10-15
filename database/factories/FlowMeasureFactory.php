@@ -21,9 +21,12 @@ class FlowMeasureFactory extends Factory
     {
         $fir = FlightInformationRegion::factory()->create();
         $startDate = Carbon::parse($this->faker->dateTimeBetween('-1 hour'));
+        $identifier = FlowMeasureIdentifierGenerator::generateIdentifier($startDate, $fir);
 
         return [
-            'identifier' => FlowMeasureIdentifierGenerator::generateIdentifier($startDate, $fir),
+            'identifier' => $identifier,
+            'canonical_identifier' => FlowMeasureIdentifierGenerator::canonicalIdentifier($identifier),
+            'revision_number' => FlowMeasureIdentifierGenerator::timesRevised($identifier),
             'user_id' => User::factory()->create()->id,
             'flight_information_region_id' => $fir->id,
             'event_id' => null,
