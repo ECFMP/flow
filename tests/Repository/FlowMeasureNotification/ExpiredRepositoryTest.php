@@ -242,7 +242,30 @@ class ExpiredRepositoryTest extends TestCase
 
         $this->assertEquals(
             [$flowMeasure1->id, $flowMeasure2->id],
-            $this->repository->flowMeasuresToBeSentToEcfmp()->pluck('id')->toArray()
+            $this->repository->flowMeasuresToBeSentToEcfmp()->pluck('measure.id')->toArray()
         );
+    }
+
+    public function testItIsNotReissued()
+    {
+        // Will be sent, notified as notified previously
+        $measure = FlowMeasure::factory()->finishedRecently()->afterCreating(
+            function (FlowMeasure $measure) {
+                $notification = $measure->discordNotifications()->create(
+                    [
+                        'remote_id' => Str::uuid(),
+                    ],
+                    joining: [
+                        'discord_notification_type_id' => DiscordNotificationType::idFromEnum(DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED),
+                        'notified_as' => $measure->identifier,
+                    ]
+                );
+                $notification->created_at = Carbon::now()->subHours(3);
+                $notification->save();
+            }
+        )->create();
+
+        $this->assertEquals($measure->id, $this->repository->flowMeasuresToBeSentToEcfmp()->first()->measure->id);
+        $this->assertFalse($this->repository->flowMeasuresToBeSentToEcfmp()->first()->isReissuedNotification);
     }
 }

@@ -8,4 +8,6 @@ return [
     'token' => env('DISCORD_AUTH_TOKEN', ''),
     'service_host' => env('DISCORD_BOT_SERVICE_URL', 'localhost'),
     'service_token' => env('DISCORD_BOT_JWT', ''),
+    'ecfmp_channel_id' => env('DISCORD_ECFMP_CHANNEL_ID', ''),
+    'client_request_app_id' => env('DISCORD_CLIENT_REQUEST_APP_ID', ''),
 ];

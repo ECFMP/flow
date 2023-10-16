@@ -231,7 +231,31 @@ class WithdrawnRepositoryTest extends TestCase
 
         $this->assertEquals(
             [$measure1->id, $measure2->id],
-            $this->repository->flowMeasuresToBeSentToEcfmp()->pluck('id')->toArray()
+            $this->repository->flowMeasuresToBeSentToEcfmp()->pluck('measure.id')->toArray()
         );
+    }
+
+    public function testItIsNotReissued()
+    {
+        // Should be sent, was notified and is now withdrawn
+        $measure = FlowMeasure::factory()
+            ->withdrawn()
+            ->afterCreating(function (FlowMeasure $measure) {
+                $measure->discordNotifications()->create(
+                    [
+                        'remote_id' => Str::uuid(),
+                    ],
+                    joining: [
+                        'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
+                            DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED
+                        ),
+                        'notified_as' => $measure->identifier
+                    ]
+                );
+            })
+            ->create();
+
+        $this->assertEquals($measure->id, $this->repository->flowMeasuresToBeSentToEcfmp()->first()->measure->id);
+        $this->assertFalse($this->repository->flowMeasuresToBeSentToEcfmp()->first()->isReissuedNotification);
     }
 }

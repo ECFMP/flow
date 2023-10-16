@@ -15,7 +15,13 @@ class WithdrawnRepository implements RepositoryInterface
         return $this->baseQueryForEcfmp()->notified()
             ->union($this->baseQueryForEcfmp()->active())
             ->orderBy('id')
-            ->get();
+            ->get()
+            ->map(
+                fn (FlowMeasure $measure) => new FlowMeasureForNotification(
+                    $measure,
+                    false
+                )
+            );
     }
 
     public function flowMeasuresForNotification(): Collection

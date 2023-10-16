@@ -3,7 +3,7 @@
 namespace App\Discord;
 
 use App\Discord\Exception\DiscordServiceException;
-use App\Discord\Message\MessageInterface;
+use App\Discord\Message\EcfmpMessageInterface;
 
 interface DiscordServiceInterface
 {
@@ -12,5 +12,5 @@ interface DiscordServiceInterface
      *
      * @throws DiscordServiceException
      */
-    public function sendMessage(string $clientRequestId, MessageInterface $message): string;
+    public function sendMessage(string $clientRequestId, EcfmpMessageInterface $message): string;
 }

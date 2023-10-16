@@ -6,7 +6,6 @@ use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use App\Enums\FilterType;
 use App\Enums\FlowMeasureStatus;
 use App\Enums\FlowMeasureType;
-use App\Helpers\FlowMeasureIdentifierGenerator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -133,9 +132,26 @@ class FlowMeasure extends Model
             ->withTimestamps();
     }
 
+    public function discordNotificationsOfType(array $types): BelongsToMany
+    {
+        return $this->discordNotifications()
+            ->wherePivotIn(
+                'discord_notification_type_id',
+                DiscordNotificationType::whereIn(
+                    'type',
+                    $types
+                )->pluck('id')
+            );
+    }
+
     public function notifiedDivisionNotifications(): BelongsToMany
     {
         return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
+    }
+
+    public function notifiedEcfmpNotifications(): BelongsToMany
+    {
+        return $this->discordNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
     }
 
     public function activatedDivisionNotifications(): BelongsToMany
@@ -282,13 +298,5 @@ class FlowMeasure extends Model
 
             return FlowMeasureStatus::NOTIFIED;
         });
-    }
-
-    public function reissueIdentifier(bool $save = true): void
-    {
-        $this->identifier = FlowMeasureIdentifierGenerator::generateRevisedIdentifier($this);
-        if ($save) {
-            $this->save();
-        }
     }
 }

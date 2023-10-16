@@ -129,7 +129,81 @@ class ActiveRepositoryTest extends TestCase
 
         $this->assertEquals(
             [$measure1->id, $measure2->id, $measure3->id, $measure4->id],
-            $this->repository->flowMeasuresToBeSentToEcfmp()->pluck('id')->toArray()
+            $this->repository->flowMeasuresToBeSentToEcfmp()->pluck('measure.id')->toArray()
         );
+    }
+
+    public function testItIsNotReissueIfNeverPreviouslyActivated()
+    {
+        // Should send, is active and never notified
+        $measure = FlowMeasure::factory()->create();
+        $measuresToNotify = $this->repository->flowMeasuresToBeSentToEcfmp();
+
+        $this->assertCount(1, $measuresToNotify);
+        $this->assertEquals($measure->id, $measuresToNotify->first()->measure->id);
+        $this->assertFalse($measuresToNotify->first()->isReissuedNotification);
+    }
+
+    public function testItIsNotReissueIfPreviousVersionWasNotifiedForTheSameIdentifier()
+    {
+        // Should send, is active and never notified
+        $measure = FlowMeasure::factory()->create();
+        $measure->discordNotifications()->create(
+            [
+                'remote_id' => Str::uuid(),
+            ],
+            joining: [
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED),
+                'notified_as' => $measure->identifier,
+            ]
+        );
+
+        $measuresToNotify = $this->repository->flowMeasuresToBeSentToEcfmp();
+
+        $this->assertCount(1, $measuresToNotify);
+        $this->assertEquals($measure->id, $measuresToNotify->first()->measure->id);
+        $this->assertFalse($measuresToNotify->first()->isReissuedNotification);
+    }
+
+    public function testItIsReissuedIfPreviousWasNotifiedUnderDifferentIdentifier()
+    {
+        // Should send, is active and never notified
+        $measure = FlowMeasure::factory()->create();
+        $measure->discordNotifications()->create(
+            [
+                'remote_id' => Str::uuid(),
+            ],
+            joining: [
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED),
+                'notified_as' => 'something_else',
+            ]
+        );
+
+        $measuresToNotify = $this->repository->flowMeasuresToBeSentToEcfmp();
+
+        $this->assertCount(1, $measuresToNotify);
+        $this->assertEquals($measure->id, $measuresToNotify->first()->measure->id);
+        $this->assertTrue($measuresToNotify->first()->isReissuedNotification);
+    }
+
+    public function testItIsReissuedIfPreviousWasActivatedUnderDifferentIdentifier()
+    {
+        // Should send, is active and never notified
+        $measure = FlowMeasure::factory()->create();
+        $measure->discordNotifications()->create(
+            [
+                'remote_id' => Str::uuid(),
+            ],
+            joining: [
+                'discord_notification_type_id' => DiscordNotificationType::idFromEnum(DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED),
+                'notified_as' => 'something_else',
+            ]
+        );
+
+        $measuresToNotify = $this->repository->flowMeasuresToBeSentToEcfmp();
+
+        $this->assertCount(1, $measuresToNotify);
+        $this->assertEquals($measure->id, $measuresToNotify->first()->measure->id);
+        $this->assertTrue($measuresToNotify->first()->isReissuedNotification);
     }
 }

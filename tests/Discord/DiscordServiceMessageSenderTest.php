@@ -5,7 +5,7 @@ namespace App\Discord;
 use App\Discord\Client\ClientFactoryInterface;
 use App\Discord\Exception\DiscordServiceException;
 use App\Discord\Message\Embed\EmbedCollection;
-use App\Discord\Message\MessageInterface;
+use App\Discord\Message\EcfmpMessageInterface;
 use Ecfmp_discord\CreateRequest;
 use Ecfmp_discord\CreateResponse;
 use Ecfmp_discord\DiscordClient;
@@ -21,7 +21,7 @@ class DiscordServiceMessageSenderTest extends TestCase
 {
     private readonly ClientFactoryInterface $clientFactory;
     private readonly DiscordClient $client;
-    private readonly MessageInterface $message;
+    private readonly EcfmpMessageInterface $message;
     private readonly EmbedCollection $embeds;
     private readonly DiscordEmbeds $discordEmbeds;
     private readonly CreateResponse $response;
@@ -37,12 +37,14 @@ class DiscordServiceMessageSenderTest extends TestCase
 
         $this->clientFactory = Mockery::mock(ClientFactoryInterface::class);
         $this->client = Mockery::mock(DiscordClient::class);
-        $this->message = Mockery::mock(MessageInterface::class);
+        $this->message = Mockery::mock(EcfmpMessageInterface::class);
         $this->embeds = Mockery::mock(EmbedCollection::class);
         $this->response = Mockery::mock(CreateResponse::class);
         $this->status = Mockery::mock(Status::class);
         $this->discordEmbeds = Mockery::mock(DiscordEmbeds::class);
         $this->unaryCall = Mockery::mock(UnaryCall::class);
+
+        $this->message->shouldReceive('channel')->andReturn('channel1');
 
         $this->clientFactory->shouldReceive('create')->andReturn($this->client);
         $this->sender = new DiscordServiceMessageSender($this->clientFactory);
@@ -68,7 +70,7 @@ class DiscordServiceMessageSenderTest extends TestCase
         $this->client->shouldReceive('Create')->with(Mockery::on(
             fn (CreateRequest $request) => $request->getContent() === 'content' &&
             count($request->getEmbeds()) === 1 &&
-            $request->getEmbeds()[0] == $this->discordEmbeds
+            $request->getEmbeds()[0] == $this->discordEmbeds && $request->getChannel() === 'channel1'
         ), [
             'authorization' => [config('discord.service_token')],
             'x-client-request-id' => ['client-request-id'],
@@ -90,7 +92,7 @@ class DiscordServiceMessageSenderTest extends TestCase
         $this->client->shouldReceive('Create')->with(Mockery::on(
             fn (CreateRequest $request) => $request->getContent() === 'content' &&
             count($request->getEmbeds()) === 1 &&
-            $request->getEmbeds()[0] == $this->discordEmbeds
+            $request->getEmbeds()[0] == $this->discordEmbeds && $request->getChannel() === 'channel1'
         ), [
             'authorization' => [config('discord.service_token')],
             'x-client-request-id' => ['client-request-id'],

@@ -29,7 +29,13 @@ class ExpiredRepository implements RepositoryInterface
                 DiscordNotificationType::FLOW_MEASURE_EXPIRED,
                 DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
             ])
-            ->get();
+            ->get()
+            ->map(
+                fn (FlowMeasure $measure) => new FlowMeasureForNotification(
+                    $measure,
+                    false
+                )
+            );
     }
 
     public function flowMeasuresForNotification(): Collection

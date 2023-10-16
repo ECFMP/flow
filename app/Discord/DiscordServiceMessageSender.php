@@ -4,7 +4,7 @@ namespace App\Discord;
 
 use App\Discord\Client\ClientFactoryInterface;
 use App\Discord\Exception\DiscordServiceException;
-use App\Discord\Message\MessageInterface;
+use App\Discord\Message\EcfmpMessageInterface;
 use Ecfmp_discord\CreateRequest;
 use Log;
 
@@ -19,7 +19,7 @@ class DiscordServiceMessageSender implements DiscordServiceInterface
         $this->discordClientFactory = $discordClientFactory;
     }
 
-    public function sendMessage(string $clientRequestId, MessageInterface $message): string
+    public function sendMessage(string $clientRequestId, EcfmpMessageInterface $message): string
     {
         $client = $this->discordClientFactory->create();
 
@@ -36,6 +36,7 @@ class DiscordServiceMessageSender implements DiscordServiceInterface
         [$response, $status] = $client->Create(
             new CreateRequest(
                 [
+                    'channel' => $message->channel(),
                     'content' => $message->content(),
                     'embeds' => $message->embeds()->toProtobuf(),
                 ]
@@ -55,16 +56,6 @@ class DiscordServiceMessageSender implements DiscordServiceInterface
             throw new DiscordServiceException('Discord grpc call failed');
         }
 
-        // TODO:
-        // Discord message sender can remain the same...
-        // The "new" sender can remain the same, but of course we give it an "update" method
-
-        // The class "Sender" now only handles division webhooks
-
-        // We create a new set of filters that filter out messages to send based on its ECFMP bot status
-        // We create a new "associator" type for ECFMP messages
-        // We create a new sender class for ECFMP messages (for first time sending)
-        // Updates, we handle outside of the normal flow (e.g. a job)
         return $response->getId();
     }
 }
