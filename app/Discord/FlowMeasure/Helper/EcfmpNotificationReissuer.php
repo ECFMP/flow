@@ -2,7 +2,6 @@
 
 namespace App\Discord\FlowMeasure\Helper;
 
-use App\Discord\FlowMeasure\Helper\NotificationReissuerInterface;
 use App\Enums\DiscordNotificationType;
 use App\Repository\FlowMeasureNotification\FlowMeasureForNotification;
 

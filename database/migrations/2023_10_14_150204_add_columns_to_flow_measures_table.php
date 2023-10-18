@@ -14,7 +14,7 @@ return new class () extends Migration {
             $table->string('canonical_identifier')
                 ->after('identifier')
                 ->comment('The original identifier of the flow measure');
-                
+
             $table->unsignedInteger('revision_number')
                 ->after('canonical_identifier')
                 ->comment('The revision number of the flow measure');
