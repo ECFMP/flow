@@ -9,7 +9,7 @@ use App\Models\FlowMeasure;
 use Mockery;
 use Tests\TestCase;
 
-class PendingDiscordWebhookMessageTest extends TestCase
+class PendingEcfmpMessageTest extends TestCase
 {
     private readonly FlowMeasure $measure;
     private readonly DiscordNotificationType $type;
