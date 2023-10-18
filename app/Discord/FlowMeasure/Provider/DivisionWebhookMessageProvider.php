@@ -26,7 +26,7 @@ class DivisionWebhookMessageProvider implements MessageProviderInterface
                 foreach ($this->repository->flowMeasuresForNotification() as $flowMeasure) {
                     foreach ($this->webhookMapper->mapToWebhooks($flowMeasure) as $webhook) {
                         $messages->push(
-                            new PendingDiscordMessage(
+                            new PendingDiscordWebhookMessage(
                                 $flowMeasure,
                                 $this->repository->notificationType(),
                                 $webhook,
