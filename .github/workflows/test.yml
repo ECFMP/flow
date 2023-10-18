@@ -31,6 +31,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: pcov
           tools: composer:${{ matrix.composer }}
+          extensions: grpc
 
       # Setting up composer dependencies
       - name: Get Composer Cache Directory
