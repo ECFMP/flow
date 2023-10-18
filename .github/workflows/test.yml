@@ -21,9 +21,15 @@ jobs:
         composer: ["v2"]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: true
+      
+      - name: Checkout Discord Service
+        uses: actions/checkout@v4
+        with:
+          repository: ecfmp/discord
+          path: ../ecfmp-discord
 
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
