@@ -34,6 +34,9 @@ jobs:
       - name: Move Discord Service
         run: mv ecfmp-discord ../ecfmp-discord
 
+      - name: Build Protobuf
+        run: (cd protobuf && make pull_builder && make discord_proto)
+
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
         with:
