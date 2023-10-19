@@ -19,7 +19,7 @@ class UpdateNetworkData implements ShouldQueue, ShouldBeUnique
     use SerializesModels;
 
     // Unique for 2 minutes
-    public $uniqueFor = 120
+    public $uniqueFor = 120;
 
     private readonly NetworkDataDownloader $networkDataDownloader;
 
