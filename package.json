@@ -29,6 +29,6 @@
         ]
     },
     "dependencies": {
-        "alpinejs": "^3.13.1"
+        "alpinejs": "^3.13.2"
     }
 }
