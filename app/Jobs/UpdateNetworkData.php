@@ -18,6 +18,9 @@ class UpdateNetworkData implements ShouldQueue, ShouldBeUnique
     use Queueable;
     use SerializesModels;
 
+    // Unique for 2 minutes
+    public $uniqueFor = 120
+
     private readonly NetworkDataDownloader $networkDataDownloader;
 
     public function __construct(NetworkDataDownloader $networkDataDownloader)
