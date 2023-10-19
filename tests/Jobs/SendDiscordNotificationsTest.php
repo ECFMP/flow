@@ -2,7 +2,8 @@
 
 namespace Tests\Jobs;
 
-use App\Discord\Message\Sender\Sender;
+use App\Discord\FlowMeasure\Generator\EcfmpFlowMeasureMessageGenerator;
+use App\Discord\Message\Sender\DivisionWebhookSender;
 use App\Jobs\SendDiscordNotifications;
 use Illuminate\Support\Facades\Config;
 use Mockery;
@@ -14,9 +15,13 @@ class SendDiscordNotificationsTest extends TestCase
     {
         Config::set('discord.enabled', true);
 
-        $senderMock = Mockery::mock(Sender::class);
+        $senderMock = Mockery::mock(DivisionWebhookSender::class);
         $senderMock->shouldReceive('sendDiscordMessages')->once();
-        $this->app->instance(Sender::class, $senderMock);
+        $this->app->instance(DivisionWebhookSender::class, $senderMock);
+
+        $serviceSenderMock = Mockery::mock(EcfmpFlowMeasureMessageGenerator::class);
+        $serviceSenderMock->shouldReceive('generateAndSend')->once();
+        $this->app->instance(EcfmpFlowMeasureMessageGenerator::class, $serviceSenderMock);
 
         $job = $this->app->make(SendDiscordNotifications::class);
         $job->handle();
@@ -26,9 +31,13 @@ class SendDiscordNotificationsTest extends TestCase
     {
         Config::set('discord.enabled', false);
 
-        $senderMock = Mockery::mock(Sender::class);
+        $senderMock = Mockery::mock(DivisionWebhookSender::class);
         $senderMock->shouldReceive('sendDiscordMessages')->never();
-        $this->app->instance(Sender::class, $senderMock);
+        $this->app->instance(DivisionWebhookSender::class, $senderMock);
+
+        $serviceSenderMock = Mockery::mock(EcfmpFlowMeasureMessageGenerator::class);
+        $serviceSenderMock->shouldReceive('generateAndSend')->never();
+        $this->app->instance(EcfmpFlowMeasureMessageGenerator::class, $serviceSenderMock);
 
         $job = $this->app->make(SendDiscordNotifications::class);
         $job->handle();

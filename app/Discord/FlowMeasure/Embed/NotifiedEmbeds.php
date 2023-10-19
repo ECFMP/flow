@@ -39,7 +39,7 @@ class NotifiedEmbeds implements FlowMeasureEmbedInterface
                         : IdentifierAndNotifiedStatus::create($this->pendingMessage->flowMeasure())
                 )
                 ->withDescription(new EventName($this->pendingMessage->flowMeasure()))
-                ->withField(Field::make(new IssuingUser($this->pendingMessage->flowMeasure())), is_null($this->pendingMessage->webhook()->id()))
+                ->withField(Field::make(new IssuingUser($this->pendingMessage->flowMeasure())), $this->pendingMessage->isEcfmp())
                 ->withField(Field::makeInline(new Restriction($this->pendingMessage->flowMeasure())))
                 ->withField(Field::makeInline(new StartTime($this->pendingMessage->flowMeasure())))
                 ->withField(Field::makeInline(new EndTime($this->pendingMessage->flowMeasure())))

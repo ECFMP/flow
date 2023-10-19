@@ -2,9 +2,9 @@
 
 namespace App\Discord\Message\Logger;
 
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 
 interface LoggerInterface
 {
-    public function log(DiscordNotification $notification): void;
+    public function log(DivisionDiscordNotification $notification): void;
 }

@@ -21,6 +21,7 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
+.phpunit.cache
 .idea
 
 # Laravel IDE Helper
@@ -39,3 +40,5 @@ public/mix-manifest.json
 storage/imports
 
 .vscode
+
+.DS_STORE

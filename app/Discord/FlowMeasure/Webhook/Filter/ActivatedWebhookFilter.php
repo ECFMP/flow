@@ -12,8 +12,8 @@ class ActivatedWebhookFilter implements FilterInterface
     public function shouldUseWebhook(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
         return $this->existingNotificationDoesntExist(
-            $flowMeasure->activatedDiscordNotifications()
-                ->where('discord_notification_flow_measure.notified_as', $flowMeasure->identifier),
+            $flowMeasure->activatedDivisionNotifications()
+                ->where('division_discord_notification_flow_measure.notified_as', $flowMeasure->identifier),
             $webhook
         );
     }

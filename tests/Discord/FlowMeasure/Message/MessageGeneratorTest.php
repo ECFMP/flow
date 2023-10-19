@@ -6,7 +6,7 @@ use App\Discord\FlowMeasure\Message\FlowMeasureMessage;
 use App\Discord\FlowMeasure\Message\FlowMeasureMessageFactory;
 use App\Discord\FlowMeasure\Message\MessageGenerator;
 use App\Discord\FlowMeasure\Provider\MessageProviderInterface;
-use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
+use App\Discord\FlowMeasure\Provider\PendingWebhookMessageInterface;
 use Mockery;
 use Tests\TestCase;
 
@@ -16,8 +16,8 @@ class MessageGeneratorTest extends TestCase
     {
         $provider = Mockery::mock(MessageProviderInterface::class);
         $measureFactory = Mockery::mock(FlowMeasureMessageFactory::class);
-        $message1 = Mockery::mock(PendingMessageInterface::class);
-        $message2 = Mockery::mock(PendingMessageInterface::class);
+        $message1 = Mockery::mock(PendingWebhookMessageInterface::class);
+        $message2 = Mockery::mock(PendingWebhookMessageInterface::class);
         $flowMeasureMessage1 = Mockery::mock(FlowMeasureMessage::class);
         $flowMeasureMessage2 = Mockery::mock(FlowMeasureMessage::class);
 

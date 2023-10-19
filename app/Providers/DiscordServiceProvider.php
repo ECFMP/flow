@@ -2,19 +2,25 @@
 
 namespace App\Providers;
 
-use App\Discord\DiscordInterface;
-use App\Discord\DiscordMessageSender;
+use App\Discord\Client\ClientFactory;
+use App\Discord\Client\ClientFactoryInterface;
+use App\Discord\DiscordServiceInterface;
+use App\Discord\DiscordServiceMessageSender;
+use App\Discord\DiscordWebhookInterface;
+use App\Discord\DiscordWebhookSender;
+use App\Discord\FlowMeasure\Generator\EcfmpFlowMeasureMessageGenerator;
 use App\Discord\FlowMeasure\Message\FlowMeasureMessageFactory;
 use App\Discord\FlowMeasure\Message\MessageGenerator;
 use App\Discord\FlowMeasure\Message\MessageGeneratorInterface;
-use App\Discord\FlowMeasure\Provider\MessageProvider;
+use App\Discord\FlowMeasure\Provider\DivisionWebhookMessageProvider;
+use App\Discord\FlowMeasure\Sender\EcfmpFlowMeasureSender;
 use App\Discord\FlowMeasure\Webhook\Filter\ActivatedWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\Filter\ExpiredWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\Filter\FilterInterface;
 use App\Discord\FlowMeasure\Webhook\Filter\NotifiedWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\Filter\WithdrawnWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\WebhookMapper;
-use App\Discord\Message\Sender\Sender;
+use App\Discord\Message\Sender\DivisionWebhookSender;
 use App\Discord\Webhook\EcfmpWebhook;
 use App\Repository\FlowMeasureNotification\ActiveRepository;
 use App\Repository\FlowMeasureNotification\ExpiredRepository;
@@ -32,16 +38,38 @@ class DiscordServiceProvider extends ServiceProvider
         ExpiredRepository::class => ExpiredWebhookFilter::class,
     ];
 
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton(DiscordInterface::class, function () {
-            return new DiscordMessageSender();
+        $this->app->singleton(DiscordWebhookInterface::class, function () {
+            return new DiscordWebhookSender();
         });
         $this->app->singleton(EcfmpWebhook::class);
-        $this->app->singleton(Sender::class, fn () => new Sender(
-            $this->flowMeasureMessageProviders(),
-            $this->app->make(DiscordInterface::class)
-        ));
+        $this->app->singleton(
+            DivisionWebhookSender::class,
+            fn () => new DivisionWebhookSender(
+                $this->flowMeasureMessageProviders(),
+                $this->app->make(DiscordWebhookInterface::class)
+            )
+        );
+
+        $this->app->singleton(
+            DiscordServiceInterface::class,
+            fn () => $this->app->make(DiscordServiceMessageSender::class)
+        );
+        $this->app->singleton(ClientFactoryInterface::class, ClientFactory::class);
+        $this->app->singleton(ClientFactory::class);
+        $this->app->singleton(
+            EcfmpFlowMeasureMessageGenerator::class,
+            function () {
+                return new EcfmpFlowMeasureMessageGenerator(
+                    $this->app->make(EcfmpFlowMeasureSender::class),
+                    array_map(
+                        fn (string $repository) => $this->app->make($repository),
+                        array_keys(self::FLOW_MEASURE_MESSAGE_REPOSITORIES)
+                    )
+                );
+            }
+        );
     }
 
     private function flowMeasureMessageProviders(): array
@@ -63,7 +91,7 @@ class DiscordServiceProvider extends ServiceProvider
         FilterInterface $filter
     ): MessageGeneratorInterface {
         return new MessageGenerator(
-            new MessageProvider(
+            new DivisionWebhookMessageProvider(
                 $repository,
                 $this->app->make(
                     WebhookMapper::class,

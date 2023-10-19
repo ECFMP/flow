@@ -2,11 +2,8 @@
 
 namespace App\Models;
 
-use App\Enums\DiscordNotificationType;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class DiscordNotification extends Model
@@ -16,45 +13,13 @@ class DiscordNotification extends Model
     public const UPDATED_AT = null;
 
     protected $fillable = [
-        'division_discord_webhook_id',
-        'content',
-        'embeds',
-    ];
-
-    protected $casts = [
-        'type' => DiscordNotificationType::class,
-        'embeds' => 'array',
+        'remote_id',
     ];
 
     public function flowMeasure(): BelongsToMany
     {
         return $this->belongsToMany(FlowMeasure::class)
-            ->withPivot(['type', 'notified_as'])
+            ->withPivot(['notified_as', 'discord_notification_type_id'])
             ->withTimestamps();
-    }
-
-    public function scopeType(Builder $query, DiscordNotificationType $type): Builder
-    {
-        return $query->where('type', $type);
-    }
-
-    public function scopeTypes(Builder $query, array $types): Builder
-    {
-        return $query->whereIn('type', $types);
-    }
-
-    public function divisionDiscordWebhook(): BelongsTo
-    {
-        return $this->belongsTo(DivisionDiscordWebhook::class);
-    }
-
-    public function scopeIsEcfmp(Builder $query): Builder
-    {
-        return $query->whereNull('division_discord_webhook_id');
-    }
-
-    public function scopeIsDivision(Builder $query): Builder
-    {
-        return $query->whereNotNull('division_discord_webhook_id');
     }
 }

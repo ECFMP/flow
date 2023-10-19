@@ -2,7 +2,7 @@
 
 namespace Tests\Discord;
 
-use App\Discord\DiscordMessageSender;
+use App\Discord\DiscordWebhookSender;
 use App\Discord\Message\Associator\AssociatorInterface;
 use App\Discord\Message\Embed\Embed;
 use App\Discord\Message\Embed\EmbedCollection;
@@ -16,14 +16,14 @@ use Illuminate\Support\Facades\Http;
 use Mockery;
 use Tests\TestCase;
 
-class DiscordMessageSenderTest extends TestCase
+class DiscordWebhookSenderTest extends TestCase
 {
-    private readonly DiscordMessageSender $sender;
+    private readonly DiscordWebhookSender $sender;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->sender = $this->app->make(DiscordMessageSender::class);
+        $this->sender = $this->app->make(DiscordWebhookSender::class);
 
         Config::set('discord.enabled', false);
         Config::set('discord.avatar_url', 'http://ecfmp.dev/images/avatar.png');

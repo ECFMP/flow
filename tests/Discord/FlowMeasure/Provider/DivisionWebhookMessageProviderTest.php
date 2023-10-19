@@ -2,7 +2,7 @@
 
 namespace Tests\Discord\FlowMeasure\Provider;
 
-use App\Discord\FlowMeasure\Provider\MessageProvider;
+use App\Discord\FlowMeasure\Provider\DivisionWebhookMessageProvider;
 use App\Discord\FlowMeasure\Webhook\WebhookMapper;
 use App\Enums\DiscordNotificationType;
 use App\Models\DivisionDiscordWebhook;
@@ -11,18 +11,18 @@ use App\Repository\FlowMeasureNotification\RepositoryInterface;
 use Mockery;
 use Tests\TestCase;
 
-class MessageProviderTest extends TestCase
+class DivisionWebhookMessageProviderTest extends TestCase
 {
     private readonly RepositoryInterface $repository;
     private readonly WebhookMapper $mapper;
-    private readonly MessageProvider $messageProvider;
+    private readonly DivisionWebhookMessageProvider $messageProvider;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->repository = Mockery::mock(RepositoryInterface::class);
         $this->mapper = Mockery::mock(WebhookMapper::class);
-        $this->messageProvider = new MessageProvider($this->repository, $this->mapper);
+        $this->messageProvider = new DivisionWebhookMessageProvider($this->repository, $this->mapper);
     }
 
     public function testItProvidesPendingMessages()

@@ -4,7 +4,7 @@ namespace App\Discord\FlowMeasure\Logger;
 
 use App\Discord\Message\Logger\LoggerInterface;
 use App\Enums\DiscordNotificationType;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\FlowMeasure;
 
 class FlowMeasureLogger implements LoggerInterface
@@ -18,7 +18,7 @@ class FlowMeasureLogger implements LoggerInterface
         $this->type = $type;
     }
 
-    public function log(DiscordNotification $notification): void
+    public function log(DivisionDiscordNotification $notification): void
     {
         activity()
             ->inLog('Discord')

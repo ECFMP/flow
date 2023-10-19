@@ -20,8 +20,8 @@ class NotifiedWebhookFilter implements FilterInterface
     private function notYetNotified(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
         return $this->existingNotificationDoesntExist(
-            $flowMeasure->notifiedDiscordNotifications()
-                ->where('discord_notification_flow_measure.notified_as', $flowMeasure->identifier),
+            $flowMeasure->notifiedDivisionNotifications()
+                ->where('division_discord_notification_flow_measure.notified_as', $flowMeasure->identifier),
             $webhook
         );
     }
@@ -29,7 +29,7 @@ class NotifiedWebhookFilter implements FilterInterface
     private function notYetActivated(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
         return $this->existingNotificationDoesntExist(
-            $flowMeasure->activatedDiscordNotifications(),
+            $flowMeasure->activatedDivisionNotifications(),
             $webhook
         );
     }

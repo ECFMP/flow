@@ -6,7 +6,6 @@ use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
 use App\Enums\FilterType;
 use App\Enums\FlowMeasureStatus;
 use App\Enums\FlowMeasureType;
-use App\Helpers\FlowMeasureIdentifierGenerator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -23,6 +22,8 @@ class FlowMeasure extends Model
 
     protected $fillable = [
         'identifier',
+        'canonical_identifier',
+        'revision_number',
         'user_id',
         'flight_information_region_id',
         'event_id',
@@ -36,6 +37,7 @@ class FlowMeasure extends Model
     ];
 
     protected $casts = [
+        'revision_number' => 'integer',
         'mandatory_route' => 'array',
         'filters' => 'array',
         'start_time' => 'datetime',
@@ -116,6 +118,13 @@ class FlowMeasure extends Model
         return $query->where('flight_information_region_id', $flightInformationRegion->id);
     }
 
+    public function divisionDiscordNotifications(): BelongsToMany
+    {
+        return $this->belongsToMany(DivisionDiscordNotification::class)
+            ->withPivot(['discord_notification_type_id', 'notified_as'])
+            ->withTimestamps();
+    }
+
     public function discordNotifications(): BelongsToMany
     {
         return $this->belongsToMany(DiscordNotification::class)
@@ -123,29 +132,46 @@ class FlowMeasure extends Model
             ->withTimestamps();
     }
 
-    public function notifiedDiscordNotifications(): BelongsToMany
+    public function discordNotificationsOfType(array $types): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
+        return $this->discordNotifications()
+            ->wherePivotIn(
+                'discord_notification_type_id',
+                DiscordNotificationType::whereIn(
+                    'type',
+                    $types
+                )->pluck('id')
+            );
     }
 
-    public function activatedDiscordNotifications(): BelongsToMany
+    public function notifiedDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED]);
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
     }
 
-    public function withdrawnDiscordNotifications(): BelongsToMany
+    public function notifiedEcfmpNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN]);
+        return $this->discordNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED]);
     }
 
-    public function expiredDiscordNotifications(): BelongsToMany
+    public function activatedDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED]);
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED]);
     }
 
-    public function withdrawnAndExpiredDiscordNotifications(): BelongsToMany
+    public function withdrawnDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType(
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN]);
+    }
+
+    public function expiredDivisionNotifications(): BelongsToMany
+    {
+        return $this->divisionNotificationsOfType([DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED]);
+    }
+
+    public function withdrawnAndExpiredDivisionNotifications(): BelongsToMany
+    {
+        return $this->divisionNotificationsOfType(
             [
                 DiscordNotificationTypeEnum::FLOW_MEASURE_WITHDRAWN,
                 DiscordNotificationTypeEnum::FLOW_MEASURE_EXPIRED,
@@ -153,9 +179,9 @@ class FlowMeasure extends Model
         );
     }
 
-    public function activatedAndNotifiedNotifications(): BelongsToMany
+    public function activatedAndNotifiedDivisionNotifications(): BelongsToMany
     {
-        return $this->notificationsOfType(
+        return $this->divisionNotificationsOfType(
             [
                 DiscordNotificationTypeEnum::FLOW_MEASURE_NOTIFIED,
                 DiscordNotificationTypeEnum::FLOW_MEASURE_ACTIVATED,
@@ -163,9 +189,51 @@ class FlowMeasure extends Model
         );
     }
 
-    private function notificationsOfType(array $types): BelongsToMany
+    public function scopeWithoutEcfmpNotificationOfTypeForIdentifier(
+        Builder $query,
+        DiscordNotificationTypeEnum $type
+    ): Builder {
+        return $query->whereDoesntHave('discordNotifications', function (Builder $query) use ($type) {
+            $query->where('discord_notification_type_id', DiscordNotificationType::where('type', $type)->firstOrFail()->id)
+                ->whereRaw('`notified_as` = `identifier`');
+        });
+    }
+
+    public function scopeWithoutEcfmpNotificationOfType(
+        Builder $query,
+        DiscordNotificationTypeEnum $type
+    ): Builder {
+        return $this->scopeWithoutEcfmpNotificationOfTypes($query, [$type]);
+    }
+
+    public function scopeWithoutEcfmpNotificationOfTypes(
+        Builder $query,
+        array $types
+    ): Builder {
+        return $query->whereDoesntHave('discordNotifications', function (Builder $query) use ($types) {
+            $query->whereIn('discord_notification_type_id', DiscordNotificationType::whereIn('type', $types)->pluck('id'));
+        });
+    }
+
+    public function scopeWithEcfmpNotificationOfType(
+        Builder $query,
+        DiscordNotificationTypeEnum $type
+    ): Builder {
+        return $this->scopeWithEcfmpNotificationOfTypes($query, [$type]);
+    }
+
+    public function scopeWithEcfmpNotificationOfTypes(
+        Builder $query,
+        array $types
+    ): Builder {
+        return $query->whereHas('discordNotifications', function (Builder $query) use ($types) {
+            $query->whereIn('discord_notification_type_id', DiscordNotificationType::whereIn('type', $types)->pluck('id'));
+        });
+    }
+
+    private function divisionNotificationsOfType(array $types): BelongsToMany
     {
-        return $this->discordNotifications()
+        return $this->divisionDiscordNotifications()
             ->wherePivotIn(
                 'discord_notification_type_id',
                 DiscordNotificationType::whereIn(
@@ -230,13 +298,5 @@ class FlowMeasure extends Model
 
             return FlowMeasureStatus::NOTIFIED;
         });
-    }
-
-    public function reissueIdentifier(bool $save = true): void
-    {
-        $this->identifier = FlowMeasureIdentifierGenerator::generateRevisedIdentifier($this);
-        if ($save) {
-            $this->save();
-        }
     }
 }

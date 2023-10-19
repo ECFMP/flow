@@ -5,7 +5,7 @@ namespace Tests\Discord\FlowMeasure\Webhook\Filter;
 use App\Discord\FlowMeasure\Webhook\Filter\ExpiredWebhookFilter;
 use App\Discord\Webhook\EcfmpWebhook;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DiscordNotificationType;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlowMeasure;
@@ -29,7 +29,7 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldUseEcfmpWebhookIfLotsOfNotificationsHaveBeenSentRecently()
     {
         $measure = FlowMeasure::factory()->create();
-        DiscordNotification::factory()->count(6)->create(['division_discord_webhook_id' => null]);
+        DivisionDiscordNotification::factory()->count(6)->create(['division_discord_webhook_id' => null]);
 
         $this->assertTrue(
             $this->filter->shouldUseWebhook(
@@ -71,8 +71,8 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToEcfmpWebhook()
     {
         $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
-        $discordNotification = DiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $discordNotification = DivisionDiscordNotification::factory()->create();
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -94,8 +94,8 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenActivatedToEcfmpWebhook()
     {
         $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
-        $discordNotification = DiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $discordNotification = DivisionDiscordNotification::factory()->create();
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -117,8 +117,8 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenWithdrawnToEcfmpWebhook()
     {
         $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
-        $discordNotification = DiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $discordNotification = DivisionDiscordNotification::factory()->create();
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -140,8 +140,8 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenExpiredToEcfmpWebhook()
     {
         $measure = FlowMeasure::factory()->create(['identifier' => 'EGTT23A-3']);
-        $discordNotification = DiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $discordNotification = DivisionDiscordNotification::factory()->create();
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -172,8 +172,8 @@ class ExpiredWebhookFilterTest extends TestCase
             ->create();
 
         // Not too many recently sent
-        DiscordNotification::factory()->count(5)->create(['division_discord_webhook_id' => null]);
-        DiscordNotification::factory()->count(5)
+        DivisionDiscordNotification::factory()->count(5)->create(['division_discord_webhook_id' => null]);
+        DivisionDiscordNotification::factory()->count(5)
             ->toDivisionWebhook(DivisionDiscordWebhook::factory()->create())
             ->create();
 
@@ -188,10 +188,10 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -213,10 +213,10 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasOnlyBeenActivatedToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -238,10 +238,10 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenExpiredToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -263,10 +263,10 @@ class ExpiredWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenWithdrawnToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(

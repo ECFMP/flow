@@ -7,7 +7,7 @@ use App\Discord\Webhook\WebhookInterface;
 use App\Enums\DiscordNotificationType;
 use App\Models\FlowMeasure;
 
-class PendingDiscordMessage implements PendingMessageInterface
+class PendingDiscordWebhookMessage implements PendingWebhookMessageInterface
 {
     private readonly FlowMeasure $measure;
     private readonly DiscordNotificationType $type;
@@ -44,5 +44,10 @@ class PendingDiscordMessage implements PendingMessageInterface
     public function reissue(): NotificationReissuerInterface
     {
         return $this->resissue;
+    }
+
+    public function isEcfmp(): bool
+    {
+        return false;
     }
 }

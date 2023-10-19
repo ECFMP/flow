@@ -5,7 +5,7 @@ namespace Tests\Discord\FlowMeasure\Webhook\Filter;
 use App\Discord\FlowMeasure\Webhook\Filter\NotifiedWebhookFilter;
 use App\Discord\Webhook\EcfmpWebhook;
 use App\Enums\DiscordNotificationType as DiscordNotificationTypeEnum;
-use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DiscordNotificationType;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlowMeasure;
@@ -39,8 +39,8 @@ class NotifiedWebhookFilterTest extends TestCase
     public function testItShouldUseWebhookIfFlowMeasureHasBeenNotifiedToEcfmpWebhookUnderDifferentIdentifier()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $discordNotification = DivisionDiscordNotification::factory()->create();
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -62,8 +62,8 @@ class NotifiedWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenNotifiedToEcfmpWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $discordNotification = DivisionDiscordNotification::factory()->create();
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -85,8 +85,8 @@ class NotifiedWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenActivatedToEcfmpWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()->create();
-        $measure->discordNotifications()->attach(
+        $discordNotification = DivisionDiscordNotification::factory()->create();
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -119,10 +119,10 @@ class NotifiedWebhookFilterTest extends TestCase
     public function testItShouldUseWebhookIfFlowMeasureHasOnlyBeenNotifiedToDivisionWebhookAsDifferentIdentifier()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -144,10 +144,10 @@ class NotifiedWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenNotifiedToDivisionWebhookWithSameIdentifier()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(
@@ -169,10 +169,10 @@ class NotifiedWebhookFilterTest extends TestCase
     public function testItShouldNotUseWebhookIfFlowMeasureHasBeenActivatedToDivisionWebhook()
     {
         $measure = FlowMeasure::factory()->create();
-        $discordNotification = DiscordNotification::factory()
+        $discordNotification = DivisionDiscordNotification::factory()
             ->toDivisionWebhook($this->divisionDiscordWebhook)
             ->create();
-        $measure->discordNotifications()->attach(
+        $measure->divisionDiscordNotifications()->attach(
             [
                 $discordNotification->id => [
                     'discord_notification_type_id' => DiscordNotificationType::idFromEnum(

@@ -7,6 +7,7 @@ use App\Models\FlightInformationRegion;
 use App\Models\FlowMeasure;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class FlowMeasureIdentifierGeneratorTest extends TestCase
@@ -154,6 +155,28 @@ class FlowMeasureIdentifierGeneratorTest extends TestCase
             'Second revision' => ['EGTT01A-2', 1],
             'Ninth revision' => ['EGTT01A-10', 9],
             'Tenth revision' => ['EGTT01A-11', 10],
+        ];
+    }
+
+    #[DataProvider('canonicalIdentifierProvider')]
+    public function testItGeneratesCanonicalIdentifiers(
+        string $identifier,
+        string $expected
+    ) {
+        $this->assertEquals(
+            $expected,
+            FlowMeasureIdentifierGenerator::canonicalIdentifier(
+                FlowMeasure::factory()->make(['identifier' => $identifier])
+            )
+        );
+    }
+
+    public function canonicalIdentifierProvider(): array
+    {
+        return [
+            'No revision' => ['EGTT01A', 'EGTT01A'],
+            'First revision' => ['EGTT31B-2', 'EGTT31BA'],
+            'Tenth revision' => ['EGTT05A-11', 'EGTT05A'],
         ];
     }
 }

@@ -118,6 +118,8 @@ class CreateFlowMeasure extends CreateRecord
         }
 
         $data['identifier'] = FlowMeasureIdentifierGenerator::generateIdentifier($startTime, $fir);
+        $data['canonical_identifier'] = FlowMeasureIdentifierGenerator::canonicalIdentifier($data['identifier']);
+        $data['revision_number'] = FlowMeasureIdentifierGenerator::timesRevised($data['identifier']);
         $data['user_id'] = auth()->id();
 
         switch ($data['type']) {

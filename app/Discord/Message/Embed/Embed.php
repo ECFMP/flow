@@ -2,6 +2,8 @@
 
 namespace App\Discord\Message\Embed;
 
+use Ecfmp_discord\DiscordEmbeds;
+use Ecfmp_discord\DiscordEmbedsFields;
 use Illuminate\Support\Collection;
 
 class Embed implements EmbedInterface
@@ -111,5 +113,35 @@ class Embed implements EmbedInterface
         }
 
         return $return;
+    }
+
+    public function toProtobuf(): DiscordEmbeds
+    {
+        return tap(
+            new DiscordEmbeds(),
+            function (DiscordEmbeds $embed) {
+                if (isset($this->title)) {
+                    $embed->setTitle($this->title->title());
+                }
+
+                if (isset($this->colour)) {
+                    $embed->setColor($this->colour->value);
+                }
+
+                if (isset($this->description)) {
+                    $embed->setDescription($this->description->description());
+                }
+
+                if ($this->fields->isNotEmpty()) {
+                    $embed->setFields(
+                        $this->fields->map(fn (FieldInterface $field) => new DiscordEmbedsFields([
+                            'name' => $field->name(),
+                            'value' => $field->value(),
+                            'inline' => $field->inline(),
+                        ]))->toArray()
+                    );
+                }
+            }
+        );
     }
 }

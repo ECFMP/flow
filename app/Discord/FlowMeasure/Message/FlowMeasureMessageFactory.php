@@ -7,6 +7,7 @@ use App\Discord\FlowMeasure\Content\FlowMeasureRecipientsFactory;
 use App\Discord\FlowMeasure\Embed\FlowMeasureEmbedFactory;
 use App\Discord\FlowMeasure\Logger\FlowMeasureLogger;
 use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
+use App\Discord\FlowMeasure\Provider\PendingWebhookMessageInterface;
 
 class FlowMeasureMessageFactory
 {
@@ -19,7 +20,7 @@ class FlowMeasureMessageFactory
         $this->embedFactory = $embedFactory;
     }
 
-    public function make(PendingMessageInterface $pendingMessage): FlowMeasureMessage
+    public function make(PendingWebhookMessageInterface $pendingMessage): FlowMeasureMessage
     {
         return new FlowMeasureMessage(
             $pendingMessage->webhook(),
@@ -29,4 +30,14 @@ class FlowMeasureMessageFactory
             new FlowMeasureLogger($pendingMessage->flowMeasure(), $pendingMessage->type())
         );
     }
+
+    public function makeEcfmp(PendingMessageInterface $message): EcfmpFlowMeasureMessage
+    {
+        return new EcfmpFlowMeasureMessage(
+            config('discord.ecfmp_channel_id'),
+            $this->recipientsFactory->makeEcfmpRecipients($message),
+            $this->embedFactory->make($message)
+        );
+    }
+
 }

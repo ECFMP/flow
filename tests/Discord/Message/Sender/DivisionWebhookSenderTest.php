@@ -2,18 +2,18 @@
 
 namespace Tests\Discord\Message\Sender;
 
-use App\Discord\DiscordInterface;
+use App\Discord\DiscordWebhookInterface;
 use App\Discord\FlowMeasure\Message\MessageGeneratorInterface;
 use App\Discord\Message\Associator\AssociatorInterface;
 use App\Discord\Message\Embed\EmbedCollection;
 use App\Discord\Message\Logger\LoggerInterface;
 use App\Discord\Message\MessageInterface;
-use App\Discord\Message\Sender\Sender;
+use App\Discord\Message\Sender\DivisionWebhookSender;
 use App\Models\DivisionDiscordWebhook;
 use Mockery;
 use Tests\TestCase;
 
-class SenderTest extends TestCase
+class DivisionWebhookSenderTest extends TestCase
 {
     public function testItSendsMessages()
     {
@@ -43,15 +43,15 @@ class SenderTest extends TestCase
 
         $mockGenerator = Mockery::mock(MessageGeneratorInterface::class);
         $mockGenerator->expects('generate')->andReturn(collect([$message1, $message2]));
-        $mockDiscord = Mockery::mock(DiscordInterface::class);
+        $mockDiscord = Mockery::mock(DiscordWebhookInterface::class);
         $mockDiscord->shouldReceive('sendMessage')->with($message1)->andReturnTrue();
         $mockDiscord->shouldReceive('sendMessage')->with($message2)->andReturnTrue();
 
-        $sender = new Sender([$mockGenerator], $mockDiscord);
+        $sender = new DivisionWebhookSender([$mockGenerator], $mockDiscord);
         $sender->sendDiscordMessages();
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'division_discord_notifications',
             [
                 'division_discord_webhook_id' => $divisionWebhook->id,
                 'content' => 'foo',
@@ -59,7 +59,7 @@ class SenderTest extends TestCase
         );
 
         $this->assertDatabaseHas(
-            'discord_notifications',
+            'division_discord_notifications',
             [
                 'division_discord_webhook_id' => $divisionWebhook->id,
                 'content' => 'bar',
