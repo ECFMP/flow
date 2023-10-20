@@ -89,7 +89,11 @@ class WebhookMapperTest extends TestCase
         $this->filter->shouldReceive('shouldUseWebhook')
             ->andReturnTrue();
 
-        $this->assertCount(3, $this->mapper->mapToWebhooks($flowMeasure));
+        $this->assertCount(2, $this->mapper->mapToWebhooks($flowMeasure));
+        $this->assertEquals(
+            DivisionDiscordWebhook::all()->pluck('id'),
+            $this->mapper->mapToWebhooks($flowMeasure)->map(fn (WebhookInterface $webhook) => $webhook->id())
+        );
     }
 
     public function testItDeduplicatesWebhooks()
@@ -129,9 +133,9 @@ class WebhookMapperTest extends TestCase
         $this->filter->shouldReceive('shouldUseWebhook')
             ->andReturnTrue();
 
-        $this->assertCount(3, $this->mapper->mapToWebhooks($flowMeasure));
+        $this->assertCount(2, $this->mapper->mapToWebhooks($flowMeasure));
         $this->assertEquals(
-            new Collection([null, $webhook1->id, $webhook2->id]),
+            new Collection([$webhook1->id, $webhook2->id]),
             $this->mapper->mapToWebhooks($flowMeasure)->map(fn (WebhookInterface $webhook) => $webhook->id())
         );
     }

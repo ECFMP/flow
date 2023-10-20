@@ -53,7 +53,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItsAReissueIfItsNotifiedAndTheIdentifierHasChanged()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -78,7 +80,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItsAReissueIfItsActivatedAndTheIdentifierHasChanged()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -103,7 +107,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItsAReissueIfItWasNotifiedAndTheIdentifierHasChangedForActivation()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -206,7 +212,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItIsNotAReissueIfItsNotifiedAndTheIdentifierHasNotChanged()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -231,7 +239,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItIsNotAReissueIfItsActivatedAndTheIdentifierHasNotChanged()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -256,7 +266,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItIsNotAReissueIfItsNotifiedAndThenActivatedTheIdentifierHasNotChanged()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -307,7 +319,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItIsNotAReissueIfItsWithdrawn()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
@@ -332,7 +346,9 @@ class NotificationReissuerTest extends TestCase
 
     public function testItIsNotAReissueIfItsExpired()
     {
-        $previousNotification = DivisionDiscordNotification::factory()->create();
+        $previousNotification = DivisionDiscordNotification::factory()
+            ->toDivisionWebhook($this->webhook)
+            ->create();
         $this->flowMeasure->divisionDiscordNotifications()->sync(
             [
                 $previousNotification->id => [
