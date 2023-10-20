@@ -21,7 +21,6 @@ use App\Discord\FlowMeasure\Webhook\Filter\NotifiedWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\Filter\WithdrawnWebhookFilter;
 use App\Discord\FlowMeasure\Webhook\WebhookMapper;
 use App\Discord\Message\Sender\DivisionWebhookSender;
-use App\Discord\Webhook\EcfmpWebhook;
 use App\Repository\FlowMeasureNotification\ActiveRepository;
 use App\Repository\FlowMeasureNotification\ExpiredRepository;
 use App\Repository\FlowMeasureNotification\NotifiedRepository;
@@ -43,7 +42,6 @@ class DiscordServiceProvider extends ServiceProvider
         $this->app->singleton(DiscordWebhookInterface::class, function () {
             return new DiscordWebhookSender();
         });
-        $this->app->singleton(EcfmpWebhook::class);
         $this->app->singleton(
             DivisionWebhookSender::class,
             fn () => new DivisionWebhookSender(
