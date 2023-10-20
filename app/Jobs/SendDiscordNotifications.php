@@ -19,6 +19,9 @@ class SendDiscordNotifications implements ShouldQueue, ShouldBeUnique
     use Queueable;
     use SerializesModels;
 
+    // Unique for 2 minutes
+    public $uniqueFor = 120;
+
     private readonly DivisionWebhookSender $sender;
     private readonly EcfmpFlowMeasureMessageGenerator $generator;
 
