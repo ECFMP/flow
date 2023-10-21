@@ -29,4 +29,9 @@ class EmbedCollection
     {
         return $this->embeds->map(fn (EmbedInterface $embed) => $embed->toArray())->toArray();
     }
+
+    public function toProtobuf(): array
+    {
+        return $this->embeds->map(fn (EmbedInterface $embed) => $embed->toProtobuf())->toArray();
+    }
 }

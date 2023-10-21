@@ -150,6 +150,8 @@ class EditFlowMeasure extends EditRecord
             $newFlowMeasure = $record->replicate();
             $newFlowMeasure->fill($data);
             $newFlowMeasure->identifier = FlowMeasureIdentifierGenerator::generateIdentifier($newFlowMeasure->start_time, $newFlowMeasure->flightInformationRegion);
+            $newFlowMeasure->canonical_identifier = $newFlowMeasure->identifier;
+            $newFlowMeasure->revision_number = FlowMeasureIdentifierGenerator::timesRevised($newFlowMeasure->identifier);
             $newFlowMeasure->push();
 
             /*
@@ -164,7 +166,9 @@ class EditFlowMeasure extends EditRecord
             return $newFlowMeasure;
         }
 
+
         $record->identifier = FlowMeasureIdentifierGenerator::generateRevisedIdentifier($record);
+        $record->revision_number = FlowMeasureIdentifierGenerator::timesRevised($record->identifier);
 
         $record->update($data);
 

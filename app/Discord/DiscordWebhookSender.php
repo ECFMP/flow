@@ -6,7 +6,7 @@ use App\Discord\Message\MessageInterface;
 use Illuminate\Support\Facades\Http;
 use Log;
 
-class DiscordMessageSender implements DiscordInterface
+class DiscordWebhookSender implements DiscordWebhookInterface
 {
     public function sendMessage(MessageInterface $message): bool
     {

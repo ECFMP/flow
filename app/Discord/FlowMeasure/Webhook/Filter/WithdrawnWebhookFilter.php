@@ -18,7 +18,7 @@ class WithdrawnWebhookFilter implements FilterInterface
     private function hasBeenActivatedOrNotified(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
         return $this->existingNotificationExists(
-            $flowMeasure->activatedAndNotifiedNotifications(),
+            $flowMeasure->activatedAndNotifiedDivisionNotifications(),
             $webhook
         );
     }
@@ -26,7 +26,7 @@ class WithdrawnWebhookFilter implements FilterInterface
     private function hasNotBeenWithdrawnOrExpired(FlowMeasure $flowMeasure, WebhookInterface $webhook): bool
     {
         return $this->existingNotificationDoesntExist(
-            $flowMeasure->withdrawnAndExpiredDiscordNotifications(),
+            $flowMeasure->withdrawnAndExpiredDivisionNotifications(),
             $webhook
         );
     }

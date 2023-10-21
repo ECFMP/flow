@@ -10,6 +10,20 @@ use Illuminate\Support\Collection;
 
 class WithdrawnRepository implements RepositoryInterface
 {
+    public function flowMeasuresToBeSentToEcfmp(): Collection
+    {
+        return $this->baseQueryForEcfmp()->notified()
+            ->union($this->baseQueryForEcfmp()->active())
+            ->orderBy('id')
+            ->get()
+            ->map(
+                fn (FlowMeasure $measure) => new FlowMeasureForNotification(
+                    $measure,
+                    false
+                )
+            );
+    }
+
     public function flowMeasuresForNotification(): Collection
     {
         return $this->baseQuery()->notified()
@@ -18,9 +32,22 @@ class WithdrawnRepository implements RepositoryInterface
             ->get();
     }
 
+    public function baseQueryForEcfmp(): Builder
+    {
+        return $this->baseQuery()
+            ->WithEcfmpNotificationOfTypes([
+                DiscordNotificationType::FLOW_MEASURE_ACTIVATED,
+                DiscordNotificationType::FLOW_MEASURE_NOTIFIED,
+            ])
+            ->withoutEcfmpNotificationOfTypes([
+                DiscordNotificationType::FLOW_MEASURE_EXPIRED,
+                DiscordNotificationType::FLOW_MEASURE_WITHDRAWN,
+            ]);
+    }
+
     private function baseQuery(): Builder
     {
-        return FlowMeasure::with('discordNotifications')
+        return FlowMeasure::with('divisionDiscordNotifications')
             ->onlyTrashed()
             ->where('deleted_at', '>', Carbon::now()->subHour());
     }

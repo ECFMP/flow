@@ -2,7 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Discord\Message\Sender\Sender;
+use App\Discord\FlowMeasure\Generator\EcfmpFlowMeasureMessageGenerator;
+use App\Discord\Message\Sender\DivisionWebhookSender;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -18,11 +19,16 @@ class SendDiscordNotifications implements ShouldQueue, ShouldBeUnique
     use Queueable;
     use SerializesModels;
 
-    private readonly Sender $sender;
+    // Unique for 2 minutes
+    public $uniqueFor = 120;
 
-    public function __construct(Sender $sender)
+    private readonly DivisionWebhookSender $sender;
+    private readonly EcfmpFlowMeasureMessageGenerator $generator;
+
+    public function __construct(DivisionWebhookSender $sender, EcfmpFlowMeasureMessageGenerator $generator)
     {
         $this->sender = $sender;
+        $this->generator = $generator;
     }
 
     public function handle(): void
@@ -34,6 +40,7 @@ class SendDiscordNotifications implements ShouldQueue, ShouldBeUnique
 
         Log::info('Sending discord notifications');
         $this->sender->sendDiscordMessages();
+        $this->generator->generateAndSend();
         Log::info('Discord notification sending complete');
     }
 }

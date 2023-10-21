@@ -3,9 +3,11 @@
 namespace App\Discord\FlowMeasure\Content;
 
 use App\Discord\FlowMeasure\Provider\PendingMessageInterface;
+use App\Discord\FlowMeasure\Provider\PendingWebhookMessageInterface;
 use App\Discord\Message\Tag\Tag;
 use App\Enums\DiscordNotificationType;
 use App\Models\DiscordNotification;
+use App\Models\DivisionDiscordNotification;
 use App\Models\DiscordTag;
 use App\Models\DivisionDiscordWebhook;
 use App\Models\FlightInformationRegion;
@@ -13,22 +15,39 @@ use Carbon\Carbon;
 
 class FlowMeasureRecipientsFactory
 {
-    public function makeRecipients(PendingMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
+    public function makeRecipients(PendingWebhookMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
+    {
+        if ($this->hasRecentlyBeenNotifiedToWebhook($pendingMessage)) {
+            return new NoRecipients();
+        }
+
+        return $this->divisionRecipients($pendingMessage);
+    }
+
+    public function makeEcfmpRecipients(PendingMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
     {
         if ($this->hasRecentlyBeenNotified($pendingMessage)) {
             return new NoRecipients();
         }
 
-        return $pendingMessage->webhook()->id() === null
-            ? $this->ecfmpRecipients($pendingMessage)
-            : $this->divisionRecipients($pendingMessage);
+        return $this->ecfmpRecipients($pendingMessage);
+    }
+
+    private function hasRecentlyBeenNotifiedToWebhook(PendingWebhookMessageInterface $pendingMessage): bool
+    {
+        $measure = $pendingMessage->flowMeasure();
+        return $pendingMessage->type(
+        ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDivisionNotifications->firstWhere(
+            fn (DivisionDiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
+                $notification->pivot->notified_as === $measure->identifier
+        ) !== null;
     }
 
     private function hasRecentlyBeenNotified(PendingMessageInterface $pendingMessage): bool
     {
         $measure = $pendingMessage->flowMeasure();
         return $pendingMessage->type(
-        ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedDiscordNotifications->firstWhere(
+        ) === DiscordNotificationType::FLOW_MEASURE_ACTIVATED && $measure->notifiedEcfmpNotifications->firstWhere(
             fn (DiscordNotification $notification) => $notification->created_at > Carbon::now()->subHour() &&
                 $notification->pivot->notified_as === $measure->identifier
         ) !== null;
@@ -44,7 +63,7 @@ class FlowMeasureRecipientsFactory
         );
     }
 
-    private function divisionRecipients(PendingMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
+    private function divisionRecipients(PendingWebhookMessageInterface $pendingMessage): FlowMeasureRecipientsInterface
     {
         $recipients = DivisionDiscordWebhook::find($pendingMessage->webhook()->id())
             ->flightInformationRegions

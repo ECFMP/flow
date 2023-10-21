@@ -21,7 +21,21 @@ jobs:
         composer: ["v2"]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      
+      - name: Checkout Discord Service
+        uses: actions/checkout@v4
+        with:
+          repository: ecfmp/discord
+          path: ecfmp-discord
+
+      - name: Move Discord Service
+        run: mv ecfmp-discord ../ecfmp-discord
+
+      - name: Build Protobuf
+        run: (cd protobuf && make pull_builder && make discord_proto)
 
       - name: Configure PHP
         uses: shivammathur/setup-php@v2
@@ -29,6 +43,7 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: pcov
           tools: composer:${{ matrix.composer }}
+          extensions: grpc
 
       # Setting up composer dependencies
       - name: Get Composer Cache Directory

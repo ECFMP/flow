@@ -37,12 +37,33 @@ class FlowMeasureIdentifierGenerator
         );
     }
 
-    public static function timesRevised(FlowMeasure $flowMeasure)
+    public static function timesRevised(FlowMeasure|string $flowMeasure)
     {
+        if ($flowMeasure instanceof FlowMeasure) {
+            return self::timesRevised($flowMeasure->identifier);
+        }
+
         $identifierParts = [];
-        preg_match(self::IDENTIFIER_REGEX, $flowMeasure->identifier, $identifierParts);
+        preg_match(self::IDENTIFIER_REGEX, $flowMeasure, $identifierParts);
 
         return isset($identifierParts[5]) ? ((int)$identifierParts[5]) - 1 : 0;
+    }
+
+    public static function canonicalIdentifier(FlowMeasure|string $flowMeasure): string
+    {
+        if ($flowMeasure instanceof FlowMeasure) {
+            return self::canonicalIdentifier($flowMeasure->identifier);
+        }
+
+        $identifierParts = [];
+        preg_match(self::IDENTIFIER_REGEX, $flowMeasure, $identifierParts);
+
+        return sprintf(
+            '%s%s%s',
+            $identifierParts[1],
+            $identifierParts[2],
+            $identifierParts[3]
+        );
     }
 
     private static function designator(Carbon $startTime, FlightInformationRegion $flightInformationRegion): string

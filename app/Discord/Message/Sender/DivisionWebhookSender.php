@@ -2,17 +2,17 @@
 
 namespace App\Discord\Message\Sender;
 
-use App\Discord\DiscordInterface;
-use App\Models\DiscordNotification;
+use App\Discord\DiscordWebhookInterface;
+use App\Models\DivisionDiscordNotification;
 use DB;
 use Exception;
 
-class Sender
+class DivisionWebhookSender
 {
     private readonly array $generators;
-    private readonly DiscordInterface $discord;
+    private readonly DiscordWebhookInterface $discord;
 
-    public function __construct(array $generators, DiscordInterface $discord)
+    public function __construct(array $generators, DiscordWebhookInterface $discord)
     {
         $this->generators = $generators;
         $this->discord = $discord;
@@ -33,7 +33,7 @@ class Sender
 
                 // Associate it and log it
                 DB::transaction(function () use ($message) {
-                    $notification = DiscordNotification::create(
+                    $notification = DivisionDiscordNotification::create(
                         [
                             'division_discord_webhook_id' => $message->destination()->id(),
                             'content' => $message->content(),

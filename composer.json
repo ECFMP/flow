@@ -8,10 +8,13 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
+        "ext-grpc": "*",
         "ext-json": "*",
         "doctrine/dbal": "^3.3",
         "filament/filament": "^2.14",
+        "google/protobuf": "^3.17",
+        "grpc/grpc": "^1.38",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.5",
         "laravel/socialite": "^5.5",
@@ -45,7 +48,9 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "SocialiteProviders\\VatsimConnect\\": "SocialiteProviders/src/VatsimConnect/"
+            "SocialiteProviders\\VatsimConnect\\": "SocialiteProviders/src/VatsimConnect/",
+            "Ecfmp_discord\\": "protobuf/discord/gen/pb-php/Ecfmp_discord/",
+            "GPBMetadata\\": "protobuf/discord/gen/pb-php/GPBMetadata/"
         }
     },
     "autoload-dev": {

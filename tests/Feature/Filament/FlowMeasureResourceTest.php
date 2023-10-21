@@ -2,9 +2,11 @@
 
 use App\Enums\FlowMeasureType;
 use App\Filament\Resources\FlowMeasureResource;
+use App\Helpers\FlowMeasureIdentifierGenerator;
 use App\Models\FlowMeasure;
 use App\Models\FlightInformationRegion;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Tests\FrontendTestCase;
 
@@ -81,7 +83,11 @@ it('can create mdi flow measure', function () {
         ->set("data.ades.{$adesKey}.custom_value", $newData->filters[1]['value'][0])
         ->call('create');
 
+    $latestFlowMeasure = FlowMeasure::latest()->first();
     $this->assertDatabaseHas(FlowMeasure::class, [
+        'identifier' => $latestFlowMeasure->identifier,
+        'canonical_identifier' => FlowMeasureIdentifierGenerator::canonicalIdentifier($latestFlowMeasure->identifier),
+        'revision_number' => FlowMeasureIdentifierGenerator::timesRevised($latestFlowMeasure->identifier),
         'flight_information_region_id' => $newData->flight_information_region_id,
         'event_id' => $newData->event_id,
         'start_time' => $newData->start_time->startOfMinute(),
@@ -290,7 +296,9 @@ it('can edit', function () {
     $this->actingAs(User::factory()->system()->create());
 
     /** @var FlowMeasure $flowMeasure */
-    $flowMeasure = FlowMeasure::factory()->create();
+    $flowMeasure = FlowMeasure::factory()->create(['start_time' => Carbon::now()->addMinutes(35)]);
+    $flowMeasure->notifiedFlightInformationRegions()->attach(FlightInformationRegion::factory()->create());
+    $nextIdentifier = FlowMeasureIdentifierGenerator::generateIdentifier($flowMeasure->start_time, $flowMeasure->flightInformationRegion);
 
     /** @var FlowMeasure $newData */
     $newData = FlowMeasure::factory()->make();
@@ -298,6 +306,7 @@ it('can edit', function () {
     $livewire = livewire(FlowMeasureResource\Pages\EditFlowMeasure::class, [
         'record' => $flowMeasure->getKey(),
     ])
+        ->set('data.flight_information_region_id', $newData->flight_information_region_id)
         ->set('data.reason', $newData->reason)
         ->set('data.type', $newData->type->value)
         ->set('data.value', $newData->value)
@@ -310,7 +319,57 @@ it('can edit', function () {
     $adepKey = key($adep);
     $adesKey = key($ades);
 
-    $livewire->set("data.adep.{$adepKey}.value_type", 'custom_value')
+    $test = $livewire->set("data.adep.{$adepKey}.value_type", 'custom_value')
+        ->set("data.adep.{$adepKey}.airport_group", null)
+        ->set("data.adep.{$adepKey}.custom_value", $newData->filters[0]['value'][0])
+        ->set("data.ades.{$adesKey}.value_type", 'custom_value')
+        ->set("data.ades.{$adesKey}.airport_group", null)
+        ->set("data.ades.{$adesKey}.custom_value", $newData->filters[1]['value'][0])
+        ->call('save');
+
+    $newFlowMeasure = FlowMeasure::where('identifier', $nextIdentifier)->first();
+
+    expect($newFlowMeasure)->toMatchArray([
+        // TODO Re-enable this after I know why it doesn't update in test, but does in front-end
+        // 'reason' => $newData->reason,
+        'identifier' => $nextIdentifier,
+        'canonical_identifier' => $nextIdentifier,
+        'revision_number' => 0,
+        'type' => $newData->type,
+        'value' => $newData->value,
+        'mandatory_route' => $newData->mandatory_route,
+    ]);
+});
+
+it('can edit with revision', function () {
+    /** @var FrontendTestCase $this */
+    $this->actingAs(User::factory()->system()->create());
+
+    /** @var FlowMeasure $flowMeasure */
+    $flowMeasure = FlowMeasure::factory()->create(['start_time' => Carbon::now()->addMinutes(15)]);
+    $flowMeasure->notifiedFlightInformationRegions()->attach(FlightInformationRegion::factory()->create());
+    $originalIdentifier = $flowMeasure->identifier;
+    $nextIdentifier = FlowMeasureIdentifierGenerator::generateRevisedIdentifier($flowMeasure);
+    /** @var FlowMeasure $newData */
+    $newData = FlowMeasure::factory()->make();
+
+    $livewire = livewire(FlowMeasureResource\Pages\EditFlowMeasure::class, [
+        'record' => $flowMeasure->getKey(),
+    ])
+        ->set('data.flight_information_region_id', $newData->flight_information_region_id)
+        ->set('data.reason', $newData->reason)
+        ->set('data.type', $newData->type->value)
+        ->set('data.value', $newData->value)
+        ->set('data.mandatory_route', $newData->mandatory_route);
+
+    /** @var array $data */
+    $data = $livewire->get('data');
+    $adep = Arr::get($data, 'adep');
+    $ades = Arr::get($data, 'ades');
+    $adepKey = key($adep);
+    $adesKey = key($ades);
+
+    $test = $livewire->set("data.adep.{$adepKey}.value_type", 'custom_value')
         ->set("data.adep.{$adepKey}.airport_group", null)
         ->set("data.adep.{$adepKey}.custom_value", $newData->filters[0]['value'][0])
         ->set("data.ades.{$adesKey}.value_type", 'custom_value')
@@ -321,6 +380,9 @@ it('can edit', function () {
     expect($flowMeasure->refresh())->toMatchArray([
         // TODO Re-enable this after I know why it doesn't update in test, but does in front-end
         // 'reason' => $newData->reason,
+        'identifier' => $nextIdentifier,
+        'canonical_identifier' => $originalIdentifier,
+        'revision_number' => 1,
         'type' => $newData->type,
         'value' => $newData->value,
         'mandatory_route' => $newData->mandatory_route,
