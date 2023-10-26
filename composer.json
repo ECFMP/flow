@@ -11,6 +11,7 @@
         "php": "^8.2",
         "ext-grpc": "*",
         "ext-json": "*",
+        "aws/aws-sdk-php": "^3.283",
         "doctrine/dbal": "^3.3",
         "filament/filament": "^2.14",
         "google/protobuf": "^3.17",
