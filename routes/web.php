@@ -3,7 +3,6 @@
 use App\Http\Controllers\Auth\VatsimConnectController;
 use App\Http\Controllers\DocumentationController;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
