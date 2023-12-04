@@ -14,7 +14,7 @@
         "postcss": "^8.4.31",
         "tailwindcss": "^3.3.3",
         "tippy.js": "^6.3.7",
-        "vite": "^4.4.9"
+        "vite": "^5.0.4"
     },
     "release": {
         "repositoryUrl": "https://github.com/ECFMP/flow",
