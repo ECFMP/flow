@@ -32,7 +32,7 @@
         "barryvdh/laravel-debugbar": "^3.6",
         "barryvdh/laravel-ide-helper": "^2.12",
         "fakerphp/faker": "^1.9.1",
-        "laravel-lang/lang": "^13.2",
+        "laravel-lang/lang": "^14.2",
         "laravel-lang/publisher": "^14.0",
         "laravel/pint": "^1.0.0",
         "laravel/sail": "^1.0.1",
